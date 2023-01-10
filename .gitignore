@@ -1,4 +1,5 @@
 Debug/*
+.cache/*
 src/calc.tab.cpp
 include/calc.tab.hpp
 src/lex.yy.cpp
