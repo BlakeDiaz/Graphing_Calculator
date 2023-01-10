@@ -1,7 +1,7 @@
 %{
 #include <stdlib.h>
 #include "Function.hpp"
-#include "calc.tab.hpp"
+#include "parser.tab.hpp"
 #include "yylex.hpp"
 void yyerror(char const *);
 %}

@@ -4,7 +4,7 @@
 #include <cmath>
 #include <map>
 #include "Function.hpp"
-#include "calc.tab.hpp"
+#include "parser.tab.hpp"
 
  std::map<std::string, Function> init_func_map()
 {

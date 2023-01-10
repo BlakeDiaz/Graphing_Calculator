@@ -2,7 +2,7 @@
 #include <string>
 #include <map>
 #include "Function.hpp"
-#include "calc.tab.hpp"
+#include "parser.tab.hpp"
 // Give flex the prototype of yylex we want...
 #define YY_DECL \
     yy::parser::symbol_type yylex(std::map<std::string, Function>& func_map)
