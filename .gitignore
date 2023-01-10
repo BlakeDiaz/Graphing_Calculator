@@ -1,0 +1,6 @@
+Debug/*
+src/calc.tab.cpp
+include/calc.tab.hpp
+src/lex.yy.cpp
+compile_commands.json
+outline.txt
