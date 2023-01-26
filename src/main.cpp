@@ -5,6 +5,7 @@
 #include <map>
 #include "Function.hpp"
 #include "parser.tab.hpp"
+#include "lexer.hpp"
 
  std::map<std::string, Function> init_func_map()
 {
@@ -25,9 +26,27 @@ void yyerror(char const *s)
     std::cout << "oops" << std::endl;
 }
 
+double solve_expression(std::map<std::string, Function> func_map, std::string expression)
+{
+    double result;
+    
+    YY_BUFFER_STATE bs = yy_scan_string(expression.c_str());
+    yy_switch_to_buffer(bs);
+
+    yy::parser parsed(func_map, &result);
+    parsed();
+
+    yy_delete_buffer(bs);
+
+    return result;
+}
+
 int main (int argc, char const* argv[])
 {
+    double result;
     std::map<std::string, Function> func_map = init_func_map();
-    yy::parser parsed(func_map);
-    return parsed();
+    
+    std::cout << "Answer 1: " << solve_expression(func_map, "20 * 9\n") << std::endl;
+
+    return 0;
 }

@@ -24,6 +24,7 @@
 
 // The parsing context
 %param { std::map<std::string, Function>& func_map }
+%parse-param { double *result }
 
 // Enable run-time traces (yydebug)
 %define parse.trace
@@ -69,7 +70,7 @@ input:
 
 line:
   "\n"
-| exp "\n"   { std::cout << $1 << std::endl; }
+| exp "\n"   { *result = $1;                 }
 | error "\n" { yyerrok;                      }
 ;
 
