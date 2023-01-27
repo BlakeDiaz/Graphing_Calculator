@@ -33,8 +33,8 @@ double solve_expression(std::map<std::string, Function> func_map, std::string ex
     YY_BUFFER_STATE bs = yy_scan_string(expression.c_str());
     yy_switch_to_buffer(bs);
 
-    yy::parser parsed(func_map, &result);
-    parsed();
+    yy::parser parser(func_map, &result);
+    parser();
 
     yy_delete_buffer(bs);
 
