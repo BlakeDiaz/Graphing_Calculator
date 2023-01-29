@@ -6,6 +6,7 @@
 
 %define api.token.raw
 
+%define api.prefix {fmt}
 %define api.token.constructor
 %define api.value.type variant
 %define parse.assert
