@@ -63,7 +63,7 @@ input:
 
 line:
   "\n"
-| exp "\n"   { std::cout << $1 << std::endl; }
+| exp "\n"   { result = $1; }
 | error "\n" { yyerrok;                      }
 ;
 

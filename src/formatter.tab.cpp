@@ -550,7 +550,7 @@ namespace fmt {
             {
   case 5: // line: exp "\n"
 #line 66 "src/formatter.yy"
-             { std::cout << yystack_[1].value.as < std::string > () << std::endl; }
+             { result = yystack_[1].value.as < std::string > (); }
 #line 555 "src/formatter.tab.cpp"
     break;
 
