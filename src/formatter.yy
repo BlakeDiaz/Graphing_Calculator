@@ -14,24 +14,18 @@
 %{
   #include <iostream>
   #include <cmath>   // For pow, used in the grammar
-  void yyerror(char const *);
+  void fmterror(char const *);
 %}
 
-%code requires
-{
-  #include "Function.hpp" // Includes func_map variable, and Function type
-  #include <map>
-}
-
 // The parsing context
-%param { std::map<std::string, Function>& func_map }
+%parse-param { std::string& result }
 
 // Enable run-time traces (yydebug)
 %define parse.trace
 
 %code
 {
-  #include "yylex.hpp"
+  #include "fmtlex.hpp"
 }
 
 // Bison declarations
@@ -54,14 +48,12 @@
 %precedence NEG // negation--unary minus
 %right "^"      // exponentiation
 
-%token <double>  NUM     // Double precision number
-%token <Function> FUN // Function (sin, cos, etc.)
-%nterm <double>  exp
+%token <std::string>  NUM     // Double precision number
+%token <std::string> VAR      // Variable (e.g. x, y)
+%token <std::string>  FUN     // Function (sin, cos, etc.)
+%nterm <std::string> exp 
 
 // Formatting semantic values
-%printer { std::cout << $$.name << "()"; } FUN;
-%printer { std::cout << $$; } <double>;
-
 %% /* The grammar follows. */
 input:
   %empty
@@ -75,19 +67,19 @@ line:
 ;
 
 exp:
-  NUM                { $$ = $1;                         }
-| FUN "(" exp ")"    { $$ = $1.ptr($3);                 }
-| exp "+" exp        { $$ = $1 + $3;                    }
-| exp "-" exp        { $$ = $1 - $3;                    }
-| exp "*" exp        { $$ = $1 * $3;                    }
-| exp "/" exp        { $$ = $1 / $3;                    }
-| "-" exp  %prec NEG { $$ = -$2;                        }
-| exp "^" exp        { $$ = pow($1, $3);                }
-| "(" exp ")"        { $$ = $2;                         }
+  NUM                { $$ += $1;                        }
+| FUN "(" exp ")"    { $$ += $1 + "(" + $3 + ")";       }
+| exp "+" exp        { $$ += $1 + "+" + $3;             }
+| exp "-" exp        { $$ += $1 + "-" + $3;             }
+| exp "*" exp        { $$ += $1 + "*" + $3;             }
+| exp "/" exp        { $$ += $1 + "/" + $3;             }
+| "-" exp  %prec NEG { $$ += "-" + $2;                  }
+| exp "^" exp        { $$ += $1 + "^" + $3;             }
+| "(" exp ")"        { $$ += "(" + $2 + ")";            }
 ;
 /* End of grammar. */
 %%
-void yy::parser::error(const std::string& m)
+void fmt::parser::error(const std::string& m)
 {
     std::cerr << m << '\n';
 }
