@@ -51,6 +51,7 @@
 %token <std::string>  NUM     // Double precision number
 %token <std::string> VAR      // Variable (e.g. x, y)
 %token <std::string>  FUN     // Function (sin, cos, etc.)
+%nterm <std::string> implicit
 %nterm <std::string> exp 
 
 // Formatting semantic values
@@ -66,16 +67,24 @@ line:
 | error "\n" { yyerrok;                      }
 ;
 
+implicit:
+  VAR                           { $$ += $1;                             }
+| FUN "(" exp ")"               { $$ += $1 + "(" + $3 + ")";            }
+| "(" exp ")"                   { $$ += "(" + $2 + ")";                 }
+| implicit VAR                  { $$ += $1 + "*" + $2;                  }
+| implicit FUN "(" exp ")"      { $$ += $1 + "*" + $2 + "(" + $4 + ")"; }
+| implicit "(" exp ")"          { $$ += $1 + "*" + "(" + $3 + ")";      }
+
 exp:
   NUM                { $$ += $1;                        }
-| FUN "(" exp ")"    { $$ += $1 + "(" + $3 + ")";       }
+| implicit           { $$ += $1;                        }
+| NUM implicit       { $$ += $1 + "*" + $2;             }
 | exp "+" exp        { $$ += $1 + "+" + $3;             }
 | exp "-" exp        { $$ += $1 + "-" + $3;             }
 | exp "*" exp        { $$ += $1 + "*" + $3;             }
 | exp "/" exp        { $$ += $1 + "/" + $3;             }
 | "-" exp  %prec NEG { $$ += "-" + $2;                  }
 | exp "^" exp        { $$ += $1 + "^" + $3;             }
-| "(" exp ")"        { $$ += "(" + $2 + ")";            }
 ;
 /* End of grammar. */
 %%

@@ -200,6 +200,7 @@ namespace fmt {
       case symbol_kind::S_NUM: // NUM
       case symbol_kind::S_VAR: // VAR
       case symbol_kind::S_FUN: // FUN
+      case symbol_kind::S_implicit: // implicit
       case symbol_kind::S_exp: // exp
         value.YY_MOVE_OR_COPY< std::string > (YY_MOVE (that.value));
         break;
@@ -222,6 +223,7 @@ namespace fmt {
       case symbol_kind::S_NUM: // NUM
       case symbol_kind::S_VAR: // VAR
       case symbol_kind::S_FUN: // FUN
+      case symbol_kind::S_implicit: // implicit
       case symbol_kind::S_exp: // exp
         value.move< std::string > (YY_MOVE (that.value));
         break;
@@ -244,6 +246,7 @@ namespace fmt {
       case symbol_kind::S_NUM: // NUM
       case symbol_kind::S_VAR: // VAR
       case symbol_kind::S_FUN: // FUN
+      case symbol_kind::S_implicit: // implicit
       case symbol_kind::S_exp: // exp
         value.copy< std::string > (that.value);
         break;
@@ -264,6 +267,7 @@ namespace fmt {
       case symbol_kind::S_NUM: // NUM
       case symbol_kind::S_VAR: // VAR
       case symbol_kind::S_FUN: // FUN
+      case symbol_kind::S_implicit: // implicit
       case symbol_kind::S_exp: // exp
         value.move< std::string > (that.value);
         break;
@@ -525,6 +529,7 @@ namespace fmt {
       case symbol_kind::S_NUM: // NUM
       case symbol_kind::S_VAR: // VAR
       case symbol_kind::S_FUN: // FUN
+      case symbol_kind::S_implicit: // implicit
       case symbol_kind::S_exp: // exp
         yylhs.value.emplace< std::string > ();
         break;
@@ -544,73 +549,109 @@ namespace fmt {
           switch (yyn)
             {
   case 5: // line: exp "\n"
-#line 65 "src/formatter.yy"
+#line 66 "src/formatter.yy"
              { std::cout << yystack_[1].value.as < std::string > () << std::endl; }
-#line 550 "src/formatter.tab.cpp"
+#line 555 "src/formatter.tab.cpp"
     break;
 
   case 6: // line: error "\n"
-#line 66 "src/formatter.yy"
+#line 67 "src/formatter.yy"
              { yyerrok;                      }
-#line 556 "src/formatter.tab.cpp"
+#line 561 "src/formatter.tab.cpp"
     break;
 
-  case 7: // exp: NUM
-#line 70 "src/formatter.yy"
-                     { yylhs.value.as < std::string > () += yystack_[0].value.as < std::string > ();                        }
-#line 562 "src/formatter.tab.cpp"
-    break;
-
-  case 8: // exp: FUN "(" exp ")"
+  case 7: // implicit: VAR
 #line 71 "src/formatter.yy"
-                     { yylhs.value.as < std::string > () += yystack_[3].value.as < std::string > () + "(" + yystack_[1].value.as < std::string > () + ")";       }
-#line 568 "src/formatter.tab.cpp"
+                                { yylhs.value.as < std::string > () += yystack_[0].value.as < std::string > ();                             }
+#line 567 "src/formatter.tab.cpp"
     break;
 
-  case 9: // exp: exp "+" exp
+  case 8: // implicit: FUN "(" exp ")"
 #line 72 "src/formatter.yy"
-                     { yylhs.value.as < std::string > () += yystack_[2].value.as < std::string > () + "+" + yystack_[0].value.as < std::string > ();             }
-#line 574 "src/formatter.tab.cpp"
+                                { yylhs.value.as < std::string > () += yystack_[3].value.as < std::string > () + "(" + yystack_[1].value.as < std::string > () + ")";            }
+#line 573 "src/formatter.tab.cpp"
     break;
 
-  case 10: // exp: exp "-" exp
+  case 9: // implicit: "(" exp ")"
 #line 73 "src/formatter.yy"
-                     { yylhs.value.as < std::string > () += yystack_[2].value.as < std::string > () + "-" + yystack_[0].value.as < std::string > ();             }
-#line 580 "src/formatter.tab.cpp"
+                                { yylhs.value.as < std::string > () += "(" + yystack_[1].value.as < std::string > () + ")";                 }
+#line 579 "src/formatter.tab.cpp"
     break;
 
-  case 11: // exp: exp "*" exp
+  case 10: // implicit: implicit VAR
 #line 74 "src/formatter.yy"
-                     { yylhs.value.as < std::string > () += yystack_[2].value.as < std::string > () + "*" + yystack_[0].value.as < std::string > ();             }
-#line 586 "src/formatter.tab.cpp"
+                                { yylhs.value.as < std::string > () += yystack_[1].value.as < std::string > () + "*" + yystack_[0].value.as < std::string > ();                  }
+#line 585 "src/formatter.tab.cpp"
     break;
 
-  case 12: // exp: exp "/" exp
+  case 11: // implicit: implicit FUN "(" exp ")"
 #line 75 "src/formatter.yy"
-                     { yylhs.value.as < std::string > () += yystack_[2].value.as < std::string > () + "/" + yystack_[0].value.as < std::string > ();             }
-#line 592 "src/formatter.tab.cpp"
+                                { yylhs.value.as < std::string > () += yystack_[4].value.as < std::string > () + "*" + yystack_[3].value.as < std::string > () + "(" + yystack_[1].value.as < std::string > () + ")"; }
+#line 591 "src/formatter.tab.cpp"
     break;
 
-  case 13: // exp: "-" exp
+  case 12: // implicit: implicit "(" exp ")"
 #line 76 "src/formatter.yy"
+                                { yylhs.value.as < std::string > () += yystack_[3].value.as < std::string > () + "*" + "(" + yystack_[1].value.as < std::string > () + ")";      }
+#line 597 "src/formatter.tab.cpp"
+    break;
+
+  case 13: // exp: NUM
+#line 79 "src/formatter.yy"
+                     { yylhs.value.as < std::string > () += yystack_[0].value.as < std::string > ();                        }
+#line 603 "src/formatter.tab.cpp"
+    break;
+
+  case 14: // exp: implicit
+#line 80 "src/formatter.yy"
+                     { yylhs.value.as < std::string > () += yystack_[0].value.as < std::string > ();                        }
+#line 609 "src/formatter.tab.cpp"
+    break;
+
+  case 15: // exp: NUM implicit
+#line 81 "src/formatter.yy"
+                     { yylhs.value.as < std::string > () += yystack_[1].value.as < std::string > () + "*" + yystack_[0].value.as < std::string > ();             }
+#line 615 "src/formatter.tab.cpp"
+    break;
+
+  case 16: // exp: exp "+" exp
+#line 82 "src/formatter.yy"
+                     { yylhs.value.as < std::string > () += yystack_[2].value.as < std::string > () + "+" + yystack_[0].value.as < std::string > ();             }
+#line 621 "src/formatter.tab.cpp"
+    break;
+
+  case 17: // exp: exp "-" exp
+#line 83 "src/formatter.yy"
+                     { yylhs.value.as < std::string > () += yystack_[2].value.as < std::string > () + "-" + yystack_[0].value.as < std::string > ();             }
+#line 627 "src/formatter.tab.cpp"
+    break;
+
+  case 18: // exp: exp "*" exp
+#line 84 "src/formatter.yy"
+                     { yylhs.value.as < std::string > () += yystack_[2].value.as < std::string > () + "*" + yystack_[0].value.as < std::string > ();             }
+#line 633 "src/formatter.tab.cpp"
+    break;
+
+  case 19: // exp: exp "/" exp
+#line 85 "src/formatter.yy"
+                     { yylhs.value.as < std::string > () += yystack_[2].value.as < std::string > () + "/" + yystack_[0].value.as < std::string > ();             }
+#line 639 "src/formatter.tab.cpp"
+    break;
+
+  case 20: // exp: "-" exp
+#line 86 "src/formatter.yy"
                      { yylhs.value.as < std::string > () += "-" + yystack_[0].value.as < std::string > ();                  }
-#line 598 "src/formatter.tab.cpp"
+#line 645 "src/formatter.tab.cpp"
     break;
 
-  case 14: // exp: exp "^" exp
-#line 77 "src/formatter.yy"
+  case 21: // exp: exp "^" exp
+#line 87 "src/formatter.yy"
                      { yylhs.value.as < std::string > () += yystack_[2].value.as < std::string > () + "^" + yystack_[0].value.as < std::string > ();             }
-#line 604 "src/formatter.tab.cpp"
-    break;
-
-  case 15: // exp: "(" exp ")"
-#line 78 "src/formatter.yy"
-                     { yylhs.value.as < std::string > () += "(" + yystack_[1].value.as < std::string > () + ")";            }
-#line 610 "src/formatter.tab.cpp"
+#line 651 "src/formatter.tab.cpp"
     break;
 
 
-#line 614 "src/formatter.tab.cpp"
+#line 655 "src/formatter.tab.cpp"
 
             default:
               break;
@@ -806,71 +847,82 @@ namespace fmt {
   const signed char
   parser::yypact_[] =
   {
-      -5,    16,    -5,    -3,    15,    15,    -5,    -5,     9,    -5,
-      -2,    -5,    -1,    28,    15,    15,    15,    15,    15,    15,
-      -5,    -5,    35,    40,    40,    -1,    -1,    -1,    -5
+      -5,    23,    -5,    -3,    26,    26,    -5,     1,    -5,     2,
+      -5,    61,    -2,    -5,    -1,    38,    61,    26,    26,    -5,
+       3,    26,    26,    26,    26,    26,    -5,    -5,    45,    52,
+      26,    65,    65,    -1,    -1,    -1,    -5,    -5,    59,    -5
   };
 
   const signed char
   parser::yydefact_[] =
   {
-       2,     0,     1,     0,     0,     0,     4,     7,     0,     3,
-       0,     6,    13,     0,     0,     0,     0,     0,     0,     0,
-       5,    15,     0,    10,     9,    11,    12,    14,     8
+       2,     0,     1,     0,     0,     0,     4,    13,     7,     0,
+       3,    14,     0,     6,    20,     0,    15,     0,     0,    10,
+       0,     0,     0,     0,     0,     0,     5,     9,     0,     0,
+       0,    17,    16,    18,    19,    21,     8,    12,     0,    11
   };
 
   const signed char
   parser::yypgoto_[] =
   {
-      -5,    -5,    -5,    -4
+      -5,    -5,    -5,    15,    -4
   };
 
   const signed char
   parser::yydefgoto_[] =
   {
-       0,     1,     9,    10
+       0,     1,    10,    11,    12
   };
 
   const signed char
   parser::yytable_[] =
   {
-      12,    13,    15,    16,    17,    18,    19,    19,    11,    20,
-      22,    23,    24,    25,    26,    27,     2,     3,    14,     4,
-       4,     0,     0,     0,     5,     5,     0,     6,     7,     7,
-       8,     8,    15,    16,    17,    18,    19,     0,    21,    15,
-      16,    17,    18,    19,     0,    28,    17,    18,    19
+      14,    15,    21,    22,    23,    24,    25,    25,    13,    26,
+       5,    17,    30,    28,    29,     8,     9,    31,    32,    33,
+      34,    35,    16,     2,     3,     0,    38,     4,     0,     0,
+       4,     0,     5,     0,     6,     5,     7,     8,     9,     7,
+       8,     9,    21,    22,    23,    24,    25,     0,    27,    21,
+      22,    23,    24,    25,     0,    36,    21,    22,    23,    24,
+      25,     0,    37,    21,    22,    23,    24,    25,     0,    39,
+      18,    23,    24,    25,     0,    19,    20
   };
 
   const signed char
   parser::yycheck_[] =
   {
        4,     5,     4,     5,     6,     7,     8,     8,    11,    11,
-      14,    15,    16,    17,    18,    19,     0,     1,     9,     4,
-       4,    -1,    -1,    -1,     9,     9,    -1,    11,    13,    13,
-      15,    15,     4,     5,     6,     7,     8,    -1,    10,     4,
-       5,     6,     7,     8,    -1,    10,     6,     7,     8
+       9,     9,     9,    17,    18,    14,    15,    21,    22,    23,
+      24,    25,     7,     0,     1,    -1,    30,     4,    -1,    -1,
+       4,    -1,     9,    -1,    11,     9,    13,    14,    15,    13,
+      14,    15,     4,     5,     6,     7,     8,    -1,    10,     4,
+       5,     6,     7,     8,    -1,    10,     4,     5,     6,     7,
+       8,    -1,    10,     4,     5,     6,     7,     8,    -1,    10,
+       9,     6,     7,     8,    -1,    14,    15
   };
 
   const signed char
   parser::yystos_[] =
   {
-       0,    17,     0,     1,     4,     9,    11,    13,    15,    18,
-      19,    11,    19,    19,     9,     4,     5,     6,     7,     8,
-      11,    10,    19,    19,    19,    19,    19,    19,    10
+       0,    17,     0,     1,     4,     9,    11,    13,    14,    15,
+      18,    19,    20,    11,    20,    20,    19,     9,     9,    14,
+      15,     4,     5,     6,     7,     8,    11,    10,    20,    20,
+       9,    20,    20,    20,    20,    20,    10,    10,    20,    10
   };
 
   const signed char
   parser::yyr1_[] =
   {
        0,    16,    17,    17,    18,    18,    18,    19,    19,    19,
-      19,    19,    19,    19,    19,    19
+      19,    19,    19,    20,    20,    20,    20,    20,    20,    20,
+      20,    20
   };
 
   const signed char
   parser::yyr2_[] =
   {
        0,     2,     0,     2,     1,     2,     2,     1,     4,     3,
-       3,     3,     3,     2,     3,     3
+       2,     5,     4,     1,     1,     2,     3,     3,     3,     3,
+       2,     3
   };
 
 
@@ -882,7 +934,7 @@ namespace fmt {
   {
   "\"end of file\"", "error", "\"invalid token\"", "\"=\"", "\"-\"",
   "\"+\"", "\"*\"", "\"/\"", "\"^\"", "\"(\"", "\")\"", "\"\\n\"", "NEG",
-  "NUM", "VAR", "FUN", "$accept", "input", "line", "exp", YY_NULLPTR
+  "NUM", "VAR", "FUN", "$accept", "input", "line", "implicit", "exp", YY_NULLPTR
   };
 #endif
 
@@ -891,8 +943,9 @@ namespace fmt {
   const signed char
   parser::yyrline_[] =
   {
-       0,    59,    59,    60,    64,    65,    66,    70,    71,    72,
-      73,    74,    75,    76,    77,    78
+       0,    60,    60,    61,    65,    66,    67,    71,    72,    73,
+      74,    75,    76,    79,    80,    81,    82,    83,    84,    85,
+      86,    87
   };
 
   void
@@ -924,9 +977,9 @@ namespace fmt {
 
 
 } // fmt
-#line 928 "src/formatter.tab.cpp"
+#line 981 "src/formatter.tab.cpp"
 
-#line 81 "src/formatter.yy"
+#line 90 "src/formatter.yy"
 
 void fmt::parser::error(const std::string& m)
 {

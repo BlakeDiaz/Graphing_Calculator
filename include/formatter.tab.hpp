@@ -413,6 +413,7 @@ namespace fmt {
       // NUM
       // VAR
       // FUN
+      // implicit
       // exp
       char dummy1[sizeof (std::string)];
     };
@@ -511,7 +512,8 @@ namespace fmt {
         S_YYACCEPT = 16,                         // $accept
         S_input = 17,                            // input
         S_line = 18,                             // line
-        S_exp = 19                               // exp
+        S_implicit = 19,                         // implicit
+        S_exp = 20                               // exp
       };
     };
 
@@ -549,6 +551,7 @@ namespace fmt {
       case symbol_kind::S_NUM: // NUM
       case symbol_kind::S_VAR: // VAR
       case symbol_kind::S_FUN: // FUN
+      case symbol_kind::S_implicit: // implicit
       case symbol_kind::S_exp: // exp
         value.move< std::string > (std::move (that.value));
         break;
@@ -613,6 +616,7 @@ switch (yykind)
       case symbol_kind::S_NUM: // NUM
       case symbol_kind::S_VAR: // VAR
       case symbol_kind::S_FUN: // FUN
+      case symbol_kind::S_implicit: // implicit
       case symbol_kind::S_exp: // exp
         value.template destroy< std::string > ();
         break;
@@ -1324,8 +1328,8 @@ switch (yykind)
     /// Constants.
     enum
     {
-      yylast_ = 48,     ///< Last index in yytable_.
-      yynnts_ = 4,  ///< Number of nonterminal symbols.
+      yylast_ = 76,     ///< Last index in yytable_.
+      yynnts_ = 5,  ///< Number of nonterminal symbols.
       yyfinal_ = 2 ///< Termination state number.
     };
 
@@ -1353,6 +1357,7 @@ switch (yykind)
       case symbol_kind::S_NUM: // NUM
       case symbol_kind::S_VAR: // VAR
       case symbol_kind::S_FUN: // FUN
+      case symbol_kind::S_implicit: // implicit
       case symbol_kind::S_exp: // exp
         value.copy< std::string > (YY_MOVE (that.value));
         break;
@@ -1391,6 +1396,7 @@ switch (yykind)
       case symbol_kind::S_NUM: // NUM
       case symbol_kind::S_VAR: // VAR
       case symbol_kind::S_FUN: // FUN
+      case symbol_kind::S_implicit: // implicit
       case symbol_kind::S_exp: // exp
         value.move< std::string > (YY_MOVE (s.value));
         break;
@@ -1460,7 +1466,7 @@ switch (yykind)
 
 
 } // fmt
-#line 1464 "src/formatter.tab.hpp"
+#line 1470 "src/formatter.tab.hpp"
 
 
 

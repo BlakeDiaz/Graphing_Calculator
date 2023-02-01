@@ -703,7 +703,7 @@ extern int yylex (void);
 #undef yyTABLES_NAME
 #endif
 
-#line 31 "src/formatter_lexer.l"
+#line 32 "src/formatter_lexer.l"
 
 
 #line 709 "formatter_lexer.hpp"

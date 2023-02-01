@@ -5,7 +5,9 @@
 #include <map>
 #include "Function.hpp"
 #include "parser.tab.hpp"
+#include "formatter.tab.hpp"
 #include "lexer.hpp"
+#include "formatter_lexer.hpp"
 
  std::map<std::string, Function> init_func_map()
 {
@@ -24,6 +26,21 @@
 void yyerror(char const *s)
 {
     std::cout << "oops" << std::endl;
+}
+
+std::string format_expression(std::string expression)
+{
+    std::string result;
+
+    YY_BUFFER_STATE bs = fmt_scan_string(expression.c_str());
+    yy_switch_to_buffer(bs);
+
+    fmt::parser formatter(result);
+    formatter();
+
+    yy_delete_buffer(bs);
+
+    return result;
 }
 
 double solve_expression(std::map<std::string, Function> func_map, std::string expression)
@@ -47,6 +64,7 @@ int main (int argc, char const* argv[])
     std::map<std::string, Function> func_map = init_func_map();
     
     std::cout << "Answer 1: " << solve_expression(func_map, "20 * 9\n") << std::endl;
+    std::cout << "Formatting:" << format_expression("5sin(3x)cos(5-4)-32x^4\n") << std::endl;
 
     return 0;
 }
