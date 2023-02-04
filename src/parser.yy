@@ -23,8 +23,8 @@
 }
 
 // The parsing context
-%param { std::map<std::string, Function>& func_map }
-%parse-param { double *result }
+%param { const std::map<std::string, Function>& func_map }
+%parse-param { double& result }
 
 // Enable run-time traces (yydebug)
 %define parse.trace
