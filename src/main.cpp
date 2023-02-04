@@ -9,9 +9,9 @@
 #include "lexer.hpp"
 #include "formatter_lexer.hpp"
 
- std::map<std::string, Function> init_func_map()
+const std::unordered_map<std::string, Function> init_func_map()
 {
-    std::map<std::string, Function> func_map;
+    std::unordered_map<std::string, Function> func_map;
     std::array<std::string, 9> func_names = { "sin", "cos", "tan", "asin", "acos", "atan", "log", "ln", "sqrt" };
     std::array<func_t, 9> functions = { sin, cos, tan, asin, acos, atan, log10, log, sqrt };
     for (int i = 0; i < func_names.size(); ++i)
@@ -43,14 +43,14 @@ std::string format_expression(std::string expression)
     return result;
 }
 
-double solve_expression(std::map<std::string, Function> func_map, std::string expression)
+double solve_expression(const std::unordered_map<std::string, Function> func_map, std::string expression)
 {
     double result;
     
     YY_BUFFER_STATE bs = yy_scan_string(expression.c_str());
     yy_switch_to_buffer(bs);
 
-    yy::parser parser(func_map, &result);
+    yy::parser parser(func_map, result);
     parser();
 
     yy_delete_buffer(bs);
@@ -61,7 +61,7 @@ double solve_expression(std::map<std::string, Function> func_map, std::string ex
 int main (int argc, char const* argv[])
 {
     double result;
-    std::map<std::string, Function> func_map = init_func_map();
+    const std::unordered_map<std::string, Function> func_map = init_func_map();
     
     std::cout << "Answer 1: " << solve_expression(func_map, "20 * 9\n") << std::endl;
     std::cout << "Formatting:" << format_expression("5sin(3x)cos(5-4)-32x^4\n") << std::endl;

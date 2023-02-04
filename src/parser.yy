@@ -23,7 +23,7 @@
 }
 
 // The parsing context
-%param { const std::map<std::string, Function>& func_map }
+%param { const std::unordered_map<std::string, Function>& func_map }
 %parse-param { double& result }
 
 // Enable run-time traces (yydebug)
