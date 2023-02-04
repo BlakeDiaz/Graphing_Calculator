@@ -70,7 +70,7 @@ input:
 
 line:
   "\n"
-| exp "\n"   { *result = $1;                 }
+| exp "\n"   { result = $1;                 }
 | error "\n" { yyerrok;                      }
 ;
 
