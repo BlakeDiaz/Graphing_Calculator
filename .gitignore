@@ -1,17 +1,23 @@
+# Directories
 Debug/*
 .cache/*
 
+# Files
+compile_commands.json
+outline.txt
+
+# Bison-generated files
 src/parser.tab.cpp
 include/parser.tab.hpp
 
 src/formatter.tab.cpp
 include/formatter.tab.hpp
 
+# Flex-generated files
 src/lex.yy.cpp
 include/lexer.hpp
 
 src/formatter_lexer.yy.cpp
 include/formatter_lexer.hpp
 
-compile_commands.json
-outline.txt
+
