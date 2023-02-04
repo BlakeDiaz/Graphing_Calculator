@@ -1,12 +1,17 @@
 Debug/*
 .cache/*
+
 src/parser.tab.cpp
 include/parser.tab.hpp
+
 src/formatter.tab.cpp
 include/formatter.tab.hpp
+
 src/lex.yy.cpp
 include/lexer.hpp
+
 src/formatter_lexer.yy.cpp
 include/formatter_lexer.hpp
+
 compile_commands.json
 outline.txt

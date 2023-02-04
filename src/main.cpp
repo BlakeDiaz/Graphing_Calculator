@@ -12,9 +12,14 @@ void yyerror(char const *s)
 }
 
 int main (int argc, char const* argv[])
-{
-    std::cout << "Answer 1: " << Calculator::solve_expression("20 * 9\n") << std::endl;
-    std::cout << "Formatting:" << Calculator::format_expression("5sin(3x)cos(5-4)-32x^4\n") << std::endl;
+{   
+    UserFunction my_func = UserFunction('f', 'x', Calculator::format_expression("5sin(x)+3x\n"));
+
+    for (int i = 0; i < 20; ++i)
+    {
+        std::string value = my_func.call(std::to_string(i));
+        std::cout << "Result: " << Calculator::solve_expression(value + "\n") << std::endl;
+    }
 
     return 0;
 }

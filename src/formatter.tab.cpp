@@ -562,7 +562,7 @@ namespace fmt {
 
   case 7: // implicit: VAR
 #line 71 "src/formatter.yy"
-                                { yylhs.value.as < std::string > () += yystack_[0].value.as < std::string > ();                             }
+                                { yylhs.value.as < std::string > () += "(" + yystack_[0].value.as < std::string > () + ")";                 }
 #line 567 "src/formatter.tab.cpp"
     break;
 
@@ -580,7 +580,7 @@ namespace fmt {
 
   case 10: // implicit: implicit VAR
 #line 74 "src/formatter.yy"
-                                { yylhs.value.as < std::string > () += yystack_[1].value.as < std::string > () + "*" + yystack_[0].value.as < std::string > ();                  }
+                                { yylhs.value.as < std::string > () += yystack_[1].value.as < std::string > () + "*" + "(" + yystack_[0].value.as < std::string > () + ")";      }
 #line 585 "src/formatter.tab.cpp"
     break;
 
