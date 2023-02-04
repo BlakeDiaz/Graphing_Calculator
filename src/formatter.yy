@@ -49,7 +49,7 @@
 %right "^"      // exponentiation
 
 %token <std::string>  NUM     // Double precision number
-%token <std::string> VAR      // Variable (e.g. x, y)
+%token <std::string> ID      // Variable (e.g. x, y)
 %token <std::string>  FUN     // Function (sin, cos, etc.)
 %nterm <std::string> implicit
 %nterm <std::string> exp 
@@ -68,10 +68,10 @@ line:
 ;
 
 implicit:
-  VAR                           { $$ += "(" + $1 + ")";                 }
+  ID                           { $$ += "(" + $1 + ")";                 }
 | FUN "(" exp ")"               { $$ += $1 + "(" + $3 + ")";            }
 | "(" exp ")"                   { $$ += "(" + $2 + ")";                 }
-| implicit VAR                  { $$ += $1 + "*" + "(" + $2 + ")";      }
+| implicit ID                  { $$ += $1 + "*" + "(" + $2 + ")";      }
 | implicit FUN "(" exp ")"      { $$ += $1 + "*" + $2 + "(" + $4 + ")"; }
 | implicit "(" exp ")"          { $$ += $1 + "*" + "(" + $3 + ")";      }
 

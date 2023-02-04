@@ -8,7 +8,7 @@ void yyerror(char const *);
 [ \t]
 [0-9]+"."[0-9]+                 { return fmt::parser::make_NUM(yytext); }
 [0-9]+                          { return fmt::parser::make_NUM(yytext); }
-[a-zA-Z]                        { return fmt::parser::make_VAR(yytext); }
+[a-zA-Z]                        { return fmt::parser::make_ID(yytext); }
 "+"                             { return fmt::parser::make_PLUS(); }
 "-"                             { return fmt::parser::make_MINUS(); }
 "*"                             { return fmt::parser::make_STAR(); }
