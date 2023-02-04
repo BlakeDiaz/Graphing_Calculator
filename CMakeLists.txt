@@ -16,6 +16,7 @@ project(calc VERSION 1.0)
 add_executable(
     ${PROJECT_NAME}
     src/main.cpp
+    src/calculator.cpp
     src/userfunction.cpp
     src/lex.yy.cpp
     src/formatter_lexer.yy.cpp
