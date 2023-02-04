@@ -13,8 +13,6 @@ void yyerror(char const *s)
 
 int main (int argc, char const* argv[])
 {
-    double result;
-    
     std::cout << "Answer 1: " << Calculator::solve_expression("20 * 9\n") << std::endl;
     std::cout << "Formatting:" << Calculator::format_expression("5sin(3x)cos(5-4)-32x^4\n") << std::endl;
 
