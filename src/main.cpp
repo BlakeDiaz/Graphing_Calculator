@@ -2,7 +2,7 @@
 #include <string>
 #include <array>
 #include <cmath>
-#include <map>
+#include <unordered_map>
 #include "Calculator.hpp"
 
 /* Called by yyparse on error. */

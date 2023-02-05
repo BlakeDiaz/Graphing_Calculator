@@ -27,7 +27,7 @@
 
 %code requires
 {
-  #include <map>
+  #include <unordered_map>
   #include "Function.hpp"
 }
 
