@@ -21,7 +21,7 @@ const std::unordered_map<std::string, Function> init_func_map()
 
 const std::unordered_map<std::string, Function> Calculator::function_map = init_func_map();
 
-std::string Calculator::format_expression(std::unordered_map<char, Function>& user_function_map, std::string expression)
+std::string Calculator::format_expression(std::unordered_map<char, UserFunction>& user_function_map, std::string expression)
 {
     std::string result;
 

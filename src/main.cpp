@@ -13,7 +13,7 @@ void yyerror(char const *s)
 
 int main (int argc, char const* argv[])
 {
-    std::unordered_map<char, Function> user_function_map;
+    std::unordered_map<char, UserFunction> user_function_map;
     UserFunction my_func = UserFunction('f', 'x', Calculator::format_expression(user_function_map, "5sin(x)+3x\n"));
 
     for (int i = 0; i < 20; ++i)

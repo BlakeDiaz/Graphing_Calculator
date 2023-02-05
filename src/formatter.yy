@@ -19,7 +19,7 @@
 %}
 
 // The parsing context
-%parse-param { std::unordered_map<char, Function>& user_function_map }
+%parse-param { std::unordered_map<char, UserFunction>& user_function_map }
 %parse-param { std::string& result }
 
 // Enable run-time traces (yydebug)
@@ -28,7 +28,7 @@
 %code requires
 {
   #include <unordered_map>
-  #include "Function.hpp"
+  #include "UserFunction.hpp"
 }
 
 // Bison declarations
