@@ -14,18 +14,21 @@
 %{
   #include <iostream>
   #include <cmath>   // For pow, used in the grammar
+  #include "fmtlex.hpp"
   void fmterror(char const *);
 %}
 
 // The parsing context
+%parse-param { std::unordered_map<char, Function>& user_function_map }
 %parse-param { std::string& result }
 
 // Enable run-time traces (yydebug)
 %define parse.trace
 
-%code
+%code requires
 {
-  #include "fmtlex.hpp"
+  #include <map>
+  #include "Function.hpp"
 }
 
 // Bison declarations
