@@ -73,9 +73,11 @@ line:
 implicit:
   ID                           { $$ += "(" + $1 + ")";                 }
 | FUN "(" exp ")"               { $$ += $1 + "(" + $3 + ")";            }
+| ID "(" exp ")"                { $$ += user_function_map.contains($1[0]) ? user_function_map.at($1[0]).call($3) : $1 + "(" + $3 + ")"; }
 | "(" exp ")"                   { $$ += "(" + $2 + ")";                 }
 | implicit ID                  { $$ += $1 + "*" + "(" + $2 + ")";      }
 | implicit FUN "(" exp ")"      { $$ += $1 + "*" + $2 + "(" + $4 + ")"; }
+| implicit ID "(" exp ")"       { $$ += $1 + "*" + (user_function_map.contains($2[0]) ? user_function_map.at($2[0]).call($4) : $2 + "(" + $4 + ")"); }
 | implicit "(" exp ")"          { $$ += $1 + "*" + "(" + $3 + ")";      }
 
 exp:
