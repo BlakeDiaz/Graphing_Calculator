@@ -83,7 +83,7 @@ implicit:
 exp:
   NUM                { $$ += $1;                        }
 | implicit           { $$ += $1;                        }
-| NUM implicit       { $$ += $1 + "*" + $2;             }
+| NUM implicit       { $$ += $1 + "*(" + $2 + ")";      }
 | exp "+" exp        { $$ += $1 + "+" + $3;             }
 | exp "-" exp        { $$ += $1 + "-" + $3;             }
 | exp "*" exp        { $$ += $1 + "*" + $3;             }
