@@ -26,12 +26,12 @@ std::string Calculator::format_expression(std::unordered_map<char, UserFunction>
     std::string result;
 
     YY_BUFFER_STATE bs = fmt_scan_string(expression.c_str());
-    yy_switch_to_buffer(bs);
+    fmt_switch_to_buffer(bs);
 
     fmt::parser formatter(user_function_map, result);
     formatter();
 
-    yy_delete_buffer(bs);
+    fmt_delete_buffer(bs);
 
     return result;
 }
