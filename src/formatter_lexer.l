@@ -8,7 +8,6 @@ void yyerror(char const *);
 [ \t]
 [0-9]+"."[0-9]+                 { return fmt::parser::make_NUM(yytext); }
 [0-9]+                          { return fmt::parser::make_NUM(yytext); }
-[a-zA-Z]                        { return fmt::parser::make_ID(yytext); }
 "+"                             { return fmt::parser::make_PLUS(); }
 "-"                             { return fmt::parser::make_MINUS(); }
 "*"                             { return fmt::parser::make_STAR(); }
@@ -26,6 +25,7 @@ tan                             { return fmt::parser::make_FUN("tan"); }
 abs                             { return fmt::parser::make_FUN("abs"); }
 log                             { return fmt::parser::make_FUN("log"); }
 ln                              { return fmt::parser::make_FUN("ln"); }
+[a-zA-Z]                        { return fmt::parser::make_ID(yytext); }
 "\n"                            { return fmt::parser::make_NEWLINE(); }
 <<EOF>>                         { return fmt::parser::make_YYEOF(); }
 .                               { yyerror("Undefined symbol"); exit(1); }
