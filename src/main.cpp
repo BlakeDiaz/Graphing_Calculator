@@ -8,7 +8,7 @@
 /* Called by yyparse on error. */
 void yyerror(char const *s)
 {
-    std::cout << "oops" << std::endl;
+    std::cout << s << std::endl;
 }
 
 int main (int argc, char const* argv[])
