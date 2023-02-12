@@ -34,7 +34,6 @@
 // Bison declarations
 %define api.token.prefix {TOK_}
 %token
-  ASSIGN "="
   MINUS  "-"
   PLUS   "+"
   STAR   "*"
