@@ -24,11 +24,13 @@ const std::unordered_map<std::string, Function> Calculator::function_map = init_
 std::string Calculator::format_expression(std::unordered_map<char, UserFunction>& user_function_map, std::string expression)
 {
     std::string result;
+    char identifier, variable;
+    bool function_assignment;
 
     YY_BUFFER_STATE bs = fmt_scan_string(expression.c_str());
     fmt_switch_to_buffer(bs);
 
-    fmt::parser formatter(user_function_map, result);
+    fmt::parser formatter(user_function_map, result, identifier, variable, function_assignment);
     formatter();
 
     fmt_delete_buffer(bs);

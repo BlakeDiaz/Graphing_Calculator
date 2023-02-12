@@ -21,6 +21,9 @@
 // The parsing context
 %parse-param { std::unordered_map<char, UserFunction>& user_function_map }
 %parse-param { std::string& result }
+%parse-param { char& identifier }
+%parse-param { char& variable }
+%parse-param { bool& function_assignment }
 
 // Enable run-time traces (yydebug)
 %define parse.trace
@@ -67,6 +70,7 @@ input:
 line:
   "\n"
 | exp "\n"   { result = $1; }
+| ASSIGN exp "\n" { result = $2; identifier = $1[0]; variable = $1[2]; function_assignment = true; }
 | error "\n" { yyerrok;                      }
 ;
 
