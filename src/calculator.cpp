@@ -21,7 +21,7 @@ const std::unordered_map<std::string, Function> init_func_map()
 
 const std::unordered_map<std::string, Function> Calculator::function_map = init_func_map();
 
-std::string Calculator::format_expression(std::unordered_map<char, UserFunction>& user_function_map, std::string expression)
+std::tuple<std::string, char, char, bool> Calculator::format_expression(std::unordered_map<char, UserFunction>& user_function_map, std::string expression)
 {
     std::string result;
     char identifier, variable;
@@ -35,7 +35,7 @@ std::string Calculator::format_expression(std::unordered_map<char, UserFunction>
 
     fmt_delete_buffer(bs);
 
-    return result;
+    return {result, identifier, variable, function_assignment};
 }
 
 double Calculator::solve_expression(std::string expression)

@@ -14,16 +14,12 @@ void yyerror(char const *s)
 int main (int argc, char const* argv[])
 {
     std::unordered_map<char, UserFunction> user_function_map;
-    UserFunction my_func = UserFunction('f', 'x', Calculator::format_expression(user_function_map, "5sin(x)+3x\n"));
-    user_function_map.emplace(my_func.identifier, my_func);
+    auto&&[formatted_expression, identifier, variable, function_assignment] = Calculator::format_expression(user_function_map, "f(x)=x^2\n");
 
-    std::cout << Calculator::format_expression(user_function_map, "5f(x)\n") << std::endl; 
-
-    /*for (int i = 0; i < 20; ++i)
-    {
-        std::string value = my_func.call(std::to_string(i));
-        std::cout << "Result: " << Calculator::solve_expression(value + "\n") << std::endl;
-    }*/
+    std::cout << "Expression: " << formatted_expression << std::endl;
+    std::cout << "Identifier: " << identifier << std::endl;
+    std::cout << "Variable: " << variable << std::endl;
+    std::cout << "Is a function assignment: " << (function_assignment ? "True" : "False") << std::endl;
 
     return 0;
 }
