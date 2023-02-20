@@ -47,18 +47,20 @@
 ;
 %token NEWLINE "\n"
 
-%precedence "="
-%left "-" "+"
-%left "*" "/"
-%precedence NEG // negation--unary minus
-%right "^"      // exponentiation
-
 %token <std::string>  NUM     // Double precision number
 %token <std::string> ID      // Variable (e.g. x, y)
 %token <std::string>  FUN     // Function (sin, cos, etc.)
 %token <std::string> ASSIGN   // Assignment (e.g. f(x)=...)
 %nterm <std::string> implicit
 %nterm <std::string> exp 
+
+%precedence ID
+%precedence "="
+%left "-" "+"
+%left "*" "/"
+%precedence NEG // negation--unary minus
+%right "^"      // exponentiation
+%nonassoc "(" ")"
 
 // Formatting semantic values
 %% /* The grammar follows. */
