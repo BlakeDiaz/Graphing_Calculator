@@ -1,16 +1,6 @@
 #include "UserFunction.hpp"
 #include <sstream>
 
-bool is_letter(const char c)
-{
-    if (c >= 'a' && c <= 'z')
-    {
-        return true;
-    }
-
-    return false;
-}
-
 UserFunction::UserFunction(const char identifier, const char variable, const std::string expression)
     : identifier(identifier), variable(variable), expression(expression)
 {
