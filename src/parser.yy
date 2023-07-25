@@ -52,15 +52,15 @@
 %precedence "="
 %left "-" "+"
 %left "*" "/"
-%precedence NEG // negation--unary minus
-%right "^"      // exponentiation
+%precedence NEGATIVE_SIGN // Unary minus operator
+%right "^"      // Exponent operator
 
-%token <double>  NUM     // Double precision number
-%token <Function> FUN // Function (sin, cos, etc.)
-%nterm <double>  exp
+%token <double>  NUMBER     // Double precision number
+%token <Function> FUNCTION // Function (sin, cos, etc.)
+%nterm <double>  expression
 
 // Formatting semantic values
-%printer { std::cout << $$.name << "()"; } FUN;
+%printer { std::cout << $$.name << "()"; } FUNCTION;
 %printer { std::cout << $$; } <double>;
 
 %% /* The grammar follows. */
@@ -71,20 +71,20 @@ input:
 
 line:
   "\n"
-| exp "\n"   { result = $1;                 }
-| error "\n" { yyerrok;                      }
+| expression "\n"   { result = $1; }
+| error "\n"        { yyerrok;     }
 ;
 
-exp:
-  NUM                { $$ = $1;                         }
-| FUN "(" exp ")"    { $$ = $1.ptr($3);                 }
-| exp "+" exp        { $$ = $1 + $3;                    }
-| exp "-" exp        { $$ = $1 - $3;                    }
-| exp "*" exp        { $$ = $1 * $3;                    }
-| exp "/" exp        { $$ = $1 / $3;                    }
-| "-" exp  %prec NEG { $$ = -$2;                        }
-| exp "^" exp        { $$ = pow($1, $3);                }
-| "(" exp ")"        { $$ = $2;                         }
+expression:
+  NUMBER                                { $$ = $1;          }
+| FUNCTION "(" expression ")"           { $$ = $1.ptr($3);  }
+| expression "+" expression             { $$ = $1 + $3;     }
+| expression "-" expression             { $$ = $1 - $3;     }
+| expression "*" expression             { $$ = $1 * $3;     }
+| expression "/" expression             { $$ = $1 / $3;     }
+| "-" expression  %prec NEGATIVE_SIGN   { $$ = -$2;         }
+| expression "^" expression             { $$ = pow($1, $3); }
+| "(" expression ")"                    { $$ = $2;          }
 ;
 /* End of grammar. */
 %%
