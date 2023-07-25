@@ -14,7 +14,6 @@
 %{
   #include <iostream>
   #include <cmath>   // For pow, used in the grammar
-  #include "fmtlex.hpp"
   void fmterror(char const *);
 %}
 
@@ -32,6 +31,12 @@
 {
   #include <unordered_map>
   #include "UserFunction.hpp"
+}
+
+%code
+{
+    #include "fmtlex.hpp"
+    YY_DECL;
 }
 
 // Bison declarations
