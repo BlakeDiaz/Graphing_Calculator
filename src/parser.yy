@@ -32,6 +32,7 @@
 %code
 {
   #include "yylex.hpp"
+  YY_DECL;
 }
 
 // Bison declarations
