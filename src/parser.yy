@@ -38,7 +38,6 @@
 // Bison declarations
 %define api.token.prefix {TOK_}
 %token
-  EQUALS "="
   SUBTRACT "-"
   ADD "+"
   MULTIPLY "*"
