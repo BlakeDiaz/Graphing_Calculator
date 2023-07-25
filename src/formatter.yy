@@ -37,29 +37,29 @@
 // Bison declarations
 %define api.token.prefix {TOK_}
 %token
-  MINUS  "-"
-  PLUS   "+"
-  STAR   "*"
-  SLASH  "/"
-  CARAT  "^"
-  LPAREN "("
-  RPAREN ")"
+  SUBTRACT "-"
+  ADD "+"
+  MULTIPLY "*"
+  DIVIDE "/"
+  EXPONENT "^"
+  OPEN_PARENTHESIS "("
+  CLOSE_PARENTHESIS ")"
 ;
 %token NEWLINE "\n"
 
-%token <std::string>  NUM     // Double precision number
-%token <std::string> ID      // Variable (e.g. x, y)
-%token <std::string>  FUN     // Function (sin, cos, etc.)
-%token <std::string> ASSIGN   // Assignment (e.g. f(x)=...)
-%nterm <std::string> implicit
-%nterm <std::string> exp 
+%token <std::string> NUMBER // Double precision number
+%token <std::string> VARIABLE // Variable (e.g. x, y)
+%token <std::string> FUNCTION // Function (sin, cos, etc.)
+%token <std::string> USER_FUNCTION_ASSIGNMENT // User-created function assignment (e.g. f(x)=...)
+%nterm <std::string> implicit_multiplication_expression
+%nterm <std::string> expression 
 
-%precedence ID
+%precedence VARIABLE
 %precedence "="
 %left "-" "+"
 %left "*" "/"
-%precedence NEG // negation--unary minus
-%right "^"      // exponentiation
+%precedence NEGATIVE_SIGN // Unary minus operator
+%right "^"      // Exponent operator
 %nonassoc "(" ")"
 
 // Formatting semantic values
@@ -71,31 +71,31 @@ input:
 
 line:
   "\n"
-| exp "\n"   { result = $1; }
-| ASSIGN exp "\n" { result = $2; identifier = $1[0]; variable = $1[2]; function_assignment = true; }
-| error "\n" { yyerrok;                      }
+| expression "\n"                           { result = $1;                                                                   }
+| USER_FUNCTION_ASSIGNMENT expression "\n"  { result = $2; identifier = $1[0]; variable = $1[2]; function_assignment = true; }
+| error "\n"                                { yyerrok;                                                                       }
 ;
 
-implicit:
-  ID                           { $$ += "(" + $1 + ")";                 }
-| FUN "(" exp ")"               { $$ += $1 + "(" + $3 + ")";            }
-| ID "(" exp ")"                { $$ += user_function_map.contains($1[0]) ? user_function_map.at($1[0]).call($3) : $1 + "(" + $3 + ")"; }
-| "(" exp ")"                   { $$ += "(" + $2 + ")";                 }
-| implicit ID                  { $$ += $1 + "*" + "(" + $2 + ")";      }
-| implicit FUN "(" exp ")"      { $$ += $1 + "*" + $2 + "(" + $4 + ")"; }
-| implicit ID "(" exp ")"       { $$ += $1 + "*" + (user_function_map.contains($2[0]) ? user_function_map.at($2[0]).call($4) : $2 + "(" + $4 + ")"); }
-| implicit "(" exp ")"          { $$ += $1 + "*" + "(" + $3 + ")";      }
+implicit_multiplication_expression:
+  VARIABLE                                                          { $$ += "(" + $1 + ")";                                                                                              }
+| FUNCTION "(" expression ")"                                       { $$ += $1 + "(" + $3 + ")";                                                                                         }
+| VARIABLE "(" expression ")"                                       { $$ += user_function_map.contains($1[0]) ? user_function_map.at($1[0]).call($3) : $1 + "(" + $3 + ")";              }
+| "(" expression ")"                                                { $$ += "(" + $2 + ")";                                                                                              }
+| implicit_multiplication_expression VARIABLE                       { $$ += $1 + "*" + "(" + $2 + ")";                                                                                   }
+| implicit_multiplication_expression FUNCTION "(" expression ")"    { $$ += $1 + "*" + $2 + "(" + $4 + ")";                                                                              }
+| implicit_multiplication_expression VARIABLE "(" expression ")"    { $$ += $1 + "*" + (user_function_map.contains($2[0]) ? user_function_map.at($2[0]).call($4) : $2 + "(" + $4 + ")"); }
+| implicit_multiplication_expression "(" expression ")"             { $$ += $1 + "*" + "(" + $3 + ")";                                                                                   }
 
-exp:
-  NUM                { $$ += $1;                        }
-| implicit           { $$ += $1;                        }
-| NUM implicit       { $$ += $1 + "*(" + $2 + ")";      }
-| exp "+" exp        { $$ += $1 + "+" + $3;             }
-| exp "-" exp        { $$ += $1 + "-" + $3;             }
-| exp "*" exp        { $$ += $1 + "*" + $3;             }
-| exp "/" exp        { $$ += $1 + "/" + $3;             }
-| "-" exp  %prec NEG { $$ += "-" + $2;                  }
-| exp "^" exp        { $$ += $1 + "^" + $3;             }
+expression:
+  NUMBER                                    { $$ += $1;                   }
+| implicit_multiplication_expression        { $$ += $1;                   }
+| NUMBER implicit_multiplication_expression { $$ += $1 + "*(" + $2 + ")"; }
+| expression "+" expression                 { $$ += $1 + "+" + $3;        }
+| expression "-" expression                 { $$ += $1 + "-" + $3;        }
+| expression "*" expression                 { $$ += $1 + "*" + $3;        }
+| expression "/" expression                 { $$ += $1 + "/" + $3;        }
+| "-" expression  %prec NEGATIVE_SIGN       { $$ += "-" + $2;             }
+| expression "^" expression                 { $$ += $1 + "^" + $3;        }
 ;
 /* End of grammar. */
 %%

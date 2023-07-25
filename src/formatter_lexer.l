@@ -6,27 +6,27 @@ void yyerror(char const *);
 %option noyywrap prefix="fmt" header-file="formatter_lexer.hpp"
 %%
 [ \t]
-[0-9]+"."[0-9]+                 { return fmt::parser::make_NUM(yytext); }
-[0-9]+                          { return fmt::parser::make_NUM(yytext); }
-[a-z]\([a-z]\)=                 { return fmt::parser::make_ASSIGN(yytext); }
-"+"                             { return fmt::parser::make_PLUS(); }
-"-"                             { return fmt::parser::make_MINUS(); }
-"*"                             { return fmt::parser::make_STAR(); }
-"/"                             { return fmt::parser::make_SLASH(); }
-"^"                             { return fmt::parser::make_CARAT(); }
-"("                             { return fmt::parser::make_LPAREN(); }
-")"                             { return fmt::parser::make_RPAREN(); }
-sqrt                            { return fmt::parser::make_FUN("sqrt"); }
-asin                            { return fmt::parser::make_FUN("asin"); }
-acos                            { return fmt::parser::make_FUN("acos"); }
-atan                            { return fmt::parser::make_FUN("atan"); }
-sin                             { return fmt::parser::make_FUN("sin"); }
-cos                             { return fmt::parser::make_FUN("cos"); }
-tan                             { return fmt::parser::make_FUN("tan"); }
-abs                             { return fmt::parser::make_FUN("abs"); }
-log                             { return fmt::parser::make_FUN("log"); }
-ln                              { return fmt::parser::make_FUN("ln"); }
-[a-zA-Z]                        { return fmt::parser::make_ID(yytext); }
+[0-9]+"."[0-9]+                 { return fmt::parser::make_NUMBER(yytext); }
+[0-9]+                          { return fmt::parser::make_NUMBER(yytext); }
+[a-z]\([a-z]\)=                 { return fmt::parser::make_USER_FUNCTION_ASSIGNMENT(yytext); }
+"+"                             { return fmt::parser::make_ADD(); }
+"-"                             { return fmt::parser::make_SUBTRACT(); }
+"*"                             { return fmt::parser::make_MULTIPLY(); }
+"/"                             { return fmt::parser::make_DIVIDE(); }
+"^"                             { return fmt::parser::make_EXPONENT(); }
+"("                             { return fmt::parser::make_OPEN_PARENTHESIS(); }
+")"                             { return fmt::parser::make_CLOSE_PARENTHESIS(); }
+sqrt                            { return fmt::parser::make_FUNCTION("sqrt"); }
+asin                            { return fmt::parser::make_FUNCTION("asin"); }
+acos                            { return fmt::parser::make_FUNCTION("acos"); }
+atan                            { return fmt::parser::make_FUNCTION("atan"); }
+sin                             { return fmt::parser::make_FUNCTION("sin"); }
+cos                             { return fmt::parser::make_FUNCTION("cos"); }
+tan                             { return fmt::parser::make_FUNCTION("tan"); }
+abs                             { return fmt::parser::make_FUNCTION("abs"); }
+log                             { return fmt::parser::make_FUNCTION("log"); }
+ln                              { return fmt::parser::make_FUNCTION("ln"); }
+[a-zA-Z]                        { return fmt::parser::make_VARIABLE(yytext); }
 "\n"                            { return fmt::parser::make_NEWLINE(); }
 <<EOF>>                         { return fmt::parser::make_YYEOF(); }
 .                               { yyerror("Undefined symbol"); exit(1); }
