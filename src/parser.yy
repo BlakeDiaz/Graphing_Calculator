@@ -38,14 +38,14 @@
 // Bison declarations
 %define api.token.prefix {TOK_}
 %token
-  ASSIGN "="
-  MINUS  "-"
-  PLUS   "+"
-  STAR   "*"
-  SLASH  "/"
-  CARAT  "^"
-  LPAREN "("
-  RPAREN ")"
+  EQUALS "="
+  SUBTRACT "-"
+  ADD "+"
+  MULTIPLY "*"
+  DIVIDE "/"
+  EXPONENT "^"
+  OPEN_PARENTHESIS "("
+  CLOSE_PARENTHESIS ")"
 ;
 %token NEWLINE "\n"
 
