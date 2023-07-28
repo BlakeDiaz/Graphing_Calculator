@@ -1,6 +1,7 @@
 # Directories
 Debug/*
 .cache/*
+backups/*
 
 # Files
 compile_commands.json
