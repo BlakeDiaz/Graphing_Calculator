@@ -15,8 +15,8 @@ void yyerror(char const *);
 "*"                             { return yy::parser::make_MULTIPLY(); }
 "/"                             { return yy::parser::make_DIVIDE(); }
 "^"                             { return yy::parser::make_EXPONENT(); }
-"("                             { return yy::parser::make_CLOSE_PARENTHESIS(); }
-")"                             { return yy::parser::make_OPEN_PARENTHESIS(); }
+"("                             { return yy::parser::make_OPEN_PARENTHESIS(); }
+")"                             { return yy::parser::make_CLOSE_PARENTHESIS(); }
 sqrt                            { return yy::parser::make_FUNCTION(func_map.at("sqrt")); }
 asin                            { return yy::parser::make_FUNCTION(func_map.at("asin")); }
 acos                            { return yy::parser::make_FUNCTION(func_map.at("acos")); }
