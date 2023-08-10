@@ -4,10 +4,11 @@
 class UserFunction
 {
 public:
-    const char identifier;          // The 'f' in 'f(x)'
-    const char variable;            // The 'x' in 'f(x)'
-    const std::string expression;   // Expanded expression with added * symbols and composite functions simplified to make for easier parsing
+    const char identifier; // The 'f' in 'f(x)'
+    const char variable; // The 'x' in 'f(x)'
+    const std::string expression; // The expression representing the function e.g. 'f(x) = 3x + g(x)'
+    std::string formatted_expression; // Expanded expression with added * symbols and composite functions simplified to make for easier parsing
 
-    UserFunction(const char identifier, const char variable, const std::string expression);
+    UserFunction(const char identifier, const char variable, const std::string expression, std::string formatted_expression);
     std::string call(const std::string argument); // Returns expression with the variable being replaced with the argument
 };

@@ -1,8 +1,8 @@
 #include "UserFunction.hpp"
 #include <sstream>
 
-UserFunction::UserFunction(const char identifier, const char variable, const std::string expression)
-    : identifier(identifier), variable(variable), expression(expression)
+UserFunction::UserFunction(const char identifier, const char variable, const std::string expression, std::string formatted_expression)
+    : identifier(identifier), variable(variable), expression(expression), formatted_expression(formatted_expression)
 {
 }
 
