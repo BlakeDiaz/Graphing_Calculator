@@ -1,5 +1,6 @@
 #include <array>
 #include <cmath>
+#include <set>
 #include "Calculator.hpp"
 #include "parser.tab.hpp"
 #include "formatter.tab.hpp"
@@ -38,18 +39,19 @@ std::tuple<std::string, std::optional<UserFunction>> Calculator::format_expressi
     std::string formatted_expression;
     char identifier, variable;
     bool function_assignment = false;
+    std::set<char> user_function_dependencies;
 
     YY_BUFFER_STATE bs = fmt_scan_string(expression.c_str());
     fmt_switch_to_buffer(bs);
 
-    fmt::parser formatter(user_function_map, formatted_expression, identifier, variable, function_assignment);
+    fmt::parser formatter(user_function_map, formatted_expression, identifier, variable, function_assignment, user_function_dependencies);
     formatter();
 
     fmt_delete_buffer(bs);
 
     if (function_assignment)
     {
-        return {formatted_expression, UserFunction(identifier, variable, expression, formatted_expression)};
+        return {formatted_expression, UserFunction(identifier, variable, expression, formatted_expression, user_function_dependencies)};
     }
     
     return {formatted_expression, std::nullopt};

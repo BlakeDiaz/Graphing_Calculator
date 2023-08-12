@@ -23,6 +23,7 @@
 %parse-param { char& identifier }
 %parse-param { char& variable }
 %parse-param { bool& function_assignment }
+%parse-param { std::set<char>& user_function_dependencies }
 
 // Enable run-time traces (yydebug)
 %define parse.trace
@@ -30,6 +31,7 @@
 %code requires
 {
   #include <unordered_map>
+  #include <set>
   #include "UserFunction.hpp"
 }
 
@@ -84,7 +86,20 @@ line:
 implicit_multiplication_expression:
   VARIABLE                                                          { $$ += "(" + $1 + ")";                                                                                              }
 | FUNCTION "(" expression ")"                                       { $$ += $1 + "(" + $3 + ")";                                                                                         }
-| VARIABLE "(" expression ")"                                       { $$ += user_function_map.contains($1[0]) ? user_function_map.at($1[0]).call($3) : $1 + "(" + $3 + ")";              }
+| VARIABLE "(" expression ")"
+{
+    // If this is a function call, add the result of that call to our expression, and update our list of user function dependencies.
+    if (user_function_map.contains($1[0]))
+    {
+        $$ += user_function_map.at($1[0]).call($3);
+        user_function_dependencies.insert($1[0]);
+    }
+    // Otherwise, treat the grammar as implicit multiplication between a variable and an expression wrapped in parentheses.
+    else
+    {
+        $$ += $1 + "(" + $3 + ")";
+    }
+}
 | "(" expression ")"                                                { $$ += "(" + $2 + ")";                                                                                              }
 | implicit_multiplication_expression VARIABLE                       { $$ += $1 + "*" + "(" + $2 + ")";                                                                                   }
 | implicit_multiplication_expression FUNCTION "(" expression ")"    { $$ += $1 + "*" + $2 + "(" + $4 + ")";                                                                              }

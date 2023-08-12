@@ -24,6 +24,7 @@ int main(int argc, char const* argv[])
         std::cout << "Identifier: " << possible_user_function->identifier << std::endl;
         std::cout << "Variable: " << possible_user_function->variable << std::endl;
         std::cout << "Expression: " << possible_user_function->expression << std::endl;
+        std::cout << "Number of Dependencies: " << possible_user_function->user_function_dependencies.size() << std::endl;
     }
 
     std::cout << "Formatted Expression: " << formatted_expression << std::endl;
