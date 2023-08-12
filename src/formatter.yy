@@ -1,6 +1,6 @@
-/* Infix notation calculator */
+/* Formatter for mathematical expressions to make them easier to parse. */
 
-%skeleton "lalr1.cc" // c++
+%skeleton "lalr1.cc" // C++
 %require "3.8.2"
 %header
 
@@ -16,8 +16,9 @@
   void fmterror(char const *);
 %}
 
-// The parsing context
+// Used to simplify composite functions.
 %parse-param { std::unordered_map<char, UserFunction>& user_function_map }
+// Used later to create a UserFunction if the expression was a function declaration.
 %parse-param { std::string& result }
 %parse-param { char& identifier }
 %parse-param { char& variable }

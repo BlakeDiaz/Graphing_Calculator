@@ -1,6 +1,6 @@
-/* Infix notation calculator */
+/* Calculator with support for basic operations as well as functions such as "sin" and "cos". */
 
-%skeleton "lalr1.cc" // c++
+%skeleton "lalr1.cc" // C++
 %require "3.8.2"
 %header
 
@@ -22,8 +22,9 @@
   #include <map>
 }
 
-// The parsing context
+// Used to compute functions such as "sin" and "cos".
 %param { const std::unordered_map<std::string, Function>& func_map }
+// Used to store the solution to the expression.
 %parse-param { double& result }
 
 // Enable run-time traces (yydebug)
