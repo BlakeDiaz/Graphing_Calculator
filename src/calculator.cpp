@@ -1,4 +1,3 @@
-#include <optional>
 #include <array>
 #include <cmath>
 #include "Calculator.hpp"
