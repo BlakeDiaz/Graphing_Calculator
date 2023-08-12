@@ -13,7 +13,6 @@
 
 %{
   #include <iostream>
-  #include <cmath>   // For pow, used in the grammar
   void fmterror(char const *);
 %}
 
