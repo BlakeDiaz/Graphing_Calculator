@@ -12,7 +12,7 @@ void yyerror(char const *s)
     std::cout << s << std::endl;
 }
 
-int main (int argc, char const* argv[])
+int main(int argc, char const* argv[])
 {
     std::unordered_map<char, UserFunction> user_function_map;
     auto&&[formatted_expression, possible_user_function] = Calculator::format_expression(user_function_map, "f(x)=x^2\n");
