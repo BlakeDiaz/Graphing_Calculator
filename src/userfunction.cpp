@@ -34,8 +34,8 @@ std::string UserFunction::call(const std::string argument)
     variable_stream << '(' << variable << ')';
     std::string modified_variable = variable_stream.str();
 
-    // Make a copy of expression to modify
-    std::string new_expression = expression;
+    // Make a copy of the formatted expression to modify
+    std::string new_expression = formatted_expression;
 
     // Replaces each instance of the function's variable with the provided argument
     size_t start_position = 0;
