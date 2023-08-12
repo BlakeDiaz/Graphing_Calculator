@@ -7,6 +7,11 @@
 #include "lexer.hpp"
 #include "formatter_lexer.hpp"
 
+/**
+ * Creates an unordered map containing most common mathematical functions (sin, cos, etc.).
+ *
+ * @return Unordered map.
+ */
 const std::unordered_map<std::string, Function> init_func_map()
 {
     std::unordered_map<std::string, Function> func_map;
@@ -22,6 +27,13 @@ const std::unordered_map<std::string, Function> init_func_map()
 
 const std::unordered_map<std::string, Function> Calculator::function_map = init_func_map();
 
+/**
+ * Formats a mathematical expression to make it easier to parse.
+ *
+ * @param user_function_map An unordered map containing each user-defined function.
+ * @param expression The expression to be formatted.
+ * @return A tuple containing the formatted expression, as well as a UserFunction if the expression was a function definition.
+ */
 std::tuple<std::string, std::optional<UserFunction>> Calculator::format_expression(std::unordered_map<char, UserFunction>& user_function_map, std::string expression)
 {
     std::string formatted_expression;
@@ -44,6 +56,13 @@ std::tuple<std::string, std::optional<UserFunction>> Calculator::format_expressi
     return {formatted_expression, std::nullopt};
 }
 
+/**
+ * Computes the solution to a formatted mathematical expression.
+ * For example, passing "5*3+4" would return 19.
+ *
+ * @param expression The formatted expression to be computed.
+ * @return The solution to the expression.
+ */
 double Calculator::solve_expression(std::string expression)
 {
     double result;

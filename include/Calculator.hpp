@@ -7,6 +7,9 @@
 #include "Function.hpp"
 #include "UserFunction.hpp"
 
+/**
+ * Container class for the formatter and computation parsers.
+ */
 class Calculator
 {
 public:
@@ -14,7 +17,7 @@ public:
     static std::unordered_map<char, UserFunction> user_function_map;    // Stores user-defined functions
 
     
-    static std::tuple<std::string, std::optional<UserFunction>> format_expression(std::unordered_map<char, UserFunction>& user_function_map, std::string expression); // Formattes expression for easier parsing
-    static double solve_expression(std::string formatted_expression);   // Takes in formatted expression, returns answer
-    
+    static std::tuple<std::string, std::optional<UserFunction>> format_expression(std::unordered_map<char, UserFunction>& user_function_map, std::string expression);
+    static double solve_expression(std::string formatted_expression);
+
 };
