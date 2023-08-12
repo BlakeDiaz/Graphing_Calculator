@@ -1,4 +1,5 @@
 #include <iostream>
+#include <optional>
 #include <string>
 #include <array>
 #include <cmath>
@@ -14,12 +15,18 @@ void yyerror(char const *s)
 int main (int argc, char const* argv[])
 {
     std::unordered_map<char, UserFunction> user_function_map;
-    auto&&[formatted_expression, identifier, variable, function_assignment] = Calculator::format_expression(user_function_map, "f(x)=x^2\n");
+    auto&&[formatted_expression, possible_user_function] = Calculator::format_expression(user_function_map, "f(x)=x^2\n");
 
-    std::cout << "Expression: " << formatted_expression << std::endl;
-    std::cout << "Identifier: " << identifier << std::endl;
-    std::cout << "Variable: " << variable << std::endl;
-    std::cout << "Is a function assignment: " << (function_assignment ? "True" : "False") << std::endl;
+    std::cout << "Is a function: " << (possible_user_function.has_value() ? "True" : "False") << std::endl;
+    
+    if (possible_user_function.has_value())
+    {
+        std::cout << "Identifier: " << possible_user_function->identifier << std::endl;
+        std::cout << "Variable: " << possible_user_function->variable << std::endl;
+        std::cout << "Expression: " << possible_user_function->expression << std::endl;
+    }
 
+    std::cout << "Formatted Expression: " << formatted_expression << std::endl;
+        
     return 0;
 }

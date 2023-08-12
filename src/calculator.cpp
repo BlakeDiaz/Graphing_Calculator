@@ -1,3 +1,4 @@
+#include <optional>
 #include <array>
 #include <cmath>
 #include "Calculator.hpp"
@@ -21,21 +22,26 @@ const std::unordered_map<std::string, Function> init_func_map()
 
 const std::unordered_map<std::string, Function> Calculator::function_map = init_func_map();
 
-std::tuple<std::string, char, char, bool> Calculator::format_expression(std::unordered_map<char, UserFunction>& user_function_map, std::string expression)
+std::tuple<std::string, std::optional<UserFunction>> Calculator::format_expression(std::unordered_map<char, UserFunction>& user_function_map, std::string expression)
 {
-    std::string result;
+    std::string formatted_expression;
     char identifier, variable;
-    bool function_assignment;
+    bool function_assignment = false;
 
     YY_BUFFER_STATE bs = fmt_scan_string(expression.c_str());
     fmt_switch_to_buffer(bs);
 
-    fmt::parser formatter(user_function_map, result, identifier, variable, function_assignment);
+    fmt::parser formatter(user_function_map, formatted_expression, identifier, variable, function_assignment);
     formatter();
 
     fmt_delete_buffer(bs);
 
-    return {result, identifier, variable, function_assignment};
+    if (function_assignment)
+    {
+        return {formatted_expression, UserFunction(identifier, variable, expression, formatted_expression)};
+    }
+    
+    return {formatted_expression, std::nullopt};
 }
 
 double Calculator::solve_expression(std::string expression)
