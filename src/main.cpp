@@ -15,7 +15,7 @@ void yyerror(char const *s)
 int main(int argc, char const* argv[])
 {
     std::unordered_map<char, UserFunction> user_function_map;
-    auto&&[formatted_expression, possible_user_function] = Calculator::format_expression(user_function_map, "f(x)=x^2\n");
+    auto&&[formatted_expression, possible_user_function] = Calculator::format_expression(user_function_map, "f(x)   =x^2");
 
     std::cout << "Is a function: " << (possible_user_function.has_value() ? "True" : "False") << std::endl;
     

@@ -1,3 +1,5 @@
+#include <algorithm>
+#include <cctype>
 #include <array>
 #include <cmath>
 #include <set>
@@ -36,12 +38,20 @@ const std::unordered_map<std::string, Function> Calculator::function_map = init_
  */
 std::tuple<std::string, std::optional<UserFunction>> Calculator::format_expression(std::unordered_map<char, UserFunction>& user_function_map, std::string expression)
 {
+    // Create a copy of expression to modify for make it easier for the formatter to parse
+    std::string modified_expression = expression;
+    // Remove any whitespace
+    modified_expression.erase(std::remove_if(modified_expression.begin(), modified_expression.end(), [](unsigned char x) { return std::isspace(x); }), modified_expression.end());
+
+    // Add marker for end of expression
+    modified_expression.append("\n");
+
     std::string formatted_expression;
     char identifier, variable;
     bool function_assignment = false;
     std::set<char> user_function_dependencies;
 
-    YY_BUFFER_STATE bs = fmt_scan_string(expression.c_str());
+    YY_BUFFER_STATE bs = fmt_scan_string(modified_expression.c_str());
     fmt_switch_to_buffer(bs);
 
     fmt::parser formatter(user_function_map, formatted_expression, identifier, variable, function_assignment, user_function_dependencies);
@@ -66,9 +76,15 @@ std::tuple<std::string, std::optional<UserFunction>> Calculator::format_expressi
  */
 double Calculator::solve_expression(std::string expression)
 {
+    // Create a copy of expression to modify for make it easier for the computation parser to parse
+    std::string modified_expression = expression;
+
+    // Add marker for end of expression
+    modified_expression.append("\n");
+
     double result;
     
-    YY_BUFFER_STATE bs = yy_scan_string(expression.c_str());
+    YY_BUFFER_STATE bs = yy_scan_string(modified_expression.c_str());
     yy_switch_to_buffer(bs);
 
     yy::parser parser(Calculator::function_map, result);
