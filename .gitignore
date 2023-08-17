@@ -1,5 +1,6 @@
 # Directories
 Debug/*
+build/*
 .cache/*
 backups/*
 
