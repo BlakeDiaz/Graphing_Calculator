@@ -15,6 +15,7 @@ execute_process(COMMAND mv src/formatter.tab.hpp include/formatter.tab.hpp)
 project(calc VERSION 1.0)
 add_executable(
     ${PROJECT_NAME}
+    src/yyerror.cpp
     src/main.cpp
     src/calculator.cpp
     src/userfunction.cpp

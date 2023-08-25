@@ -22,16 +22,6 @@ std::ostream& operator<<(std::ostream& out, UserFunction const& user_function)
     return out;
 }
 
-/** 
- * Called by yyparse on error
- *
- * @param s Error message.
- */
-void yyerror(char const *s)
-{
-    std::cout << s << std::endl;
-}
-
 /**
  * Processes any input from the user.
  *
