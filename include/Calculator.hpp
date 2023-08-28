@@ -12,6 +12,8 @@
 class Calculator
 {
 public:
+    enum ExpressionType { SOLVABLE_EXPRESSION, FUNCTION_DEFINITION };
+
     const static std::unordered_map<std::string, Function> function_map;    // Contains functions like sin, cos, etc.
     
     static std::tuple<std::string, std::optional<UserFunction>> format_expression(std::unordered_map<char, UserFunction>& user_function_map, std::string expression);
