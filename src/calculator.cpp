@@ -1,5 +1,6 @@
 #include <algorithm>
 #include <cctype>
+#include <regex>
 #include <array>
 #include <cmath>
 #include <set>
@@ -30,6 +31,38 @@ const std::unordered_map<std::string, Function> init_func_map()
 const std::unordered_map<std::string, Function> Calculator::function_map = init_func_map();
 
 /**
+ * Removes whitespace from a string.
+ * The original string is not modified.
+ * Whitespace characters are determined by the std::isspace function.
+ *
+ * @param str The string that whitespace is removed from.
+ * @return Copy of str without any whitespace characters.
+ */
+std::string remove_whitespace(std::string str)
+{
+    str.erase(std::remove_if(str.begin(), str.end(), [](unsigned char x) { return std::isspace(x); }), str.end());
+    return str;
+
+}
+
+Calculator::ExpressionType Calculator::identify_expression(std::string expression)
+{
+    // Remove any whitespace characters from the expression
+    std::string modified_expression = remove_whitespace(expression);
+
+    std::regex find_function_definition("[a-z]\\([a-z]\\)=");
+
+    bool function_definition_found = std::regex_search(modified_expression, find_function_definition, std::regex_constants::match_continuous);
+
+    if (function_definition_found)
+    {
+        return Calculator::FUNCTION_DEFINITION;
+    }
+
+    return Calculator::SOLVABLE_EXPRESSION;
+}
+
+/**
  * Formats a mathematical expression to make it easier to parse.
  *
  * @param user_function_map An unordered map containing each user-defined function.
@@ -39,9 +72,8 @@ const std::unordered_map<std::string, Function> Calculator::function_map = init_
 std::tuple<std::string, std::optional<UserFunction>> Calculator::format_expression(std::unordered_map<char, UserFunction>& user_function_map, std::string expression)
 {
     // Create a copy of expression to modify for make it easier for the formatter to parse
-    std::string modified_expression = expression;
-    // Remove any whitespace
-    modified_expression.erase(std::remove_if(modified_expression.begin(), modified_expression.end(), [](unsigned char x) { return std::isspace(x); }), modified_expression.end());
+    // Additionally, remove any whitespace characters from the expression
+    std::string modified_expression = remove_whitespace(expression);
 
     // Add marker for end of expression
     modified_expression.append("\n");
