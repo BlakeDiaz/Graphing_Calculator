@@ -29,6 +29,16 @@ TEST(CalculatorTest, FunctionMap)
     EXPECT_TRUE(Calculator::function_map.contains("sqrt"));
 }
 
+TEST(CalculatorTest, IdentifyExpression)
+{
+    EXPECT_EQ(Calculator::identify_expression("f(x) = 5x + 4"), Calculator::FUNCTION_DEFINITION);
+    EXPECT_EQ(Calculator::identify_expression("   g  ( x ) = \n x^3"), Calculator::FUNCTION_DEFINITION);
+    EXPECT_EQ(Calculator::identify_expression("r(x)=19"), Calculator::FUNCTION_DEFINITION);
+    EXPECT_EQ(Calculator::identify_expression("5+5"), Calculator::SOLVABLE_EXPRESSION);
+    EXPECT_EQ(Calculator::identify_expression("sin(3) + 14f(2)"), Calculator::SOLVABLE_EXPRESSION);
+    EXPECT_EQ(Calculator::identify_expression("f(g(l(11)) + 10^3)*log(5)"), Calculator::SOLVABLE_EXPRESSION);
+}
+
 TEST_F(CalculatorTestFixture, FormatExpression)
 {
     EXPECT_STREQ(std::get<0>(Calculator::format_expression(user_function_map, "g(x) = 5x + 4")).c_str(), "5*((x))+4");
