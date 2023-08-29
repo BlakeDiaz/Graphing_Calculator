@@ -1,5 +1,36 @@
 #include "UserFunction.hpp"
+#include "string_manipulation.hpp"
 #include <sstream>
+
+/**
+ * Finds the identifier of a UserFunction's expression.
+ * This should only be called if the expression has been verified to be a UserFunction definition.
+ * To verify that, use Calculator::identify_function().
+ *
+ * @param expression The text form of the function e.g. "f(x) = 5x + 3
+ * @return The letter that identifies the function e.g. the "f" in "f(x) = 5x + 3".
+ */
+static char find_identifier(std::string expression)
+{
+    std::string modified_expression = remove_whitespace(expression);
+
+    return modified_expression[0];
+}
+
+/**
+ * Finds the variable of a UserFunction's expression.
+ * This should only be called if the expression has been verified to be a UserFunction definition.
+ * To verify that, use Calculator::identify_function().
+ *
+ * @param expression The text form of the function e.g. "f(x) = 5x + 3
+ * @return The variable that the function uses e.g. the "x" in "f(x) = 5x + 3".
+ */
+static char find_variable(std::string expression)
+{
+    std::string modified_expression = remove_whitespace(expression);
+
+    return modified_expression[2];
+}
 
 /**
  * Class constructor.
