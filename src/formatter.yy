@@ -14,6 +14,7 @@
 %{
   #include <iostream>
   void fmterror(char const *);
+  extern int yylineno;
 %}
 
 // Used to simplify composite functions.
@@ -121,5 +122,5 @@ expression:
 %%
 void fmt::parser::error(const std::string& m)
 {
-    std::cerr << m << '\n';
+    std::cerr << m << " Line: " << yylineno << '\n';
 }

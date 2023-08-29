@@ -5,7 +5,7 @@
 #include "yylex.hpp"
 void yyerror(char const *);
 %}
-%option noyywrap header-file="lexer.hpp"
+%option yylineno noyywrap header-file="lexer.hpp"
 %%
 [ \t]
 [0-9]+"."[0-9]+                 { return yy::parser::make_NUMBER(atof(yytext)); }

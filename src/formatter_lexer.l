@@ -3,7 +3,7 @@
 #include "fmtlex.hpp"
 void yyerror(char const *);
 %}
-%option noyywrap prefix="fmt" header-file="formatter_lexer.hpp"
+%option yylineno noyywrap prefix="fmt" header-file="formatter_lexer.hpp"
 %%
 [ \t]
 [0-9]+"."[0-9]+                 { return fmt::parser::make_NUMBER(yytext); }

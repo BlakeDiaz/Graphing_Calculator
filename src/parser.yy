@@ -14,6 +14,7 @@
   #include <iostream>
   #include <cmath>   // For pow, used in the grammar
   void yyerror(char const *);
+  extern int yylineno;
 %}
 
 %code requires
@@ -90,5 +91,5 @@ expression:
 %%
 void yy::parser::error(const std::string& m)
 {
-    std::cerr << m << '\n';
+    std::cerr << m << " Line: " << yylineno << '\n';
 }
