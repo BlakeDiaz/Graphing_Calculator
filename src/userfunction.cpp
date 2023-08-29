@@ -10,7 +10,7 @@
  * @param expression The text form of the function e.g. "f(x) = 5x + 3
  * @return The letter that identifies the function e.g. the "f" in "f(x) = 5x + 3".
  */
-static char find_identifier(std::string expression)
+char UserFunction::find_identifier(std::string expression)
 {
     std::string modified_expression = remove_whitespace(expression);
 
@@ -25,7 +25,7 @@ static char find_identifier(std::string expression)
  * @param expression The text form of the function e.g. "f(x) = 5x + 3
  * @return The variable that the function uses e.g. the "x" in "f(x) = 5x + 3".
  */
-static char find_variable(std::string expression)
+char UserFunction::find_variable(std::string expression)
 {
     std::string modified_expression = remove_whitespace(expression);
 
