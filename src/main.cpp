@@ -31,19 +31,31 @@ std::ostream& operator<<(std::ostream& out, UserFunction const& user_function)
  */
 void process_input(std::unordered_map<char, UserFunction>& user_function_map, std::vector<std::unordered_set<char>>& user_functions, std::string expression)
 {
-    auto&&[formatted_expression, possible_user_function] = Calculator::format_expression(user_function_map, expression);
+    Calculator::ExpressionType expression_type = Calculator::identify_expression(expression);
+    std::string formatted_expression = Calculator::format_expression(user_function_map, expression);
 
-    std::cout << "Is a function: " << (possible_user_function.has_value() ? "True" : "False") << std::endl;
-    
-    if (possible_user_function.has_value())
+    switch (expression_type)
     {
-        std::cout << possible_user_function.value() << std::endl;;
-        process_user_function_input(user_function_map, user_functions, possible_user_function.value());
-    }
-    else
-    {
-        std::cout << "Formatted Expression: " << formatted_expression << std::endl;
-        std::cout << "Solved Expression: " << Calculator::solve_expression(formatted_expression) << std::endl;
+        case Calculator::SOLVABLE_EXPRESSION:
+        {
+            std::cout << "Formatted Expression: " << formatted_expression << std::endl;
+            std::cout << "Solved Expression: " << Calculator::solve_expression(formatted_expression) << std::endl;
+            break;
+        }
+
+        case Calculator::FUNCTION_DEFINITION:
+        {
+            UserFunction user_function(expression, formatted_expression, Calculator::locate_user_function_dependencies(user_function_map, expression));
+            process_user_function_input(user_function_map, user_functions, user_function);
+            break;
+        }
+ 
+
+        default:
+        {
+            std::cout << "Error: Invalid Expression Type" << std::endl;
+            break;
+        }
     }
 }
 
@@ -85,6 +97,9 @@ void process_user_function_input(std::unordered_map<char, UserFunction>& user_fu
      */
     std::unordered_set<char> updated_user_functions;
 
+    std::string new_formatted_expression;
+    std::unordered_set<char> new_user_function_dependencies;
+
     for (int i = old_number_of_dependencies + 1; i < user_functions.size(); i++)
     {
         for (char current_user_function_identifier : user_functions[i])
@@ -96,9 +111,12 @@ void process_user_function_input(std::unordered_map<char, UserFunction>& user_fu
                 continue;
             }
 
-            auto&&[formatted_expression, possible_user_function] = Calculator::format_expression(user_function_map, current_user_function.expression);
+            new_formatted_expression = Calculator::format_expression(user_function_map, current_user_function.expression);
+            new_user_function_dependencies = Calculator::locate_user_function_dependencies(user_function_map, current_user_function.expression);
+
             user_function_map.erase(current_user_function_identifier);
-            user_function_map.emplace(current_user_function_identifier, possible_user_function.value());
+            user_function_map.emplace(current_user_function_identifier,
+                    UserFunction(current_user_function.expression, new_formatted_expression, new_user_function_dependencies));
             
             // We temporarily store any updated UserFunctions in a seperate set to avoid repeatedly updating the same UserFunction
             user_functions[i].erase(current_user_function_identifier);

@@ -21,10 +21,6 @@
 %parse-param { std::unordered_map<char, UserFunction>& user_function_map }
 // Used later to create a UserFunction if the expression was a function declaration.
 %parse-param { std::string& result }
-%parse-param { char& identifier }
-%parse-param { char& variable }
-%parse-param { bool& function_assignment }
-%parse-param { std::unordered_set<char>& user_function_dependencies }
 
 // Enable run-time traces (yydebug)
 %define parse.trace
@@ -79,9 +75,9 @@ input:
 
 line:
   "\n"
-| expression "\n"                           { result = $1;                                                                   }
-| USER_FUNCTION_ASSIGNMENT expression "\n"  { result = $2; identifier = $1[0]; variable = $1[2]; function_assignment = true; }
-| error "\n"                                { yyerrok;                                                                       }
+| expression "\n"                           { result = $1; }
+| USER_FUNCTION_ASSIGNMENT expression "\n"  { result = $2; }
+| error "\n"                                { yyerrok;     }
 ;
 
 implicit_multiplication_expression:
@@ -89,11 +85,10 @@ implicit_multiplication_expression:
 | FUNCTION "(" expression ")"                                       { $$ += $1 + "(" + $3 + ")";                                                                                         }
 | VARIABLE "(" expression ")"
 {
-    // If this is a function call, add the result of that call to our expression, and update our list of user function dependencies.
+    // If this is a function call, add the result of that call to our expression
     if (user_function_map.contains($1[0]))
     {
         $$ += user_function_map.at($1[0]).call($3);
-        user_function_dependencies.insert($1[0]);
     }
     // Otherwise, treat the grammar as implicit multiplication between a variable and an expression wrapped in parentheses.
     else
@@ -104,7 +99,19 @@ implicit_multiplication_expression:
 | "(" expression ")"                                                { $$ += "(" + $2 + ")";                                                                                              }
 | implicit_multiplication_expression VARIABLE                       { $$ += $1 + "*" + "(" + $2 + ")";                                                                                   }
 | implicit_multiplication_expression FUNCTION "(" expression ")"    { $$ += $1 + "*" + $2 + "(" + $4 + ")";                                                                              }
-| implicit_multiplication_expression VARIABLE "(" expression ")"    { $$ += $1 + "*" + (user_function_map.contains($2[0]) ? user_function_map.at($2[0]).call($4) : $2 + "(" + $4 + ")"); }
+| implicit_multiplication_expression VARIABLE "(" expression ")"
+{ 
+    // If this is a function call, add the result of that call to our expression
+    if (user_function_map.contains($2[0]))
+    {
+        $$ += user_function_map.at($2[0]).call($4);
+    }
+    // Otherwise, treat the grammar as implicit multiplication between a variable and an expression wrapped in parentheses.
+    else
+    {
+        $$ += $2 + "(" + $4 + ")";
+    }
+}
 | implicit_multiplication_expression "(" expression ")"             { $$ += $1 + "*" + "(" + $3 + ")";                                                                                   }
 
 expression:

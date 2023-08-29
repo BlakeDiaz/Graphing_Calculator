@@ -41,7 +41,7 @@ TEST(CalculatorTest, IdentifyExpression)
 
 TEST_F(CalculatorTestFixture, FormatExpression)
 {
-    EXPECT_STREQ(std::get<0>(Calculator::format_expression(user_function_map, "g(x) = 5x + 4")).c_str(), "5*((x))+4");
+    EXPECT_STREQ(Calculator::format_expression(user_function_map, "g(x) = 5x + 4").c_str(), "5*((x))+4");
 }
 
 }

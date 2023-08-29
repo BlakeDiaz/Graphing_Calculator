@@ -11,6 +11,7 @@
 #include "lexer.hpp"
 #include "formatter_lexer.hpp"
 #include "user_function_dependency_locator_lexer.hpp"
+#include "string_manipulation.hpp"
 
 /**
  * Creates an unordered map containing most common mathematical functions (sin, cos, etc.).
@@ -86,7 +87,7 @@ std::unordered_set<char> Calculator::locate_user_function_dependencies(std::unor
  * @param expression The expression to be formatted.
  * @return A tuple containing the formatted expression, as well as a UserFunction if the expression was a function definition.
  */
-std::tuple<std::string, std::optional<UserFunction>> Calculator::format_expression(std::unordered_map<char, UserFunction>& user_function_map, std::string expression)
+std::string Calculator::format_expression(std::unordered_map<char, UserFunction>& user_function_map, std::string expression)
 {
     // Create a copy of expression to modify for make it easier for the formatter to parse
     // Additionally, remove any whitespace characters from the expression
@@ -96,24 +97,16 @@ std::tuple<std::string, std::optional<UserFunction>> Calculator::format_expressi
     modified_expression.append("\n");
 
     std::string formatted_expression;
-    char identifier, variable;
-    bool function_assignment = false;
-    std::unordered_set<char> user_function_dependencies;
 
     YY_BUFFER_STATE bs = fmt_scan_string(modified_expression.c_str());
     fmt_switch_to_buffer(bs);
 
-    fmt::parser formatter(user_function_map, formatted_expression, identifier, variable, function_assignment, user_function_dependencies);
+    fmt::parser formatter(user_function_map, formatted_expression);
     formatter();
 
     fmt_delete_buffer(bs);
 
-    if (function_assignment)
-    {
-        return {formatted_expression, UserFunction(identifier, variable, expression, formatted_expression, user_function_dependencies)};
-    }
-    
-    return {formatted_expression, std::nullopt};
+    return formatted_expression;
 }
 
 /**
