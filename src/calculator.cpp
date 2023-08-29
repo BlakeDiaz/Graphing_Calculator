@@ -7,8 +7,10 @@
 #include "Calculator.hpp"
 #include "parser.tab.hpp"
 #include "formatter.tab.hpp"
+#include "user_function_dependency_locator.tab.hpp"
 #include "lexer.hpp"
 #include "formatter_lexer.hpp"
+#include "user_function_dependency_locator_lexer.hpp"
 
 /**
  * Creates an unordered map containing most common mathematical functions (sin, cos, etc.).
@@ -60,6 +62,36 @@ Calculator::ExpressionType Calculator::identify_expression(std::string expressio
     }
 
     return Calculator::SOLVABLE_EXPRESSION;
+}
+
+/**
+ * Locates each other UserFunction that a UserFunction depends on.
+ * A UserFunction depends on another function if it is defined in terms of it, or if a dependency is defined in terms of it.
+ * For example, if "f(x) = 5x + 4", "g(x) = 3 * f(x)", and "r(x) = 2^g(x)", 'r(x)' has dependencies 'f' and 'g'.
+ *
+ * @param user_function_map An unordered map containing each user-defined function.
+ * @param expression The expression representing the UserFunction
+ * @return A set containing the identifiers for each UserFunction that the expression depends on.
+ */
+std::set<char> Calculator::locate_user_function_dependencies(std::unordered_map<char, UserFunction>& user_function_map, std::string expression)
+{
+    // Remove any whitespace characters from the expression
+    std::string modified_expression = remove_whitespace(expression);
+
+    // Add marker for end of expression
+    modified_expression.append("\n");
+
+    std::set<char> dependencies;
+
+    YY_BUFFER_STATE bs = ufdl_scan_string(modified_expression.c_str());
+    ufdl_switch_to_buffer(bs);
+
+    ufdl::parser user_function_dependency_locator(user_function_map, dependencies);
+    user_function_dependency_locator();
+
+    ufdl_delete_buffer(bs);
+
+    return dependencies;
 }
 
 /**
