@@ -24,7 +24,7 @@
 %parse-param { char& identifier }
 %parse-param { char& variable }
 %parse-param { bool& function_assignment }
-%parse-param { std::set<char>& user_function_dependencies }
+%parse-param { std::unordered_set<char>& user_function_dependencies }
 
 // Enable run-time traces (yydebug)
 %define parse.trace

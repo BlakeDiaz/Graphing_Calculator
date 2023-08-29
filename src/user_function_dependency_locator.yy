@@ -19,7 +19,7 @@
 
 // Used to simplify composite functions.
 %parse-param { std::unordered_map<char, UserFunction>& user_function_map }
-%parse-param { std::set<char>& user_function_dependencies }
+%parse-param { std::unordered_set<char>& user_function_dependencies }
 
 // Enable run-time traces (yydebug)
 %define parse.trace

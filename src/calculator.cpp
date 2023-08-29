@@ -73,7 +73,7 @@ Calculator::ExpressionType Calculator::identify_expression(std::string expressio
  * @param expression The expression representing the UserFunction
  * @return A set containing the identifiers for each UserFunction that the expression depends on.
  */
-std::set<char> Calculator::locate_user_function_dependencies(std::unordered_map<char, UserFunction>& user_function_map, std::string expression)
+std::unordered_set<char> Calculator::locate_user_function_dependencies(std::unordered_map<char, UserFunction>& user_function_map, std::string expression)
 {
     // Remove any whitespace characters from the expression
     std::string modified_expression = remove_whitespace(expression);
@@ -81,7 +81,7 @@ std::set<char> Calculator::locate_user_function_dependencies(std::unordered_map<
     // Add marker for end of expression
     modified_expression.append("\n");
 
-    std::set<char> dependencies;
+    std::unordered_set<char> dependencies;
 
     YY_BUFFER_STATE bs = ufdl_scan_string(modified_expression.c_str());
     ufdl_switch_to_buffer(bs);
@@ -113,7 +113,7 @@ std::tuple<std::string, std::optional<UserFunction>> Calculator::format_expressi
     std::string formatted_expression;
     char identifier, variable;
     bool function_assignment = false;
-    std::set<char> user_function_dependencies;
+    std::unordered_set<char> user_function_dependencies;
 
     YY_BUFFER_STATE bs = fmt_scan_string(modified_expression.c_str());
     fmt_switch_to_buffer(bs);

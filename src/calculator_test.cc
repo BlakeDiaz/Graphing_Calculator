@@ -11,7 +11,7 @@ protected:
 
     void SetUp() override
     {
-        user_function_map.emplace('f', UserFunction('f', 'x', "f(x) = 5x + 4", "5*((x))+4", std::set<char>()));
+        user_function_map.emplace('f', UserFunction('f', 'x', "f(x) = 5x + 4", "5*((x))+4", std::unordered_set<char>()));
     }
 };
 

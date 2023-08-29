@@ -10,7 +10,7 @@
  * @param formatted_expression The body of the function formatted to make it easier to parse e.g. "5*x+3" from the expression "f(x) = 5x + 3".
  * @param user_function_dependencies The UserFunctions that the function is defined in terms of e.g. "g(x)" in "f(x) = 5x + 3g(x)".
  */
-UserFunction::UserFunction(const char identifier, const char variable, const std::string expression, std::string formatted_expression, std::set<char> user_function_dependencies)
+UserFunction::UserFunction(const char identifier, const char variable, const std::string expression, std::string formatted_expression, std::unordered_set<char> user_function_dependencies)
     : identifier(identifier), variable(variable), expression(expression), formatted_expression(formatted_expression), user_function_dependencies(user_function_dependencies)
 {
 }
