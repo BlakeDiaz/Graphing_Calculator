@@ -15,6 +15,9 @@ include/parser.tab.hpp
 src/formatter.tab.cpp
 include/formatter.tab.hpp
 
+src/user_function_dependency_locator.tab.cpp
+include/user_function_dependency_locator.tab.hpp
+
 # Flex-generated files
 src/lex.yy.cpp
 include/lexer.hpp
@@ -22,4 +25,5 @@ include/lexer.hpp
 src/formatter_lexer.yy.cpp
 include/formatter_lexer.hpp
 
-
+src/user_function_dependency_locator_lexer.yy.cpp
+include/user_function_dependency_locator_lexer.hpp
