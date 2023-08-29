@@ -38,7 +38,7 @@ char UserFunction::find_variable(std::string expression)
  * @param expression The text form of the function e.g. "f(x) = 5x + 3".
  */
 UserFunction::UserFunction(std::string expression, std::string formatted_expression, std::unordered_set<char> user_function_dependencies)
-    : identifier(formatted_expression[0]), variable(formatted_expression[2]), expression(expression), formatted_expression(formatted_expression), user_function_dependencies(user_function_dependencies)
+    : identifier(find_identifier(expression)), variable(find_variable(expression)), expression(expression), formatted_expression(formatted_expression), user_function_dependencies(user_function_dependencies)
 {
 }
 
