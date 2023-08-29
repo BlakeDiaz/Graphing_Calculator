@@ -29,6 +29,7 @@ project(calc VERSION 1.0)
 add_executable(
     ${PROJECT_NAME}
     src/yyerror.cpp
+    src/string_manipulation.cpp
     src/main.cpp
     src/calculator.cpp
     src/userfunction.cpp
@@ -47,6 +48,7 @@ enable_testing()
 add_executable(
     calculator_test
     src/yyerror.cpp
+    src/string_manipulation.cpp
     src/calculator.cpp
     src/userfunction.cpp
     src/lex.yy.cpp

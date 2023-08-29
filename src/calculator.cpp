@@ -32,21 +32,6 @@ const std::unordered_map<std::string, Function> init_func_map()
 
 const std::unordered_map<std::string, Function> Calculator::function_map = init_func_map();
 
-/**
- * Removes whitespace from a string.
- * The original string is not modified.
- * Whitespace characters are determined by the std::isspace function.
- *
- * @param str The string that whitespace is removed from.
- * @return Copy of str without any whitespace characters.
- */
-std::string remove_whitespace(std::string str)
-{
-    str.erase(std::remove_if(str.begin(), str.end(), [](unsigned char x) { return std::isspace(x); }), str.end());
-    return str;
-
-}
-
 Calculator::ExpressionType Calculator::identify_expression(std::string expression)
 {
     // Remove any whitespace characters from the expression
