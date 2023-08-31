@@ -95,9 +95,9 @@ implicit_multiplication_expression:
 | implicit_multiplication_expression VARIABLE "(" expression ")"
 {
     // If this is a function call, update our list of user function dependencies.
-    if (user_function_map.contains($1[0]))
+    if (user_function_map.contains($2[0]))
     {
-        user_function_dependencies.insert($1[0]);
+        user_function_dependencies.insert($2[0]);
     }
 }
 | implicit_multiplication_expression "(" expression ")"
