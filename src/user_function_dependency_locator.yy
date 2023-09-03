@@ -84,9 +84,13 @@ implicit_multiplication_expression:
 | VARIABLE "(" expression ")"
 {
     // If this is a function call, update our list of user function dependencies.
-    if (user_function_map.contains($1[0]))
+    char identifier = $1[0];
+    if (user_function_map.contains(identifier))
     {
-        user_function_dependencies.insert($1[0]);
+        const UserFunction& user_function = user_function_map.at(identifier);
+        user_function_dependencies.insert(user_function.identifier);
+        user_function_dependencies.insert(user_function.user_function_dependencies.begin(),
+                                          user_function.user_function_dependencies.end());
     }
 }
 | "(" expression ")"
@@ -95,9 +99,13 @@ implicit_multiplication_expression:
 | implicit_multiplication_expression VARIABLE "(" expression ")"
 {
     // If this is a function call, update our list of user function dependencies.
-    if (user_function_map.contains($2[0]))
+    char identifier = $2[0];
+    if (user_function_map.contains(identifier))
     {
-        user_function_dependencies.insert($2[0]);
+        const UserFunction& user_function = user_function_map.at(identifier);
+        user_function_dependencies.insert(user_function.identifier);
+        user_function_dependencies.insert(user_function.user_function_dependencies.begin(),
+                                          user_function.user_function_dependencies.end());
     }
 }
 | implicit_multiplication_expression "(" expression ")"
