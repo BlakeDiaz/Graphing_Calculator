@@ -111,12 +111,8 @@ void process_user_function_input(std::unordered_map<char, UserFunction>& user_fu
                 continue;
             }
 
-            new_formatted_expression = Calculator::format_expression(user_function_map, current_user_function.expression);
-            new_user_function_dependencies = Calculator::locate_user_function_dependencies(user_function_map, current_user_function.expression);
-
             user_function_map.erase(current_user_function_identifier);
-            user_function_map.emplace(current_user_function_identifier,
-                    UserFunction(current_user_function.expression, new_formatted_expression, new_user_function_dependencies));
+            user_function_map.emplace(current_user_function_identifier, UserFunction(user_function_map, current_user_function.expression));
             
             // We temporarily store any updated UserFunctions in a seperate set to avoid repeatedly updating the same UserFunction
             user_functions[i].erase(current_user_function_identifier);
