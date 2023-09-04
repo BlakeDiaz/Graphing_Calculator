@@ -1,4 +1,5 @@
 #include "UserFunction.hpp"
+#include "Calculator.hpp"
 #include "string_manipulation.hpp"
 #include <sstream>
 
@@ -30,6 +31,22 @@ char UserFunction::find_variable(std::string expression)
     std::string modified_expression = remove_whitespace(expression);
 
     return modified_expression[2];
+}
+
+/**
+ * Class constructor.
+ *
+ * @param user_function_map An unordered map containing each user-defined function.
+ * @param expression The text form of the function e.g. "f(x) = 5x + 3".
+ * @param formatted_expression The body of the function formatted to make it easier to parse e.g. "5*x+3" from the expression "f(x) = 5x + 3".
+ */
+UserFunction::UserFunction(std::unordered_map<char, UserFunction> user_function_map, std::string expression)
+    : identifier(find_identifier(expression)),
+    variable(find_variable(expression)),
+    expression(expression),
+    formatted_expression(Calculator::format_expression(user_function_map, expression)),
+    user_function_dependencies(Calculator::locate_user_function_dependencies(user_function_map, expression))
+{
 }
 
 /**

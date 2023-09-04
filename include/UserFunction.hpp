@@ -1,5 +1,6 @@
 #pragma once
 #include <unordered_set>
+#include <unordered_map>
 #include <string>
 
 /**
@@ -17,6 +18,7 @@ public:
     static char find_identifier(std::string expression);
     static char find_variable(std::string expression);
 
+    UserFunction(std::unordered_map<char, UserFunction> user_function_map, std::string expression);
     UserFunction(std::string expression, std::string formatted_expression, std::unordered_set<char> user_function_dependencies);
     UserFunction(const char identifier, const char variable, const std::string expression, std::string formatted_expression, std::unordered_set<char> user_function_dependencies);
     std::string call(const std::string argument);
