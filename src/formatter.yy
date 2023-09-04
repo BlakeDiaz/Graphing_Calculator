@@ -117,7 +117,7 @@ implicit_multiplication_expression:
 expression:
   NUMBER                                    { $$ += $1;                   }
 | implicit_multiplication_expression        { $$ += $1;                   }
-| NUMBER implicit_multiplication_expression { $$ += $1 + "*(" + $2 + ")"; }
+| NUMBER implicit_multiplication_expression { $$ += $1 + "*" + $2;        }
 | expression "+" expression                 { $$ += $1 + "+" + $3;        }
 | expression "-" expression                 { $$ += $1 + "-" + $3;        }
 | expression "*" expression                 { $$ += $1 + "*" + $3;        }
