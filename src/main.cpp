@@ -11,17 +11,6 @@
 void add_user_function(std::unordered_map<char, UserFunction>& user_function_map, std::vector<std::unordered_set<char>>& user_functions, UserFunction& user_function);
 void process_user_function_input(std::unordered_map<char, UserFunction>& user_function_map, std::vector<std::unordered_set<char>>& user_functions, UserFunction& user_function);
 
-std::ostream& operator<<(std::ostream& out, UserFunction const& user_function)
-{
-    out << "Identifier: " << user_function.identifier << "; ";
-    out << "Variable: " << user_function.variable << "; ";
-    out << "Expression: " << user_function.expression << "; ";
-    out << "Formatted Expression: " << user_function.formatted_expression << "; ";
-    out << "Number of Dependencies: " << user_function.user_function_dependencies.size() << "; ";
-
-    return out;
-}
-
 /**
  * Processes any input from the user.
  *

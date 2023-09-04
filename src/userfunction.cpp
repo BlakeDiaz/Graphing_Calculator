@@ -4,6 +4,23 @@
 #include <sstream>
 
 /**
+ * Prints a UserFunction using std::cout.
+ *
+ * @param out std::cout.
+ * @param user_function The user_function to be printed.
+ */
+std::ostream& operator<<(std::ostream& out, UserFunction const& user_function)
+{
+    out << "Identifier: " << user_function.identifier << "; ";
+    out << "Variable: " << user_function.variable << "; ";
+    out << "Expression: " << user_function.expression << "; ";
+    out << "Formatted Expression: " << user_function.formatted_expression << "; ";
+    out << "Number of Dependencies: " << user_function.user_function_dependencies.size() << "; ";
+
+    return out;
+}
+
+/**
  * Finds the identifier of a UserFunction's expression.
  * This should only be called if the expression has been verified to be a UserFunction definition.
  * To verify that, use Calculator::identify_function().

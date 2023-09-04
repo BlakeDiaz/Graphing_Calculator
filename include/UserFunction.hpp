@@ -23,3 +23,5 @@ public:
     UserFunction(const char identifier, const char variable, const std::string expression, std::string formatted_expression, std::unordered_set<char> user_function_dependencies);
     std::string call(const std::string argument);
 };
+
+std::ostream& operator<<(std::ostream& out, UserFunction const& user_function);
