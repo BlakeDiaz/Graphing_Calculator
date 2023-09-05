@@ -24,8 +24,17 @@ execute_process(COMMAND bison -o src/user_function_dependency_locator.tab.cpp -d
 execute_process(COMMAND mv src/parser.tab.hpp include/parser.tab.hpp)
 execute_process(COMMAND mv src/formatter.tab.hpp include/formatter.tab.hpp)
 execute_process(COMMAND mv src/user_function_dependency_locator.tab.hpp include/user_function_dependency_locator.tab.hpp)
+execute_process(COMMAND /usr/lib/qt6/uic forms/calculator_form.ui -o include/ui_calculator_form.hpp)
 
 project(calc VERSION 1.0)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
+set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+find_package(glfw3 REQUIRED)
+find_package(OpenGL REQUIRED)
+find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets UiTools OpenGLWidgets)
 add_executable(
     ${PROJECT_NAME}
     src/yyerror.cpp
@@ -39,10 +48,25 @@ add_executable(
     src/user_function_dependency_locator_lexer.yy.cpp
     src/parser.tab.cpp
     src/formatter.tab.cpp
-    src/user_function_dependency_locator.tab.cpp)
+    src/user_function_dependency_locator.tab.cpp
+    src/calculator_form.cpp
+    src/graph_window_data.cpp
+    src/axis_marker_data.cpp
+    src/coordinate_transformation_data.cpp
+    src/graph_widget.cpp
+    include/ui_calculator_form.hpp
+    include/calculator_form.hpp)
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/include)
+
+target_link_libraries(calc PUBLIC glfw)
+target_link_libraries(calc PUBLIC OpenGL::GL)
+target_link_libraries(calc PRIVATE Qt6::Core)
+target_link_libraries(calc PRIVATE Qt6::Gui)
+target_link_libraries(calc PRIVATE Qt6::Widgets)
+target_link_libraries(calc PRIVATE Qt6::UiTools)
+target_link_libraries(calc PRIVATE Qt6::OpenGLWidgets)
 
 enable_testing()
 
@@ -59,12 +83,27 @@ add_executable(
     src/parser.tab.cpp
     src/formatter.tab.cpp
     src/user_function_dependency_locator.tab.cpp
+    src/calculator_form.cpp
+    src/graph_window_data.cpp
+    src/axis_marker_data.cpp
+    src/coordinate_transformation_data.cpp
+    src/graph_widget.cpp
+    include/ui_calculator_form.hpp
+    include/calculator_form.hpp
     src/calculator_test.cc)
     
 
-target_link_libraries(
-    calculator_test
-    GTest::gtest_main)
+target_link_libraries(calculator_test PUBLIC glfw)
+target_link_libraries(calculator_test PUBLIC OpenGL::GL)
+target_link_libraries(calculator_test PRIVATE Qt6::Core)
+target_link_libraries(calculator_test PRIVATE Qt6::Gui)
+target_link_libraries(calculator_test PRIVATE Qt6::Widgets)
+target_link_libraries(calculator_test PRIVATE Qt6::UiTools)
+target_link_libraries(calculator_test PRIVATE Qt6::OpenGLWidgets)
+target_link_libraries(calculator_test PRIVATE GTest::gtest_main)
 
 include(GoogleTest)
 gtest_discover_tests(calculator_test)
+
+add_compile_options(export CFLAGS=-Qunused-arguments)
+add_compile_options(export CPPFLAGS=-Qunused-arguments)
