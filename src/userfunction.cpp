@@ -1,15 +1,15 @@
-#include "UserFunction.hpp"
+#include "User_Function.hpp"
 #include "Calculator.hpp"
 #include "string_manipulation.hpp"
 #include <sstream>
 
 /**
- * Prints a UserFunction using std::cout.
+ * Prints a User_Function using std::cout.
  *
  * @param out std::cout.
  * @param user_function The user_function to be printed.
  */
-std::ostream& operator<<(std::ostream& out, UserFunction const& user_function)
+std::ostream& operator<<(std::ostream& out, User_Function const& user_function)
 {
     out << "Identifier: " << user_function.identifier << "; ";
     out << "Variable: " << user_function.variable << "; ";
@@ -21,14 +21,14 @@ std::ostream& operator<<(std::ostream& out, UserFunction const& user_function)
 }
 
 /**
- * Finds the identifier of a UserFunction's expression.
- * This should only be called if the expression has been verified to be a UserFunction definition.
+ * Finds the identifier of a User_Function's expression.
+ * This should only be called if the expression has been verified to be a User_Function definition.
  * To verify that, use Calculator::identify_function().
  *
  * @param expression The text form of the function e.g. "f(x) = 5x + 3
  * @return The letter that identifies the function e.g. the "f" in "f(x) = 5x + 3".
  */
-char UserFunction::find_identifier(std::string expression)
+char User_Function::find_identifier(std::string expression)
 {
     std::string modified_expression = remove_whitespace(expression);
 
@@ -36,14 +36,14 @@ char UserFunction::find_identifier(std::string expression)
 }
 
 /**
- * Finds the variable of a UserFunction's expression.
- * This should only be called if the expression has been verified to be a UserFunction definition.
+ * Finds the variable of a User_Function's expression.
+ * This should only be called if the expression has been verified to be a User_Function definition.
  * To verify that, use Calculator::identify_function().
  *
  * @param expression The text form of the function e.g. "f(x) = 5x + 3
  * @return The variable that the function uses e.g. the "x" in "f(x) = 5x + 3".
  */
-char UserFunction::find_variable(std::string expression)
+char User_Function::find_variable(std::string expression)
 {
     std::string modified_expression = remove_whitespace(expression);
 
@@ -57,7 +57,7 @@ char UserFunction::find_variable(std::string expression)
  * @param expression The text form of the function e.g. "f(x) = 5x + 3".
  * @param formatted_expression The body of the function formatted to make it easier to parse e.g. "5*x+3" from the expression "f(x) = 5x + 3".
  */
-UserFunction::UserFunction(std::unordered_map<char, UserFunction> user_function_map, std::string expression)
+User_Function::User_Function(std::unordered_map<char, User_Function> user_function_map, std::string expression)
     : identifier(find_identifier(expression)),
     variable(find_variable(expression)),
     expression(expression),
@@ -71,7 +71,7 @@ UserFunction::UserFunction(std::unordered_map<char, UserFunction> user_function_
  *
  * @param expression The text form of the function e.g. "f(x) = 5x + 3".
  */
-UserFunction::UserFunction(std::string expression, std::string formatted_expression, std::unordered_set<char> user_function_dependencies)
+User_Function::User_Function(std::string expression, std::string formatted_expression, std::unordered_set<char> user_function_dependencies)
     : identifier(find_identifier(expression)), variable(find_variable(expression)), expression(expression), formatted_expression(formatted_expression), user_function_dependencies(user_function_dependencies)
 {
 }
@@ -83,21 +83,21 @@ UserFunction::UserFunction(std::string expression, std::string formatted_express
  * @param variable The variable that the function uses e.g. the "x" in "f(x) = 5x + 3".
  * @param expression The text form of the function e.g. "f(x) = 5x + 3".
  * @param formatted_expression The body of the function formatted to make it easier to parse e.g. "5*x+3" from the expression "f(x) = 5x + 3".
- * @param user_function_dependencies The UserFunctions that the function is defined in terms of e.g. "g(x)" in "f(x) = 5x + 3g(x)".
+ * @param user_function_dependencies The User_Functions that the function is defined in terms of e.g. "g(x)" in "f(x) = 5x + 3g(x)".
  */
-UserFunction::UserFunction(const char identifier, const char variable, const std::string expression, std::string formatted_expression, std::unordered_set<char> user_function_dependencies)
+User_Function::User_Function(const char identifier, const char variable, const std::string expression, std::string formatted_expression, std::unordered_set<char> user_function_dependencies)
     : identifier(identifier), variable(variable), expression(expression), formatted_expression(formatted_expression), user_function_dependencies(user_function_dependencies)
 {
 }
 
 /**
  * Replaces each instance of the function's variable with the provided argument.
- * For example, if the UserFunction is "f(x)=5*x+3" and the argument passed in is "15", the result
+ * For example, if the User_Function is "f(x)=5*x+3" and the argument passed in is "15", the result
  * will be "5*(15)+3".
  *
  * @param argument The string that replaces each instance of` the function's variable. 
  */
-std::string UserFunction::call(const std::string argument)
+std::string User_Function::call(const std::string argument)
 {
     // Wrap argument in parenthesis
     std::stringstream argument_stream;

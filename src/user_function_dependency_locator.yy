@@ -18,7 +18,7 @@
 %}
 
 // Used to simplify composite functions.
-%parse-param { std::unordered_map<char, UserFunction>& user_function_map }
+%parse-param { std::unordered_map<char, User_Function>& user_function_map }
 %parse-param { std::unordered_set<char>& user_function_dependencies }
 
 // Enable run-time traces (yydebug)
@@ -30,7 +30,7 @@
 {
   #include <unordered_map>
   #include <set>
-  #include "UserFunction.hpp"
+  #include "User_Function.hpp"
 }
 
 %code
@@ -87,7 +87,7 @@ implicit_multiplication_expression:
     char identifier = $1[0];
     if (user_function_map.contains(identifier))
     {
-        const UserFunction& user_function = user_function_map.at(identifier);
+        const User_Function& user_function = user_function_map.at(identifier);
         user_function_dependencies.insert(user_function.identifier);
         user_function_dependencies.insert(user_function.user_function_dependencies.begin(),
                                           user_function.user_function_dependencies.end());
@@ -102,7 +102,7 @@ implicit_multiplication_expression:
     char identifier = $2[0];
     if (user_function_map.contains(identifier))
     {
-        const UserFunction& user_function = user_function_map.at(identifier);
+        const User_Function& user_function = user_function_map.at(identifier);
         user_function_dependencies.insert(user_function.identifier);
         user_function_dependencies.insert(user_function.user_function_dependencies.begin(),
                                           user_function.user_function_dependencies.end());

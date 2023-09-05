@@ -18,8 +18,8 @@
 %}
 
 // Used to simplify composite functions.
-%parse-param { std::unordered_map<char, UserFunction>& user_function_map }
-// Used later to create a UserFunction if the expression was a function declaration.
+%parse-param { std::unordered_map<char, User_Function>& user_function_map }
+// Used later to create a User_Function if the expression was a function declaration.
 %parse-param { std::string& result }
 
 // Enable run-time traces (yydebug)
@@ -29,7 +29,7 @@
 {
   #include <unordered_map>
   #include <set>
-  #include "UserFunction.hpp"
+  #include "User_Function.hpp"
 }
 
 %code

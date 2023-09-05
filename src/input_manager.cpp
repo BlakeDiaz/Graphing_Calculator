@@ -5,11 +5,11 @@
 /**
  * Processes any input from the user.
  *
- * @param user_function_map An unordered map associating each UserFunction's identifier to the UserFunction itself.
- * @param user_functions A vector containing unordered sets of identifiers for UserFunctionss for each number of dependencies that a UserFunction can have.
+ * @param user_function_map An unordered map associating each User_Function's identifier to the User_Function itself.
+ * @param user_functions A vector containing unordered sets of identifiers for User_Functionss for each number of dependencies that a User_Function can have.
  * @param expression The expression provided by the user.
  */
-void Input_Manager::process_input(std::unordered_map<char, UserFunction>& user_function_map, std::vector<std::unordered_set<char>>& user_functions, std::string expression)
+void Input_Manager::process_input(std::unordered_map<char, User_Function>& user_function_map, std::vector<std::unordered_set<char>>& user_functions, std::string expression)
 {
     Calculator::ExpressionType expression_type = Calculator::identify_expression(expression);
     std::string formatted_expression = Calculator::format_expression(user_function_map, expression);
@@ -25,7 +25,7 @@ void Input_Manager::process_input(std::unordered_map<char, UserFunction>& user_f
 
         case Calculator::FUNCTION_DEFINITION:
         {
-            UserFunction user_function(expression, formatted_expression, Calculator::locate_user_function_dependencies(user_function_map, expression));
+            User_Function user_function(expression, formatted_expression, Calculator::locate_user_function_dependencies(user_function_map, expression));
             Input_Manager::process_user_function_input(user_function_map, user_functions, user_function);
             break;
         }
@@ -40,15 +40,15 @@ void Input_Manager::process_input(std::unordered_map<char, UserFunction>& user_f
 }
 
 /**
- * Processes a UserFunction definition or re-definition from the user.
+ * Processes a User_Function definition or re-definition from the user.
  *
- * @param user_function_map An unordered map associating each UserFunction's identifier to the UserFunction itself.
- * @param user_functions A vector containing unordered sets of identifiers for UserFunctionss for each number of dependencies that a UserFunction can have.
+ * @param user_function_map An unordered map associating each User_Function's identifier to the User_Function itself.
+ * @param user_functions A vector containing unordered sets of identifiers for User_Functionss for each number of dependencies that a User_Function can have.
  * @param expression The expression provided by the user.
  */
-void Input_Manager::process_user_function_input(std::unordered_map<char, UserFunction>& user_function_map, std::vector<std::unordered_set<char>>& user_functions, UserFunction& user_function)
+void Input_Manager::process_user_function_input(std::unordered_map<char, User_Function>& user_function_map, std::vector<std::unordered_set<char>>& user_functions, User_Function& user_function)
 {
-    // Adding a new UserFunction
+    // Adding a new User_Function
     if (!user_function_map.contains(user_function.identifier))
     {
         Input_Manager::add_user_function(user_function_map, user_functions, user_function);
@@ -56,8 +56,8 @@ void Input_Manager::process_user_function_input(std::unordered_map<char, UserFun
         return;
     }
 
-    // Verify whether the UserFunction has been updated
-    UserFunction& old_user_function = user_function_map.at(user_function.identifier);
+    // Verify whether the User_Function has been updated
+    User_Function& old_user_function = user_function_map.at(user_function.identifier);
     if (old_user_function.formatted_expression == user_function.formatted_expression)
     {
         return;
@@ -65,15 +65,15 @@ void Input_Manager::process_user_function_input(std::unordered_map<char, UserFun
 
     int old_number_of_dependencies = old_user_function.user_function_dependencies.size();
 
-    // Remove the old UserFunction
+    // Remove the old User_Function
     user_function_map.erase(user_function.identifier);
     user_functions[old_number_of_dependencies].erase(user_function.identifier);
 
-    // Add the new UserFunction
+    // Add the new User_Function
     Input_Manager::add_user_function(user_function_map, user_functions, user_function);
 
     /*
-     * Loop through each UserFunction with more dependencies than the now updated UserFunction in ascending order regarding the number of dependencies.
+     * Loop through each User_Function with more dependencies than the now updated User_Function in ascending order regarding the number of dependencies.
      */
     std::unordered_set<char> updated_user_functions;
 
@@ -84,41 +84,41 @@ void Input_Manager::process_user_function_input(std::unordered_map<char, UserFun
     {
         for (char current_user_function_identifier : user_functions[i])
         {
-            UserFunction& current_user_function = user_function_map.at(current_user_function_identifier);
-            // If the current UserFunction has the updated UserFunction as a dependency, update the current UserFunction.
+            User_Function& current_user_function = user_function_map.at(current_user_function_identifier);
+            // If the current User_Function has the updated User_Function as a dependency, update the current User_Function.
             if (!current_user_function.user_function_dependencies.contains(user_function.identifier))
             {
                 continue;
             }
 
             user_function_map.erase(current_user_function_identifier);
-            user_function_map.emplace(current_user_function_identifier, UserFunction(user_function_map, current_user_function.expression));
+            user_function_map.emplace(current_user_function_identifier, User_Function(user_function_map, current_user_function.expression));
             
-            // We temporarily store any updated UserFunctions in a seperate set to avoid repeatedly updating the same UserFunction
+            // We temporarily store any updated User_Functions in a seperate set to avoid repeatedly updating the same User_Function
             user_functions[i].erase(current_user_function_identifier);
             updated_user_functions.emplace(current_user_function_identifier);
         }
     }
 
-    // We now insert each UserFunction at its proper location according to how many dependencies it has
+    // We now insert each User_Function at its proper location according to how many dependencies it has
     for (char current_user_function_identifier : updated_user_functions)
     {
-        UserFunction& current_user_function = user_function_map.at(current_user_function_identifier);
+        User_Function& current_user_function = user_function_map.at(current_user_function_identifier);
         user_functions[current_user_function.user_function_dependencies.size()].emplace(current_user_function_identifier);
     }
 }
 
 /**
- * Adds a UserFunction to the map of UserFunctions and the vector of unordered sets of UserFunction identifiers.
+ * Adds a User_Function to the map of User_Functions and the vector of unordered sets of User_Function identifiers.
  *
- * @param user_function_map An unordered map associating each UserFunction's identifier to the UserFunction itself.
- * @param user_functions A vector containing unordered sets of identifiers for UserFunctionss for each number of dependencies that a UserFunction can have.
+ * @param user_function_map An unordered map associating each User_Function's identifier to the User_Function itself.
+ * @param user_functions A vector containing unordered sets of identifiers for User_Functionss for each number of dependencies that a User_Function can have.
  */
-void Input_Manager::add_user_function(std::unordered_map<char, UserFunction>& user_function_map, std::vector<std::unordered_set<char>>& user_functions, UserFunction& user_function)
+void Input_Manager::add_user_function(std::unordered_map<char, User_Function>& user_function_map, std::vector<std::unordered_set<char>>& user_functions, User_Function& user_function)
 {
     user_function_map.emplace(user_function.identifier, user_function);
         
-    // Expand our list of UserFunctions at each number of dependencies if we need to.
+    // Expand our list of User_Functions at each number of dependencies if we need to.
     if (user_functions.size() <= user_function.user_function_dependencies.size())
     {
         for (int i = user_functions.size(); i <= user_function.user_function_dependencies.size(); i++)
@@ -126,6 +126,6 @@ void Input_Manager::add_user_function(std::unordered_map<char, UserFunction>& us
             user_functions.push_back(std::unordered_set<char>());
         }
     }
-    // Add the UserFunction to our list at the correct amount of dependencies.
+    // Add the User_Function to our list at the correct amount of dependencies.
     user_functions[user_function.user_function_dependencies.size()].emplace(user_function.identifier);
 }

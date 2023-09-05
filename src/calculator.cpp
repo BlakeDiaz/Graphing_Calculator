@@ -51,15 +51,15 @@ Calculator::ExpressionType Calculator::identify_expression(std::string expressio
 }
 
 /**
- * Locates each other UserFunction that a UserFunction depends on.
- * A UserFunction depends on another function if it is defined in terms of it, or if a dependency is defined in terms of it.
+ * Locates each other User_Function that a User_Function depends on.
+ * A User_Function depends on another function if it is defined in terms of it, or if a dependency is defined in terms of it.
  * For example, if "f(x) = 5x + 4", "g(x) = 3 * f(x)", and "r(x) = 2^g(x)", 'r(x)' has dependencies 'f' and 'g'.
  *
  * @param user_function_map An unordered map containing each user-defined function.
- * @param expression The expression representing the UserFunction
- * @return A set containing the identifiers for each UserFunction that the expression depends on.
+ * @param expression The expression representing the User_Function
+ * @return A set containing the identifiers for each User_Function that the expression depends on.
  */
-std::unordered_set<char> Calculator::locate_user_function_dependencies(std::unordered_map<char, UserFunction>& user_function_map, std::string expression)
+std::unordered_set<char> Calculator::locate_user_function_dependencies(std::unordered_map<char, User_Function>& user_function_map, std::string expression)
 {
     // Remove any whitespace characters from the expression
     std::string modified_expression = remove_whitespace(expression);
@@ -85,9 +85,9 @@ std::unordered_set<char> Calculator::locate_user_function_dependencies(std::unor
  *
  * @param user_function_map An unordered map containing each user-defined function.
  * @param expression The expression to be formatted.
- * @return A tuple containing the formatted expression, as well as a UserFunction if the expression was a function definition.
+ * @return A tuple containing the formatted expression, as well as a User_Function if the expression was a function definition.
  */
-std::string Calculator::format_expression(std::unordered_map<char, UserFunction>& user_function_map, std::string expression)
+std::string Calculator::format_expression(std::unordered_map<char, User_Function>& user_function_map, std::string expression)
 {
     // Create a copy of expression to modify for make it easier for the formatter to parse
     // Additionally, remove any whitespace characters from the expression
