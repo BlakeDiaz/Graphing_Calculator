@@ -31,6 +31,7 @@ add_executable(
     src/yyerror.cpp
     src/string_manipulation.cpp
     src/main.cpp
+    src/input_manager.cpp
     src/calculator.cpp
     src/userfunction.cpp
     src/lex.yy.cpp
@@ -49,6 +50,7 @@ add_executable(
     calculator_test
     src/yyerror.cpp
     src/string_manipulation.cpp
+    src/input_manager.cpp
     src/calculator.cpp
     src/userfunction.cpp
     src/lex.yy.cpp
