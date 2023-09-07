@@ -9,7 +9,7 @@
  * @param user_functions A vector containing unordered sets of identifiers for User_Functionss for each number of dependencies that a User_Function can have.
  * @param expression The expression provided by the user.
  */
-void Input_Manager::process_input(std::unordered_map<char, User_Function>& user_function_map, std::vector<std::unordered_set<char>>& user_functions, std::string expression)
+std::optional<std::string> Input_Manager::process_input(std::unordered_map<char, User_Function>& user_function_map, std::vector<std::unordered_set<char>>& user_functions, std::string expression)
 {
     Calculator::ExpressionType expression_type = Calculator::identify_expression(expression);
     std::string formatted_expression = Calculator::format_expression(user_function_map, expression);
@@ -18,9 +18,8 @@ void Input_Manager::process_input(std::unordered_map<char, User_Function>& user_
     {
         case Calculator::SOLVABLE_EXPRESSION:
         {
-            std::cout << "Formatted Expression: " << formatted_expression << std::endl;
-            std::cout << "Solved Expression: " << Calculator::solve_expression(formatted_expression) << std::endl;
-            break;
+            double result =  Calculator::solve_expression(formatted_expression);
+            return std::optional<std::string>(std::to_string(result));
         }
 
         case Calculator::FUNCTION_DEFINITION:
@@ -29,7 +28,6 @@ void Input_Manager::process_input(std::unordered_map<char, User_Function>& user_
             Input_Manager::process_user_function_input(user_function_map, user_functions, user_function);
             break;
         }
- 
 
         default:
         {
@@ -37,6 +35,8 @@ void Input_Manager::process_input(std::unordered_map<char, User_Function>& user_
             break;
         }
     }
+
+    return std::optional<std::string>();
 }
 
 /**
