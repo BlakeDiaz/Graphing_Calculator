@@ -30,10 +30,6 @@ execute_process(COMMAND /usr/lib/qt6/uic forms/calculator_form.ui -o include/ui_
 project(calc VERSION 1.0)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
-set(GLFW_BUILD_DOCS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_TESTS OFF CACHE BOOL "" FORCE)
-set(GLFW_BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
-find_package(glfw3 REQUIRED)
 find_package(OpenGL REQUIRED)
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets UiTools OpenGLWidgets)
 add_executable(
@@ -61,7 +57,6 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/include)
 
-target_link_libraries(calc PUBLIC glfw)
 target_link_libraries(calc PUBLIC OpenGL::GL)
 target_link_libraries(calc PRIVATE Qt6::Core)
 target_link_libraries(calc PRIVATE Qt6::Gui)
@@ -94,7 +89,6 @@ add_executable(
     src/calculator_test.cc)
     
 
-target_link_libraries(calculator_test PUBLIC glfw)
 target_link_libraries(calculator_test PUBLIC OpenGL::GL)
 target_link_libraries(calculator_test PRIVATE Qt6::Core)
 target_link_libraries(calculator_test PRIVATE Qt6::Gui)
