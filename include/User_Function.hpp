@@ -21,7 +21,7 @@ public:
     User_Function(std::unordered_map<char, User_Function> user_function_map, std::string expression);
     User_Function(std::string expression, std::string formatted_expression, std::unordered_set<char> user_function_dependencies);
     User_Function(const char identifier, const char variable, const std::string expression, std::string formatted_expression, std::unordered_set<char> user_function_dependencies);
-    std::string call(const std::string argument);
+    std::string call(const std::string argument) const;
 };
 
 std::ostream& operator<<(std::ostream& out, User_Function const& user_function);

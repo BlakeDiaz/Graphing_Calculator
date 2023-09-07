@@ -97,7 +97,7 @@ User_Function::User_Function(const char identifier, const char variable, const s
  *
  * @param argument The string that replaces each instance of` the function's variable. 
  */
-std::string User_Function::call(const std::string argument)
+std::string User_Function::call(const std::string argument) const
 {
     // Wrap argument in parenthesis
     std::stringstream argument_stream;
