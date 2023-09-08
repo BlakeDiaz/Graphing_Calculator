@@ -1,7 +1,9 @@
 #pragma once
 #include "ui_calculator_form.hpp"
 #include "graph_widget.hpp"
+#include "User_Function.hpp"
 #include <QColorDialog>
+#include <vector>
 #include <string>
 
 class Calculator_Form : public QDialog
@@ -25,6 +27,8 @@ private:
     static const int output_column = 1;
     static const int color_column = 2;
     inline static const std::string default_function_input_text = "f(x) = x + 3";
+    std::unordered_map<char, User_Function> user_function_map;
+    std::vector<std::unordered_set<char>> user_functions;
 
 private slots:
     void on_add_function();
