@@ -1,8 +1,10 @@
 #include "calculator_form.hpp"
 #include "graph_widget.hpp"
+#include "Input_Manager.hpp"
 #include <iostream>
 #include <QPushButton>
 #include <QString>
+#include <ostream>
 
 Calculator_Form::Calculator_Form(QWidget* parent)
     : QDialog(parent)
@@ -116,7 +118,40 @@ void Calculator_Form::on_reset_graph()
 
 void Calculator_Form::on_update_graph()
 {
-    // Pass text from input sections of table to calculator, then display on openglwidget
+    // Get boundaries
+    // TODO error handling on string input
+    float x_min = std::stof(ui.x_axis_lower_bound_line_edit->text().toStdString());
+    float y_min = std::stof(ui.y_axis_lower_bound_line_edit->text().toStdString());
+    float x_max = std::stof(ui.x_axis_upper_bound_line_edit->text().toStdString());
+    float y_max = std::stof(ui.y_axis_upper_bound_line_edit->text().toStdString());
+    
+
+    QTableWidget* table = ui.function_table_widget;
+    QString input_text;
+
+    for (int row = 0; row < table->rowCount(); row++)
+    {
+        input_text = table->item(row, input_column)->text();
+
+        if (input_text == "")
+        {
+            continue;
+        }
+
+        std::optional<std::string> output_text = Input_Manager::process_input(user_function_map, user_functions, input_text.toStdString());
+
+        if (output_text.has_value())
+        {
+            table->item(row, output_column)->setText(QString(output_text.value().c_str()));
+        }
+        // Graph function
+        else
+        {
+            table->item(row, output_column)->setText("");
+            
+            graph_gl_widget->update_state(user_function_map, {.x_min = x_min, .x_max = x_max, .y_min = y_min, .y_max = y_max});
+        }
+    }
 }
 
 void Calculator_Form::change_function_color(QPushButton* button, const QColor& color)
