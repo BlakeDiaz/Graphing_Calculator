@@ -32,7 +32,8 @@ private:
     std::vector<Line_Rendering_Data> curves_rendering_data;
     Line_Rendering_Data x_axis_marker_rendering_data;
     Line_Rendering_Data y_axis_marker_rendering_data;
-    const float x_step = 0.01;
+
+    const int total_number_of_curve_points = 2000;
     
     std::vector<float> create_curve(const User_Function& user_function, const float lower_x_limit, const float upper_x_limit, const float x_step);
     unsigned int setup_points_VAO(float data[], unsigned int data_length);

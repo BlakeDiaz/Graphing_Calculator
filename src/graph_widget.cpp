@@ -148,6 +148,8 @@ void Graph_Widget::update_state(const std::unordered_map<char, User_Function>& u
     y_axis_marker_rendering_data.number_of_points = y_axis_marker_points.size()/2;
 
     // Update our curves based on the new graph window, as well as any changes to the inputted User_Functions
+    float x_step = (graph_window.x_max - graph_window.x_min) / total_number_of_curve_points;
+
     curves_rendering_data.clear();
 
     for (const auto& [identifier, user_function] : user_function_map)
