@@ -72,7 +72,7 @@ std::unordered_set<char> Calculator::locate_user_function_dependencies(std::stri
     YY_BUFFER_STATE bs = ufdl_scan_string(modified_expression.c_str());
     ufdl_switch_to_buffer(bs);
 
-    ufdl::parser user_function_dependency_locator(dependencies);
+    ufdl::parser user_function_dependency_locator(dependencies, User_Function::find_variable(expression));
     user_function_dependency_locator();
 
     ufdl_delete_buffer(bs);

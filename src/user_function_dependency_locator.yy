@@ -19,6 +19,7 @@
 
 // Used to simplify composite functions.
 %parse-param { std::unordered_set<char>& user_function_dependencies }
+%parse-param { const char variable }
 
 // Enable run-time traces (yydebug)
 %define parse.trace
@@ -84,7 +85,10 @@ implicit_multiplication_expression:
 {
     // If this is a function call, update our list of user function dependencies.
     char identifier = $1[0];
-    user_function_dependencies.emplace(identifier);
+    if (identifier != variable)
+    {
+        user_function_dependencies.emplace(identifier);
+    }
 }
 | "(" expression ")"
 | implicit_multiplication_expression VARIABLE
@@ -93,7 +97,10 @@ implicit_multiplication_expression:
 {
     // If this is a function call, update our list of user function dependencies.
     char identifier = $2[0];
-    user_function_dependencies.emplace(identifier);
+    if (identifier != variable)
+    {
+        user_function_dependencies.emplace(identifier);
+    }
 
 }
 | implicit_multiplication_expression "(" expression ")"

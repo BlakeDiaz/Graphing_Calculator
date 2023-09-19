@@ -93,7 +93,7 @@ implicit_multiplication_expression:
     // Otherwise, treat the grammar as implicit multiplication between a variable and an expression wrapped in parentheses.
     else
     {
-        $$ += $1 + "(" + $3 + ")";
+        $$ += "(" + $1 + ")*" + "(" + $3 + ")";
     }
 }
 | "(" expression ")"                                                { $$ += "(" + $2 + ")";                                                                                              }
@@ -109,7 +109,7 @@ implicit_multiplication_expression:
     // Otherwise, treat the grammar as implicit multiplication between a variable and an expression wrapped in parentheses.
     else
     {
-        $$ += $1 + "*" + $2 + "(" + $4 + ")";
+        $$ += $1 + "*(" + $2 + ")*" + "(" + $4 + ")";
     }
 }
 | implicit_multiplication_expression "(" expression ")"             { $$ += $1 + "*" + "(" + $3 + ")";                                                                                   }
