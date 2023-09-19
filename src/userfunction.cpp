@@ -62,7 +62,7 @@ User_Function::User_Function(std::unordered_map<char, User_Function> user_functi
     variable(find_variable(expression)),
     expression(expression),
     formatted_expression(Calculator::format_expression(user_function_map, expression)),
-    user_function_dependencies(Calculator::locate_user_function_dependencies(user_function_map, expression))
+    user_function_dependencies(Calculator::locate_user_function_dependencies(expression))
 {
 }
 

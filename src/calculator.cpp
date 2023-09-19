@@ -51,15 +51,15 @@ Calculator::ExpressionType Calculator::identify_expression(std::string expressio
 }
 
 /**
- * Locates each other User_Function that a User_Function depends on.
- * A User_Function depends on another function if it is defined in terms of it, or if a dependency is defined in terms of it.
- * For example, if "f(x) = 5x + 4", "g(x) = 3 * f(x)", and "r(x) = 2^g(x)", 'r(x)' has dependencies 'f' and 'g'.
+ * Locates each User_Function that a User_Function directly depends on.
+ * A User_Function directly depends on another function if it is directly defined in terms of it.
+ * For example, if "f(x) = 5x + 4", "g(x) = 3 * f(x)", and "r(x) = 2^g(x)", 'r(x)' has direct dependency 'g', and indirect dependency 'f'.
  *
  * @param user_function_map An unordered map containing each user-defined function.
  * @param expression The expression representing the User_Function
  * @return A set containing the identifiers for each User_Function that the expression depends on.
  */
-std::unordered_set<char> Calculator::locate_user_function_dependencies(std::unordered_map<char, User_Function>& user_function_map, std::string expression)
+std::unordered_set<char> Calculator::locate_user_function_dependencies(std::string expression)
 {
     // Remove any whitespace characters from the expression
     std::string modified_expression = remove_whitespace(expression);
@@ -72,7 +72,7 @@ std::unordered_set<char> Calculator::locate_user_function_dependencies(std::unor
     YY_BUFFER_STATE bs = ufdl_scan_string(modified_expression.c_str());
     ufdl_switch_to_buffer(bs);
 
-    ufdl::parser user_function_dependency_locator(user_function_map, dependencies);
+    ufdl::parser user_function_dependency_locator(dependencies);
     user_function_dependency_locator();
 
     ufdl_delete_buffer(bs);

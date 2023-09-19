@@ -18,7 +18,6 @@
 %}
 
 // Used to simplify composite functions.
-%parse-param { std::unordered_map<char, User_Function>& user_function_map }
 %parse-param { std::unordered_set<char>& user_function_dependencies }
 
 // Enable run-time traces (yydebug)
@@ -85,13 +84,7 @@ implicit_multiplication_expression:
 {
     // If this is a function call, update our list of user function dependencies.
     char identifier = $1[0];
-    if (user_function_map.contains(identifier))
-    {
-        const User_Function& user_function = user_function_map.at(identifier);
-        user_function_dependencies.insert(user_function.identifier);
-        user_function_dependencies.insert(user_function.user_function_dependencies.begin(),
-                                          user_function.user_function_dependencies.end());
-    }
+    user_function_dependencies.emplace(identifier);
 }
 | "(" expression ")"
 | implicit_multiplication_expression VARIABLE
@@ -100,13 +93,8 @@ implicit_multiplication_expression:
 {
     // If this is a function call, update our list of user function dependencies.
     char identifier = $2[0];
-    if (user_function_map.contains(identifier))
-    {
-        const User_Function& user_function = user_function_map.at(identifier);
-        user_function_dependencies.insert(user_function.identifier);
-        user_function_dependencies.insert(user_function.user_function_dependencies.begin(),
-                                          user_function.user_function_dependencies.end());
-    }
+    user_function_dependencies.emplace(identifier);
+
 }
 | implicit_multiplication_expression "(" expression ")"
 
