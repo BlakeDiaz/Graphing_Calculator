@@ -104,12 +104,12 @@ implicit_multiplication_expression:
     // If this is a function call, add the result of that call to our expression
     if (user_function_map.contains($2[0]))
     {
-        $$ += "(" + user_function_map.at($2[0]).call($4) + ")";
+        $$ += $1 + "*" + "(" + user_function_map.at($2[0]).call($4) + ")";
     }
     // Otherwise, treat the grammar as implicit multiplication between a variable and an expression wrapped in parentheses.
     else
     {
-        $$ += $2 + "(" + $4 + ")";
+        $$ += $1 + "*" + $2 + "(" + $4 + ")";
     }
 }
 | implicit_multiplication_expression "(" expression ")"             { $$ += $1 + "*" + "(" + $3 + ")";                                                                                   }
