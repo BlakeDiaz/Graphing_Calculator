@@ -29,5 +29,5 @@ ln                              { return fmt::parser::make_FUNCTION("ln"); }
 [a-zA-Z]                        { return fmt::parser::make_VARIABLE(yytext); }
 "\n"                            { return fmt::parser::make_NEWLINE(); }
 <<EOF>>                         { return fmt::parser::make_YYEOF(); }
-.                               { yyerror("Undefined symbol"); exit(1); }
+.                               { yyerror("Undefined symbol in formatter"); exit(1); }
 %%

@@ -29,5 +29,5 @@ log                             { return yy::parser::make_FUNCTION(func_map.at("
 ln                              { return yy::parser::make_FUNCTION(func_map.at("ln")); }
 "\n"                            { return yy::parser::make_NEWLINE(); }
 <<EOF>>                         { return yy::parser::make_YYEOF(); }
-.                               { yyerror("Undefined symbol"); exit(1); }
+.                               { yyerror("Undefined symbol in solver"); exit(1); }
 %%

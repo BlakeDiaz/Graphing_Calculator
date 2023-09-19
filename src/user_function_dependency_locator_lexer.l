@@ -29,5 +29,5 @@ ln                              { return ufdl::parser::make_FUNCTION(); }
 [a-zA-Z]                        { return ufdl::parser::make_VARIABLE(yytext); }
 "\n"                            { return ufdl::parser::make_NEWLINE(); }
 <<EOF>>                         { return ufdl::parser::make_YYEOF(); }
-.                               { yyerror("Undefined symbol"); exit(1); }
+.                               { yyerror("Undefined symbol in user function dependency locator"); exit(1); }
 %%
