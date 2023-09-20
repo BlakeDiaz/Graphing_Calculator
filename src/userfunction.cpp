@@ -57,12 +57,13 @@ char User_Function::find_variable(std::string expression)
  * @param expression The text form of the function e.g. "f(x) = 5x + 3".
  * @param formatted_expression The body of the function formatted to make it easier to parse e.g. "5*x+3" from the expression "f(x) = 5x + 3".
  */
-User_Function::User_Function(std::unordered_map<char, User_Function> user_function_map, std::string expression)
+User_Function::User_Function(std::unordered_map<char, User_Function> user_function_map, std::string expression, QColor color)
     : identifier(find_identifier(expression)),
     variable(find_variable(expression)),
     expression(expression),
     formatted_expression(Calculator::format_expression(user_function_map, expression)),
-    user_function_dependencies(Calculator::locate_user_function_dependencies(expression))
+    user_function_dependencies(Calculator::locate_user_function_dependencies(expression)),
+    color(color)
 {
 }
 
@@ -71,8 +72,13 @@ User_Function::User_Function(std::unordered_map<char, User_Function> user_functi
  *
  * @param expression The text form of the function e.g. "f(x) = 5x + 3".
  */
-User_Function::User_Function(std::string expression, std::string formatted_expression, std::unordered_set<char> user_function_dependencies)
-    : identifier(find_identifier(expression)), variable(find_variable(expression)), expression(expression), formatted_expression(formatted_expression), user_function_dependencies(user_function_dependencies)
+User_Function::User_Function(std::string expression, std::string formatted_expression, std::unordered_set<char> user_function_dependencies, QColor color)
+    : identifier(find_identifier(expression)),
+    variable(find_variable(expression)),
+    expression(expression),
+    formatted_expression(formatted_expression),
+    user_function_dependencies(user_function_dependencies),
+    color(color)
 {
 }
 
@@ -85,8 +91,13 @@ User_Function::User_Function(std::string expression, std::string formatted_expre
  * @param formatted_expression The body of the function formatted to make it easier to parse e.g. "5*x+3" from the expression "f(x) = 5x + 3".
  * @param user_function_dependencies The User_Functions that the function is defined in terms of e.g. "g(x)" in "f(x) = 5x + 3g(x)".
  */
-User_Function::User_Function(const char identifier, const char variable, const std::string expression, std::string formatted_expression, std::unordered_set<char> user_function_dependencies)
-    : identifier(identifier), variable(variable), expression(expression), formatted_expression(formatted_expression), user_function_dependencies(user_function_dependencies)
+User_Function::User_Function(const char identifier, const char variable, const std::string expression, std::string formatted_expression, std::unordered_set<char> user_function_dependencies, QColor color)
+    : identifier(identifier),
+    variable(variable),
+    expression(expression),
+    formatted_expression(formatted_expression),
+    user_function_dependencies(user_function_dependencies),
+    color(color)
 {
 }
 

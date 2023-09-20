@@ -127,12 +127,14 @@ void Calculator_Form::on_update_graph()
 {
     QTableWidget* table = ui.function_table_widget;
     QString input_text;
+    QColor current_color;
 
-    std::vector<std::tuple<std::string, std::unordered_set<char>>> new_user_function_expressions;
+    std::vector<std::tuple<std::string, std::unordered_set<char>, QColor>> new_user_function_expressions;
 
     for (int row = 0; row < table->rowCount(); row++)
     {
         input_text = table->item(row, input_column)->text();
+        current_color = table->cellWidget(row, color_column)->palette().color(QPalette::Button);
 
         if (input_text == "")
         {
@@ -149,7 +151,7 @@ void Calculator_Form::on_update_graph()
             }
             case Calculator::FUNCTION_DEFINITION:
             {
-                new_user_function_expressions.push_back(std::tuple(input_text.toStdString(), Calculator::locate_user_function_dependencies(input_text.toStdString())));
+                new_user_function_expressions.push_back(std::tuple(input_text.toStdString(), Calculator::locate_user_function_dependencies(input_text.toStdString()), current_color));
                 
                 break;
             }

@@ -11,7 +11,7 @@ protected:
 
     void SetUp() override
     {
-        user_function_map.emplace('f', User_Function('f', 'x', "f(x) = 5x + 4", "5*((x))+4", std::unordered_set<char>()));
+        user_function_map.emplace('f', User_Function('f', 'x', "f(x) = 5x + 4", "5*((x))+4", std::unordered_set<char>(), QColor()));
     }
 };
 
@@ -46,11 +46,11 @@ TEST_F(CalculatorTestFixture, FormatExpression)
 
 TEST_F(CalculatorTestFixture, LocateUser_FunctionDependencies)
 {
-    user_function_map.emplace('a', User_Function("a(x) = 3x", "3*(x)", {}));
-    user_function_map.emplace('b', User_Function("b(x) = 3a(x)", "3*3*((x))", {'a'}));
-    user_function_map.emplace('c', User_Function("c(x) = 3b(x)", "3*3*3*(((x)))", {'b'}));
-    user_function_map.emplace('d', User_Function("d(x) = 3c(x)", "3*3*3*3*((((x))))", {'c'}));
-    user_function_map.emplace('e', User_Function("e(x) = 3d(x)", "3*3*3*3*3*(((((x)))))", {'d'}));
+    user_function_map.emplace('a', User_Function("a(x) = 3x", "3*(x)", {}, QColor()));
+    user_function_map.emplace('b', User_Function("b(x) = 3a(x)", "3*3*((x))", {'a'}, QColor()));
+    user_function_map.emplace('c', User_Function("c(x) = 3b(x)", "3*3*3*(((x)))", {'b'}, QColor()));
+    user_function_map.emplace('d', User_Function("d(x) = 3c(x)", "3*3*3*3*((((x))))", {'c'}, QColor()));
+    user_function_map.emplace('e', User_Function("e(x) = 3d(x)", "3*3*3*3*3*(((((x)))))", {'d'}, QColor()));
 
     for (char c = 'a'; c < 'f'; c++)
     {

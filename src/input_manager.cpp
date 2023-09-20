@@ -33,7 +33,7 @@ static bool check_if_user_function_can_be_defined(const std::unordered_map<char,
  *                                      user function dependency of the User_Function the expression represents.
  * @return An unordered map containing the User_Functions the list of expressions represent.
  */
-std::unordered_map<char, User_Function> Input_Manager::create_user_function_map(std::vector<std::tuple<std::string, std::unordered_set<char>>>& new_user_function_expressions)
+std::unordered_map<char, User_Function> Input_Manager::create_user_function_map(std::vector<std::tuple<std::string, std::unordered_set<char>, QColor>>& new_user_function_expressions)
 {
     /*
      * To assemble each User_Function, we need to have its dependencies assembled in the map first, so that we can replace its dependencies' function calls with its dependencies'
@@ -43,10 +43,10 @@ std::unordered_map<char, User_Function> Input_Manager::create_user_function_map(
     std::unordered_map<char, User_Function> user_function_map;
     for (int i = 0; i < new_user_function_expressions.size();)
     {
-        auto&& [expression, dependencies] = new_user_function_expressions.at(i);
+        auto&& [expression, dependencies, color] = new_user_function_expressions.at(i);
         if (dependencies.size() == 0)
         {
-            user_function_map.emplace(User_Function::find_identifier(expression), User_Function(user_function_map, expression));
+            user_function_map.emplace(User_Function::find_identifier(expression), User_Function(user_function_map, expression, color));
             new_user_function_expressions.erase(new_user_function_expressions.begin() + i);
         }
         else
@@ -62,16 +62,16 @@ std::unordered_map<char, User_Function> Input_Manager::create_user_function_map(
     {
         for (int i = 0; i < new_user_function_expressions.size(); i++)
         {
-            auto&& [expression, dependencies] = new_user_function_expressions.at(i);
+            auto&& [expression, dependencies, color] = new_user_function_expressions.at(i);
             
             if (check_if_user_function_can_be_defined(user_function_map, expression, dependencies))
             {
-                user_function_map.emplace(User_Function::find_identifier(expression), User_Function(user_function_map, expression));
+                user_function_map.emplace(User_Function::find_identifier(expression), User_Function(user_function_map, expression, color));
                 new_user_function_expressions.erase(new_user_function_expressions.begin() + i);
             }
 
             user_function_can_be_defined = true;
-            
+                                                                    
         }
         // If at least one function hasn't been added, then we can't continue, and the remaining functions' dependencies are invalid 
         if (new_user_function_expressions.size() >= previous_user_function_expression_length)
