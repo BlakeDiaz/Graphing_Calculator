@@ -90,6 +90,9 @@ void Calculator_Form::on_add_function()
     table->setItem(table->rowCount() - 1, input_column, input_item);
     table->setItem(table->rowCount()-1, output_column, output_item);
     table->setCellWidget(table->rowCount()-1, color_column, color_button);
+
+    // Redraw window to prevent ghost color button from appearing
+    update();
 }
 
 void Calculator_Form::on_remove_function()
