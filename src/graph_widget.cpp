@@ -86,6 +86,8 @@ void Graph_Widget::initializeGL()
     y_axis_rendering_data.number_of_points = y_axis_points.size()/2;
     x_axis_marker_rendering_data.number_of_points = x_axis_marker_points.size()/2;
     y_axis_marker_rendering_data.number_of_points = y_axis_marker_points.size()/2;
+
+    // The default color of QColor is black, so we don't have to set it here
 }
 
 void Graph_Widget::resizeGL(int width, int height)
@@ -147,6 +149,8 @@ void Graph_Widget::update_state(const std::unordered_map<char, User_Function>& u
     x_axis_marker_rendering_data.number_of_points = x_axis_marker_points.size()/2;
     y_axis_marker_rendering_data.number_of_points = y_axis_marker_points.size()/2;
 
+    // The default color of QColor is black, so we don't have to set it here
+
     // Update our curves based on the new graph window, as well as any changes to the inputted User_Functions
     float x_step = (graph_window.x_max - graph_window.x_min) / total_number_of_curve_points;
 
@@ -157,7 +161,8 @@ void Graph_Widget::update_state(const std::unordered_map<char, User_Function>& u
         std::vector<float> curve_points = create_curve(user_function, graph_window.x_min, graph_window.x_max, x_step);
         curves_rendering_data.push_back({
             .VAO = setup_points_VAO(curve_points.data(), curve_points.size()),
-            .number_of_points = curve_points.size()/2
+            .number_of_points = curve_points.size()/2,
+            .color = user_function.color
         });
     }
 
@@ -211,6 +216,7 @@ void Graph_Widget::render_line(QOpenGLShaderProgram& program, const Coordinate_T
     program.setUniformValue(program.uniformLocation("x_scale"), transformation_data.get_x_scale());
     program.setUniformValue(program.uniformLocation("y_offset"), transformation_data.get_y_offset());
     program.setUniformValue(program.uniformLocation("y_scale"), transformation_data.get_y_scale());
+    program.setUniformValue(program.uniformLocation("color"), curve_data.color);
 
     functions->glBindVertexArray(curve_data.VAO);
     functions->glDrawArrays(GL_LINE_STRIP, 0, curve_data.number_of_points);
@@ -223,6 +229,7 @@ void Graph_Widget::render_disconnected_lines(QOpenGLShaderProgram& program, cons
     program.setUniformValue(program.uniformLocation("x_scale"), transformation_data.get_x_scale());
     program.setUniformValue(program.uniformLocation("y_offset"), transformation_data.get_y_offset());
     program.setUniformValue(program.uniformLocation("y_scale"), transformation_data.get_y_scale());
+    program.setUniformValue(program.uniformLocation("color"), lines_data.color);
 
     functions->glBindVertexArray(lines_data.VAO);
     functions->glDrawArrays(GL_LINES, 0, lines_data.number_of_points);
