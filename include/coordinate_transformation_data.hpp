@@ -3,7 +3,7 @@
 
 class Coordinate_Transformation_Data
 {
-public:
+  public:
     Coordinate_Transformation_Data();
     Coordinate_Transformation_Data(const Graph_Window_Data& graph_window);
     void update(const Graph_Window_Data& graph_window);
@@ -12,7 +12,7 @@ public:
     float get_y_offset() const;
     float get_y_scale() const;
 
-private:
+  private:
     float x_offset, x_scale, y_offset, y_scale;
     const float marker_top_normalized_coordinate = 0.1;
     const float marker_bottom_normalized_coordinate = -0.1;

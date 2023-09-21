@@ -1,9 +1,9 @@
 #include "graph_widget.hpp"
 
-#include "User_Function.hpp"
 #include "Calculator.hpp"
-#include "coordinate_transformation_data.hpp"
+#include "User_Function.hpp"
 #include "axis_marker_data.hpp"
+#include "coordinate_transformation_data.hpp"
 #include "graph_window_data.hpp"
 #include "line_rendering_data.hpp"
 #include <QOpenGLExtraFunctions>
@@ -11,7 +11,8 @@
 
 #define MAX_NUMBER_OF_MARKERS 16
 
-static bool create_shader_program(QOpenGLShaderProgram& program, const QString& vertex_shader_path, const QString& fragment_shader_path)
+static bool create_shader_program(QOpenGLShaderProgram& program, const QString& vertex_shader_path,
+                                  const QString& fragment_shader_path)
 {
     bool result;
 
@@ -39,8 +40,7 @@ static bool create_shader_program(QOpenGLShaderProgram& program, const QString& 
     return true;
 }
 
-Graph_Widget::Graph_Widget(QWidget* parent)
-    : QOpenGLWidget(parent)
+Graph_Widget::Graph_Widget(QWidget* parent) : QOpenGLWidget(parent)
 {
     setFixedSize(200, 200);
 }
@@ -52,7 +52,7 @@ void Graph_Widget::initializeGL()
     {
         std::cout << "Couldn't compile axis shader" << std::endl;
     }
-    
+
     if (!create_shader_program(curve_shader, "res/shaders/curve_shader.vs", "res/shaders/curve_shader.fs"))
     {
         std::cout << "Couldn't compile curve shader" << std::endl;
@@ -72,20 +72,22 @@ void Graph_Widget::initializeGL()
 
     std::array<float, 4> x_axis_points = {graph_window.x_min, 0, graph_window.x_max, 0};
     std::array<float, 4> y_axis_points = {0, graph_window.y_min, 0, graph_window.y_max};
-    std::vector<float> x_axis_marker_points = x_axis_marker_data.get_x_marker_points(graph_window.get_x_marker_height()/2, -graph_window.get_x_marker_height()/2);
-    std::vector<float> y_axis_marker_points = y_axis_marker_data.get_y_marker_points(graph_window.get_y_marker_length()/2, -graph_window.get_y_marker_length()/2);
+    std::vector<float> x_axis_marker_points = x_axis_marker_data.get_x_marker_points(
+        graph_window.get_x_marker_height() / 2, -graph_window.get_x_marker_height() / 2);
+    std::vector<float> y_axis_marker_points = y_axis_marker_data.get_y_marker_points(
+        graph_window.get_y_marker_length() / 2, -graph_window.get_y_marker_length() / 2);
 
     x_axis_rendering_data.VAO = setup_points_VAO(x_axis_points.data(), x_axis_points.size());
     y_axis_rendering_data.VAO = setup_points_VAO(y_axis_points.data(), y_axis_points.size());
     x_axis_marker_rendering_data.VAO = setup_points_VAO(x_axis_marker_points.data(), x_axis_marker_points.size());
     y_axis_marker_rendering_data.VAO = setup_points_VAO(y_axis_marker_points.data(), y_axis_marker_points.size());
-        
+
     // Our containers hold x and y coordinates as individual elements,
     // so we divide the number of elements in them by 2 to get the number of points
-    x_axis_rendering_data.number_of_points = x_axis_points.size()/2;
-    y_axis_rendering_data.number_of_points = y_axis_points.size()/2;
-    x_axis_marker_rendering_data.number_of_points = x_axis_marker_points.size()/2;
-    y_axis_marker_rendering_data.number_of_points = y_axis_marker_points.size()/2;
+    x_axis_rendering_data.number_of_points = x_axis_points.size() / 2;
+    y_axis_rendering_data.number_of_points = y_axis_points.size() / 2;
+    x_axis_marker_rendering_data.number_of_points = x_axis_marker_points.size() / 2;
+    y_axis_marker_rendering_data.number_of_points = y_axis_marker_points.size() / 2;
 
     // The default color of QColor is black, so we don't have to set it here
 }
@@ -111,9 +113,10 @@ void Graph_Widget::paintGL()
     render_disconnected_lines(axis_shader, transformation_data, y_axis_marker_rendering_data);
 }
 
-void Graph_Widget::update_state(const std::unordered_map<char, User_Function>& user_function_map, const Graph_Window_Data& graph_window)
+void Graph_Widget::update_state(const std::unordered_map<char, User_Function>& user_function_map,
+                                const Graph_Window_Data& graph_window)
 {
-    // This lets us call OpenGL functions outside of initializeGL, resizeGL, and paintGL 
+    // This lets us call OpenGL functions outside of initializeGL, resizeGL, and paintGL
     makeCurrent();
 
     functions->glDeleteVertexArrays(1, &x_axis_rendering_data.VAO);
@@ -134,20 +137,22 @@ void Graph_Widget::update_state(const std::unordered_map<char, User_Function>& u
     std::array<float, 4> x_axis_points = {graph_window.x_min, 0, graph_window.x_max, 0};
     std::array<float, 4> y_axis_points = {0, graph_window.y_min, 0, graph_window.y_max};
 
-    std::vector<float> x_axis_marker_points = x_axis_marker_data.get_x_marker_points(graph_window.get_x_marker_height()/2, -graph_window.get_x_marker_height()/2);
-    std::vector<float> y_axis_marker_points = y_axis_marker_data.get_y_marker_points(graph_window.get_y_marker_length()/2, -graph_window.get_y_marker_length()/2);
+    std::vector<float> x_axis_marker_points = x_axis_marker_data.get_x_marker_points(
+        graph_window.get_x_marker_height() / 2, -graph_window.get_x_marker_height() / 2);
+    std::vector<float> y_axis_marker_points = y_axis_marker_data.get_y_marker_points(
+        graph_window.get_y_marker_length() / 2, -graph_window.get_y_marker_length() / 2);
 
     x_axis_rendering_data.VAO = setup_points_VAO(x_axis_points.data(), x_axis_points.size());
     y_axis_rendering_data.VAO = setup_points_VAO(y_axis_points.data(), y_axis_points.size());
     x_axis_marker_rendering_data.VAO = setup_points_VAO(x_axis_marker_points.data(), x_axis_marker_points.size());
     y_axis_marker_rendering_data.VAO = setup_points_VAO(y_axis_marker_points.data(), y_axis_marker_points.size());
-        
+
     // Our containers hold x and y coordinates as individual elements,
     // so we divide the number of elements in them by 2 to get the number of points
-    x_axis_rendering_data.number_of_points = x_axis_points.size()/2;
-    y_axis_rendering_data.number_of_points = y_axis_points.size()/2;
-    x_axis_marker_rendering_data.number_of_points = x_axis_marker_points.size()/2;
-    y_axis_marker_rendering_data.number_of_points = y_axis_marker_points.size()/2;
+    x_axis_rendering_data.number_of_points = x_axis_points.size() / 2;
+    y_axis_rendering_data.number_of_points = y_axis_points.size() / 2;
+    x_axis_marker_rendering_data.number_of_points = x_axis_marker_points.size() / 2;
+    y_axis_marker_rendering_data.number_of_points = y_axis_marker_points.size() / 2;
 
     // The default color of QColor is black, so we don't have to set it here
 
@@ -159,21 +164,20 @@ void Graph_Widget::update_state(const std::unordered_map<char, User_Function>& u
     for (const auto& [identifier, user_function] : user_function_map)
     {
         std::vector<float> curve_points = create_curve(user_function, graph_window.x_min, graph_window.x_max, x_step);
-        curves_rendering_data.push_back({
-            .VAO = setup_points_VAO(curve_points.data(), curve_points.size()),
-            .number_of_points = curve_points.size()/2,
-            .color = user_function.color
-        });
+        curves_rendering_data.push_back({.VAO = setup_points_VAO(curve_points.data(), curve_points.size()),
+                                         .number_of_points = curve_points.size() / 2,
+                                         .color = user_function.color});
     }
 
     // Repaints the graph to display the new changes (paintGL shouldn't be called directly)
     update();
 }
 
-std::vector<float> Graph_Widget::create_curve(const User_Function& user_function, const float lower_x_limit, const float upper_x_limit, const float x_step)
+std::vector<float> Graph_Widget::create_curve(const User_Function& user_function, const float lower_x_limit,
+                                              const float upper_x_limit, const float x_step)
 {
     const int number_of_points = (upper_x_limit - lower_x_limit) / x_step;
-    
+
     std::vector<float> graph = std::vector<float>();
 
     for (int i = 0; i < number_of_points; i++)
@@ -183,7 +187,7 @@ std::vector<float> Graph_Widget::create_curve(const User_Function& user_function
         graph.push_back(x);
         graph.push_back(y);
     }
-    
+
     return graph;
 }
 
@@ -198,7 +202,7 @@ unsigned int Graph_Widget::setup_points_VAO(float data[], unsigned int data_leng
     functions->glBindBuffer(GL_ARRAY_BUFFER, VBO);
     functions->glBufferData(GL_ARRAY_BUFFER, data_length * sizeof(float), data, GL_STATIC_DRAW);
 
-    functions->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void *)0);
+    functions->glVertexAttribPointer(0, 2, GL_FLOAT, GL_FALSE, 2 * sizeof(float), (void*)0);
     functions->glEnableVertexAttribArray(0);
 
     functions->glBindBuffer(GL_ARRAY_BUFFER, 0);
@@ -209,7 +213,8 @@ unsigned int Graph_Widget::setup_points_VAO(float data[], unsigned int data_leng
     return VAO;
 }
 
-void Graph_Widget::render_line(QOpenGLShaderProgram& program, const Coordinate_Transformation_Data& transformation_data, const Line_Rendering_Data& curve_data)
+void Graph_Widget::render_line(QOpenGLShaderProgram& program, const Coordinate_Transformation_Data& transformation_data,
+                               const Line_Rendering_Data& curve_data)
 {
     program.bind();
     program.setUniformValue(program.uniformLocation("x_offset"), transformation_data.get_x_offset());
@@ -222,7 +227,9 @@ void Graph_Widget::render_line(QOpenGLShaderProgram& program, const Coordinate_T
     functions->glDrawArrays(GL_LINE_STRIP, 0, curve_data.number_of_points);
 }
 
-void Graph_Widget::render_disconnected_lines(QOpenGLShaderProgram& program, const Coordinate_Transformation_Data& transformation_data, const Line_Rendering_Data& lines_data)
+void Graph_Widget::render_disconnected_lines(QOpenGLShaderProgram& program,
+                                             const Coordinate_Transformation_Data& transformation_data,
+                                             const Line_Rendering_Data& lines_data)
 {
     program.bind();
     program.setUniformValue(program.uniformLocation("x_offset"), transformation_data.get_x_offset());

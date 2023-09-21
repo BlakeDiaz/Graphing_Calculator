@@ -1,6 +1,6 @@
-#include "calculator_form.hpp"
-
 #include <QApplication>
+
+#include "calculator_form.hpp"
 
 /**
  * Main function.

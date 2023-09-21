@@ -1,24 +1,24 @@
 #pragma once
-#include "ui_calculator_form.hpp"
-#include "graph_widget.hpp"
 #include "User_Function.hpp"
+#include "graph_widget.hpp"
+#include "ui_calculator_form.hpp"
 #include <QColorDialog>
-#include <vector>
 #include <string>
+#include <vector>
 
 class Calculator_Form : public QDialog
 {
     Q_OBJECT;
 
-public:
+  public:
     Graph_Widget* graph_gl_widget;
 
     explicit Calculator_Form(QWidget* parent = nullptr);
 
-protected:
+  protected:
     void changeEvent(QEvent* e);
 
-private:
+  private:
     Ui::Calculator_Form ui;
     QColorDialog* color_dialog;
     inline static const QColor default_function_color = QColor(255, 0, 0);
@@ -30,7 +30,7 @@ private:
     std::unordered_map<char, User_Function> user_function_map;
     std::vector<std::unordered_set<char>> user_functions;
 
-private slots:
+  private slots:
     void on_add_function();
     void on_remove_function();
     void on_reset_graph();

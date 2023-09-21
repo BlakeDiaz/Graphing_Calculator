@@ -6,7 +6,7 @@ typedef std::function<double(double)> func_t;
 
 struct Function
 {
-public:
+  public:
     std::string name;
     func_t ptr;
 };

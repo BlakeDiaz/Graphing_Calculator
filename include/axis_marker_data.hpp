@@ -6,7 +6,7 @@
  */
 class Axis_Marker_Data
 {
-public:
+  public:
     Axis_Marker_Data(float axis_min, float axis_max);
 
     /**
@@ -43,7 +43,7 @@ public:
      */
     std::vector<float> get_y_marker_points(float marker_right_x_coordinate, float marker_left_x_coordinate) const;
 
-private:
+  private:
     float marker_step;
     float starting_point;
     int number_of_markers;

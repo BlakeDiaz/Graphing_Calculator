@@ -1,20 +1,21 @@
-#include "gtest/gtest.h"
 #include "Calculator.hpp"
+#include "gtest/gtest.h"
 #include <cmath>
 
-namespace {
+namespace
+{
 
 class CalculatorTestFixture : public testing::Test
 {
-protected:
+  protected:
     std::unordered_map<char, User_Function> user_function_map;
 
     void SetUp() override
     {
-        user_function_map.emplace('f', User_Function('f', 'x', "f(x) = 5x + 4", "5*((x))+4", std::unordered_set<char>(), QColor()));
+        user_function_map.emplace(
+            'f', User_Function('f', 'x', "f(x) = 5x + 4", "5*((x))+4", std::unordered_set<char>(), QColor()));
     }
 };
-
 
 TEST(CalculatorTest, FunctionMap)
 {
@@ -63,4 +64,4 @@ TEST_F(CalculatorTestFixture, LocateUser_FunctionDependencies)
     EXPECT_EQ(Calculator::locate_user_function_dependencies("g(x) = 4c(x) + 2^a(x) + f(x)").size(), 3);
 }
 
-}
+} // namespace

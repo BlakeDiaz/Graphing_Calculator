@@ -1,6 +1,6 @@
 #pragma once
-#include <cstdlib>
 #include <QColor>
+#include <cstdlib>
 
 struct Line_Rendering_Data
 {
