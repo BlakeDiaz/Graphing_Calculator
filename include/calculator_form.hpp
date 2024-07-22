@@ -31,9 +31,9 @@ class Calculator_Form : public QDialog
     std::vector<std::unordered_set<char>> user_functions;
 
   private slots:
-    void on_add_function();
-    void on_remove_function();
-    void on_reset_graph();
-    void on_update_graph();
+    void add_function();
+    void remove_function();
+    void reset_graph();
+    void update_graph();
     void change_function_color(QPushButton* button, const QColor& color);
 };

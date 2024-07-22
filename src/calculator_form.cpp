@@ -65,13 +65,13 @@ Calculator_Form::Calculator_Form(QWidget* parent) : QDialog(parent)
     }
 
     // Set up signals/slots
-    QObject::connect(ui.add_function_push_button, &QPushButton::clicked, this, &Calculator_Form::on_add_function);
-    QObject::connect(ui.remove_function_push_button, &QPushButton::clicked, this, &Calculator_Form::on_remove_function);
-    QObject::connect(ui.reset_graph_push_button, &QPushButton::clicked, this, &Calculator_Form::on_reset_graph);
-    QObject::connect(ui.update_graph_push_button, &QPushButton::clicked, this, &Calculator_Form::on_update_graph);
+    QObject::connect(ui.add_function_push_button, &QPushButton::clicked, this, &Calculator_Form::add_function);
+    QObject::connect(ui.remove_function_push_button, &QPushButton::clicked, this, &Calculator_Form::remove_function);
+    QObject::connect(ui.reset_graph_push_button, &QPushButton::clicked, this, &Calculator_Form::reset_graph);
+    QObject::connect(ui.update_graph_push_button, &QPushButton::clicked, this, &Calculator_Form::update_graph);
 }
 
-void Calculator_Form::on_add_function()
+void Calculator_Form::add_function()
 {
     QTableWidget* table = ui.function_table_widget;
 
@@ -98,7 +98,7 @@ void Calculator_Form::on_add_function()
     update();
 }
 
-void Calculator_Form::on_remove_function()
+void Calculator_Form::remove_function()
 {
     QTableWidget* table = ui.function_table_widget;
     if (table->rowCount() > default_number_of_functions)
@@ -107,7 +107,7 @@ void Calculator_Form::on_remove_function()
     }
 }
 
-void Calculator_Form::on_reset_graph()
+void Calculator_Form::reset_graph()
 {
     QTableWidget* table = ui.function_table_widget;
     while (table->rowCount() > default_number_of_functions)
@@ -126,7 +126,7 @@ void Calculator_Form::on_reset_graph()
     table->item(0, 0)->setText("f(x) = x + 3");
 }
 
-void Calculator_Form::on_update_graph()
+void Calculator_Form::update_graph()
 {
     QTableWidget* table = ui.function_table_widget;
     QString input_text;
