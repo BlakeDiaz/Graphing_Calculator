@@ -2,7 +2,7 @@
 #include <functional>
 #include <string>
 
-typedef std::function<double(double)> func_t;
+typedef double(*func_t)(double);
 
 struct Function
 {
