@@ -81,49 +81,49 @@ line:
 ;
 
 implicit_multiplication_expression:
-  VARIABLE                                                          { $$ += "(" + $1 + ")";                                                                                              }
-| FUNCTION "(" expression ")"                                       { $$ += $1 + "(" + $3 + ")";                                                                                         }
+  VARIABLE                                                          { $$ = "(" + $1 + ")";                                                                                              }
+| FUNCTION "(" expression ")"                                       { $$ = $1 + "(" + $3 + ")";                                                                                         }
 | VARIABLE "(" expression ")"
 {
     // If this is a function call, add the result of that call to our expression
     if (user_function_map.contains($1[0]))
     {
-        $$ += "(" + user_function_map.at($1[0]).call($3) + ")";
+        $$ = "(" + user_function_map.at($1[0]).call($3) + ")";
     }
     // Otherwise, treat the grammar as implicit multiplication between a variable and an expression wrapped in parentheses.
     else
     {
-        $$ += "(" + $1 + ")*" + "(" + $3 + ")";
+        $$ = "(" + $1 + ")*" + "(" + $3 + ")";
     }
 }
-| "(" expression ")"                                                { $$ += "(" + $2 + ")";                                                                                              }
-| implicit_multiplication_expression VARIABLE                       { $$ += $1 + "*" + "(" + $2 + ")";                                                                                   }
-| implicit_multiplication_expression FUNCTION "(" expression ")"    { $$ += $1 + "*" + $2 + "(" + $4 + ")";                                                                              }
+| "(" expression ")"                                                { $$ = "(" + $2 + ")";                                                                                              }
+| implicit_multiplication_expression VARIABLE                       { $$ = $1 + "*" + "(" + $2 + ")";                                                                                   }
+| implicit_multiplication_expression FUNCTION "(" expression ")"    { $$ = $1 + "*" + $2 + "(" + $4 + ")";                                                                              }
 | implicit_multiplication_expression VARIABLE "(" expression ")"
 { 
     // If this is a function call, add the result of that call to our expression
     if (user_function_map.contains($2[0]))
     {
-        $$ += $1 + "*" + "(" + user_function_map.at($2[0]).call($4) + ")";
+        $$ = $1 + "*" + "(" + user_function_map.at($2[0]).call($4) + ")";
     }
     // Otherwise, treat the grammar as implicit multiplication between a variable and an expression wrapped in parentheses.
     else
     {
-        $$ += $1 + "*(" + $2 + ")*" + "(" + $4 + ")";
+        $$ = $1 + "*(" + $2 + ")*" + "(" + $4 + ")";
     }
 }
-| implicit_multiplication_expression "(" expression ")"             { $$ += $1 + "*" + "(" + $3 + ")";                                                                                   }
+| implicit_multiplication_expression "(" expression ")"             { $$ = $1 + "*" + "(" + $3 + ")";                                                                                   }
 
 expression:
-  NUMBER                                    { $$ += $1;                   }
-| implicit_multiplication_expression        { $$ += $1;                   }
-| NUMBER implicit_multiplication_expression { $$ += $1 + "*" + $2;        }
-| expression "+" expression                 { $$ += $1 + "+" + $3;        }
-| expression "-" expression                 { $$ += $1 + "-" + $3;        }
-| expression "*" expression                 { $$ += $1 + "*" + $3;        }
-| expression "/" expression                 { $$ += $1 + "/" + $3;        }
-| "-" expression  %prec NEGATIVE_SIGN       { $$ += "-" + $2;             }
-| expression "^" expression                 { $$ += $1 + "^" + $3;        }
+  NUMBER                                    { $$ = $1;                   }
+| implicit_multiplication_expression        { $$ = $1;                   }
+| NUMBER implicit_multiplication_expression { $$ = $1 + "*" + $2;        }
+| expression "+" expression                 { $$ = $1 + "+" + $3;        }
+| expression "-" expression                 { $$ = $1 + "-" + $3;        }
+| expression "*" expression                 { $$ = $1 + "*" + $3;        }
+| expression "/" expression                 { $$ = $1 + "/" + $3;        }
+| "-" expression  %prec NEGATIVE_SIGN       { $$ = "-" + $2;             }
+| expression "^" expression                 { $$ = $1 + "^" + $3;        }
 ;
 /* End of grammar. */
 %%
