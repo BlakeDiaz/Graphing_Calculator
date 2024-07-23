@@ -85,14 +85,15 @@ void Calculator_Form::add_function()
     QTableWidgetItem* output_item = new QTableWidgetItem();
     QPushButton* color_button = new QPushButton();
 
+    table->setItem(table->rowCount() - 1, input_column, input_item);
+    table->setItem(table->rowCount() - 1, output_column, output_item);
+    table->setCellWidget(table->rowCount() - 1, color_column, color_button);
+
     output_item->setFlags(output_item->flags() & ~Qt::ItemIsEditable);
     QObject::connect(color_button, &QPushButton::clicked, this,
                      [this, color_button] { change_function_color(color_button, color_dialog->getColor()); });
     change_function_color(color_button, default_function_color);
 
-    table->setItem(table->rowCount() - 1, input_column, input_item);
-    table->setItem(table->rowCount() - 1, output_column, output_item);
-    table->setCellWidget(table->rowCount() - 1, color_column, color_button);
 
     // Redraw window to prevent ghost color button from appearing
     update();
