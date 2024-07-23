@@ -64,7 +64,7 @@ std::unordered_map<char, User_Function> Input_Manager::create_user_function_map(
         }
     }
 
-    int previous_user_function_expression_length = new_user_function_expressions.size();
+    int previous_number_of_new_user_function_expressions = new_user_function_expressions.size();
     bool invalid_dependency = false;
     bool user_function_can_be_defined = true;
     while (!new_user_function_expressions.empty())
@@ -84,7 +84,7 @@ std::unordered_map<char, User_Function> Input_Manager::create_user_function_map(
         }
         // If at least one function hasn't been added, then we can't continue, and the remaining functions' dependencies
         // are invalid
-        if (new_user_function_expressions.size() >= previous_user_function_expression_length)
+        if (new_user_function_expressions.size() >= previous_number_of_new_user_function_expressions )
         {
             // TODO Handle the error with a pop-up or error section in the UI
             new_user_function_expressions.clear();
