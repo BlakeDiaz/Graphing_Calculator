@@ -11,19 +11,70 @@ FetchContent_Declare(
 
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
-execute_process(COMMAND flex -o ${CMAKE_SOURCE_DIR}/src/lex.yy.cpp ${CMAKE_SOURCE_DIR}/src/lexer.l)
-execute_process(COMMAND flex -o ${CMAKE_SOURCE_DIR}/src/formatter_lexer.yy.cpp ${CMAKE_SOURCE_DIR}/src/formatter_lexer.l)
-execute_process(COMMAND flex -o ${CMAKE_SOURCE_DIR}/src/user_function_dependency_locator_lexer.yy.cpp ${CMAKE_SOURCE_DIR}/src/user_function_dependency_locator_lexer.l)
-execute_process(COMMAND mv ${CMAKE_SOURCE_DIR}/lexer.hpp ${CMAKE_SOURCE_DIR}/include)
-execute_process(COMMAND mv ${CMAKE_SOURCE_DIR}/formatter_lexer.hpp ${CMAKE_SOURCE_DIR}/include)
-execute_process(COMMAND mv ${CMAKE_SOURCE_DIR}/user_function_dependency_locator_lexer.hpp ${CMAKE_SOURCE_DIR}/include)
-execute_process(COMMAND bison -o ${CMAKE_SOURCE_DIR}/src/parser.tab.cpp -d ${CMAKE_SOURCE_DIR}/src/parser.yy)
-execute_process(COMMAND bison -o ${CMAKE_SOURCE_DIR}/src/formatter.tab.cpp -d ${CMAKE_SOURCE_DIR}/src/formatter.yy)
-execute_process(COMMAND bison -o ${CMAKE_SOURCE_DIR}/src/user_function_dependency_locator.tab.cpp -d ${CMAKE_SOURCE_DIR}/src/user_function_dependency_locator.yy)
-execute_process(COMMAND mv ${CMAKE_SOURCE_DIR}/src/parser.tab.hpp ${CMAKE_SOURCE_DIR}/include/parser.tab.hpp)
-execute_process(COMMAND mv ${CMAKE_SOURCE_DIR}/src/formatter.tab.hpp ${CMAKE_SOURCE_DIR}/include/formatter.tab.hpp)
-execute_process(COMMAND mv ${CMAKE_SOURCE_DIR}/src/user_function_dependency_locator.tab.hpp ${CMAKE_SOURCE_DIR}/include/user_function_dependency_locator.tab.hpp)
 execute_process(COMMAND /usr/lib/qt6/uic forms/calculator_form.ui -o ${CMAKE_SOURCE_DIR}/include/ui_calculator_form.hpp)
+#[[ Calculator ]]#
+add_custom_command(
+        OUTPUT
+            ${CMAKE_SOURCE_DIR}/src/parser.tab.cpp
+            ${CMAKE_SOURCE_DIR}/include/parser.tab.hpp
+        COMMAND
+            bison -o ${CMAKE_SOURCE_DIR}/src/parser.tab.cpp -d ${CMAKE_SOURCE_DIR}/src/parser.yy && mv ${CMAKE_SOURCE_DIR}/src/parser.tab.hpp ${CMAKE_SOURCE_DIR}/include
+        DEPENDS
+            ${CMAKE_SOURCE_DIR}/src/parser.yy
+        VERBATIM
+)
+add_custom_command(
+        OUTPUT
+            ${CMAKE_SOURCE_DIR}/src/lex.yy.cpp
+            ${CMAKE_SOURCE_DIR}/include/lexer.hpp
+        COMMAND
+            flex -o ${CMAKE_SOURCE_DIR}/src/lex.yy.cpp ${CMAKE_SOURCE_DIR}/src/lexer.l && mv lexer.hpp ${CMAKE_SOURCE_DIR}/include
+        DEPENDS
+            ${CMAKE_SOURCE_DIR}/src/lexer.l
+        VERBATIM
+)
+#[[ Formatter ]]#
+add_custom_command(
+        OUTPUT
+            ${CMAKE_SOURCE_DIR}/src/formatter.tab.cpp
+            ${CMAKE_SOURCE_DIR}/include/formatter.tab.hpp
+        COMMAND
+            bison -o ${CMAKE_SOURCE_DIR}/src/formatter.tab.cpp -d ${CMAKE_SOURCE_DIR}/src/formatter.yy && mv ${CMAKE_SOURCE_DIR}/src/formatter.tab.hpp ${CMAKE_SOURCE_DIR}/include
+        DEPENDS
+            ${CMAKE_SOURCE_DIR}/src/formatter.yy
+        VERBATIM
+)
+add_custom_command(
+        OUTPUT
+            ${CMAKE_SOURCE_DIR}/src/formatter_lexer.yy.cpp
+            ${CMAKE_SOURCE_DIR}/include/formatter_lexer.hpp
+        COMMAND
+            flex -o ${CMAKE_SOURCE_DIR}/src/formatter_lexer.yy.cpp ${CMAKE_SOURCE_DIR}/src/formatter_lexer.l && mv formatter_lexer.hpp ${CMAKE_SOURCE_DIR}/include
+        DEPENDS
+            ${CMAKE_SOURCE_DIR}/src/formatter_lexer.l
+        VERBATIM
+)
+#[[ User Function Dependency Locator]]#
+add_custom_command(
+        OUTPUT
+            ${CMAKE_SOURCE_DIR}/src/user_function_dependency_locator.tab.cpp
+            ${CMAKE_SOURCE_DIR}/include/user_function_dependency_locator.tab.hpp
+        COMMAND
+            bison -o ${CMAKE_SOURCE_DIR}/src/user_function_dependency_locator.tab.cpp -d ${CMAKE_SOURCE_DIR}/src/user_function_dependency_locator.yy && mv ${CMAKE_SOURCE_DIR}/src/user_function_dependency_locator.tab.hpp ${CMAKE_SOURCE_DIR}/include
+        DEPENDS
+            ${CMAKE_SOURCE_DIR}/src/user_function_dependency_locator.yy
+        VERBATIM
+)
+add_custom_command(
+        OUTPUT
+            ${CMAKE_SOURCE_DIR}/src/user_function_dependency_locator_lexer.yy.cpp
+            ${CMAKE_SOURCE_DIR}/include/user_function_dependency_locator_lexer.hpp
+        COMMAND
+            flex -o ${CMAKE_SOURCE_DIR}/src/user_function_dependency_locator_lexer.yy.cpp ${CMAKE_SOURCE_DIR}/src/user_function_dependency_locator_lexer.l && mv user_function_dependency_locator_lexer.hpp ${CMAKE_SOURCE_DIR}/include
+        DEPENDS
+            ${CMAKE_SOURCE_DIR}/src/user_function_dependency_locator_lexer.l
+        VERBATIM
+)
 
 project(calc VERSION 1.0)
 set(CMAKE_AUTOMOC ON)
