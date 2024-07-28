@@ -1,7 +1,7 @@
 #pragma once
 #include "User_Function.hpp"
 #include "graph_widget.hpp"
-#include "ui_calculator_form.hpp"
+#include "ui_calculator_form.h"
 #include <QColorDialog>
 #include <string>
 #include <vector>

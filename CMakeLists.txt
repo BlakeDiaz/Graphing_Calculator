@@ -11,7 +11,6 @@ FetchContent_Declare(
 
 set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
 FetchContent_MakeAvailable(googletest)
-execute_process(COMMAND /usr/lib/qt6/uic forms/calculator_form.ui -o ${CMAKE_SOURCE_DIR}/include/ui_calculator_form.hpp)
 #[[ Calculator ]]#
 add_custom_command(
         OUTPUT
@@ -79,10 +78,12 @@ add_custom_command(
 project(calc VERSION 1.0)
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTOUIC_SEARCH_PATHS ${CMAKE_SOURCE_DIR}/forms)
 find_package(OpenGL REQUIRED)
 find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets UiTools OpenGLWidgets)
-add_executable(
+qt_add_executable(
     ${PROJECT_NAME}
+    ${CMAKE_SOURCE_DIR}/forms/calculator_form.ui
     ${CMAKE_SOURCE_DIR}/src/yyerror.cpp
     ${CMAKE_SOURCE_DIR}/src/string_manipulation.cpp
     ${CMAKE_SOURCE_DIR}/src/main.cpp
@@ -100,7 +101,6 @@ add_executable(
     ${CMAKE_SOURCE_DIR}/src/axis_marker_data.cpp
     ${CMAKE_SOURCE_DIR}/src/coordinate_transformation_data.cpp
     ${CMAKE_SOURCE_DIR}/src/graph_widget.cpp
-    ${CMAKE_SOURCE_DIR}/include/ui_calculator_form.hpp
     ${CMAKE_SOURCE_DIR}/include/calculator_form.hpp)
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -133,7 +133,6 @@ add_executable(
     ${CMAKE_SOURCE_DIR}/src/axis_marker_data.cpp
     ${CMAKE_SOURCE_DIR}/src/coordinate_transformation_data.cpp
     ${CMAKE_SOURCE_DIR}/src/graph_widget.cpp
-    ${CMAKE_SOURCE_DIR}/include/ui_calculator_form.hpp
     ${CMAKE_SOURCE_DIR}/include/calculator_form.hpp
     ${CMAKE_SOURCE_DIR}/src/calculator_test.cc)
     
