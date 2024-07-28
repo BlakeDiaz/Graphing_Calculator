@@ -64,6 +64,10 @@ Calculator_Form::Calculator_Form(QWidget* parent) : QDialog(parent)
         table->item(0, input_column)->setText(initialFunctionText);
     }
 
+    // Set default button for when the enter key is hit
+    ui.update_graph_push_button->setAutoDefault(true);
+    ui.update_graph_push_button->setDefault(true);
+
     // Set up signals/slots
     QObject::connect(ui.add_function_push_button, &QPushButton::clicked, this, &Calculator_Form::add_function);
     QObject::connect(ui.remove_function_push_button, &QPushButton::clicked, this, &Calculator_Form::remove_function);
