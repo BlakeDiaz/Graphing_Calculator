@@ -4,22 +4,26 @@
 %require "3.8.2"
 %header
 
-%define api.token.raw
+%locations
 
 %define api.prefix {fmt}
+
+%define api.token.raw
 %define api.token.constructor
+
 %define api.value.type variant
+
+%define api.location.type { ufdl::location }
+
+%define parse.error custom
 %define parse.assert
 
 %{
   #include <iostream>
-  void fmterror(char const *);
-  extern int yylineno;
 %}
 
-// Used to simplify composite functions.
+%param { Parse_Error& parse_error }
 %parse-param { std::unordered_map<char, User_Function>& user_function_map }
-// Used later to create a User_Function if the expression was a function declaration.
 %parse-param { std::string& result }
 
 // Enable run-time traces (yydebug)
@@ -29,6 +33,7 @@
 {
   #include <unordered_map>
   #include <set>
+  #include <Parse_Error.hpp>
   #include "User_Function.hpp"
 }
 
@@ -77,7 +82,7 @@ line:
   "\n"
 | expression "\n"                           { result = $1; }
 | USER_FUNCTION_ASSIGNMENT expression "\n"  { result = $2; }
-| error "\n"                                { yyerrok;     }
+| error                                     { YYABORT; }
 ;
 
 implicit_multiplication_expression:
@@ -127,7 +132,47 @@ expression:
 ;
 /* End of grammar. */
 %%
-void fmt::parser::error(const std::string& m)
+void fmt::parser::error(const location_type& location, const std::string& message)
 {
-    std::cerr << m << " Line: " << yylineno << '\n';
+    int beginning_column = location.begin.column;
+    std::cerr << parse_error.expression << '\n';
+    Parse_Error::print_error_marker_to_column(beginning_column);
+    std::cerr << "Error on line 1, column " << beginning_column << "\n" << message << std::endl;
+}
+void fmt::parser::report_syntax_error(const context& error_context) const
+{
+    location_type current_location = error_context.location();
+    int beginning_column = current_location.begin.column;
+    int ending_column = current_location.end.column;
+    int symbol_length = ending_column - beginning_column;
+
+    std::cerr << parse_error.expression << '\n';
+    Parse_Error::print_error_marker_to_column(beginning_column);
+
+    std::cerr << "Syntax Error on line 1, column " << beginning_column << "\nUnexpected token: ";
+    std::cerr << fmt::parser::symbol_name(error_context.token()) << '\n';
+    std::cerr << "Expected token: ";
+
+    symbol_kind_type expected_tokens[parser::YYNTOKENS];
+    for (int i = 0; i < parser::YYNTOKENS; i++)
+    {
+        expected_tokens[i] = symbol_kind::S_YYEMPTY;
+    }
+    int success = error_context.expected_tokens(expected_tokens, parser::YYNTOKENS);
+
+    if (expected_tokens[0] == symbol_kind::S_YYEMPTY)
+    {
+        std::cerr << '\n' << "Something broke" << std::endl;
+        return;
+    }
+
+    for (int i = 0; i < parser::YYNTOKENS - 1 && expected_tokens[i] != symbol_kind::S_YYEMPTY; i++)
+    {
+        std::cerr << parser::symbol_name(expected_tokens[i]);
+        if (expected_tokens[i + 1] != symbol_kind::S_YYEMPTY)
+        {
+            std::cerr << ", ";
+        }
+    }
+    std::cerr << std::endl;
 }

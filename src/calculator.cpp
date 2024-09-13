@@ -92,11 +92,9 @@ std::unordered_set<char> Calculator::locate_user_function_dependencies(const std
  * definition.
  */
 std::string Calculator::format_expression(std::unordered_map<char, User_Function>& user_function_map,
-                                          std::string expression)
+                                          std::string expression, int line_number)
 {
-    // Create a copy of expression to modify for make it easier for the formatter to parse
-    // Additionally, remove any whitespace characters from the expression
-    std::string modified_expression = remove_whitespace(expression);
+    std::string modified_expression = expression;
 
     // Add marker for end of expression
     modified_expression.append("\n");
@@ -106,7 +104,8 @@ std::string Calculator::format_expression(std::unordered_map<char, User_Function
     YY_BUFFER_STATE bs = fmt_scan_string(modified_expression.c_str());
     fmt_switch_to_buffer(bs);
 
-    fmt::parser formatter(user_function_map, formatted_expression);
+    Parse_Error parse_error(line_number, modified_expression);
+    fmt::parser formatter(parse_error, user_function_map, formatted_expression);
     formatter();
 
     fmt_delete_buffer(bs);
