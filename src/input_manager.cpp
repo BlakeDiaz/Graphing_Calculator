@@ -55,7 +55,7 @@ std::unordered_map<char, User_Function> Input_Manager::create_user_function_map(
         if (dependencies.size() == 0)
         {
             user_function_map.emplace(User_Function::find_identifier(expression),
-                                      User_Function(user_function_map, expression, color));
+                                      User_Function(user_function_map, expression, dependencies, color));
             new_user_function_expressions.erase(new_user_function_expressions.begin() + i);
         }
         else
@@ -76,7 +76,7 @@ std::unordered_map<char, User_Function> Input_Manager::create_user_function_map(
             if (check_if_user_function_can_be_defined(user_function_map, expression, dependencies))
             {
                 user_function_map.emplace(User_Function::find_identifier(expression),
-                                          User_Function(user_function_map, expression, color));
+                                          User_Function(user_function_map, expression, dependencies, color));
                 new_user_function_expressions.erase(new_user_function_expressions.begin() + i);
             }
 

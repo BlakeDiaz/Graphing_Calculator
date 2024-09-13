@@ -66,6 +66,15 @@ User_Function::User_Function(std::unordered_map<char, User_Function> user_functi
 {
 }
 
+
+User_Function::User_Function(std::unordered_map<char, User_Function> user_function_map, std::string expression,
+                             std::unordered_set<char> user_function_dependencies, QColor color)
+    : identifier(find_identifier(expression)), variable(find_variable(expression)), expression(expression),
+    formatted_expression(Calculator::format_expression(user_function_map, expression)),
+    user_function_dependencies(user_function_dependencies), color(color)
+{
+}
+
 /**
  * Class constructor.
  *
