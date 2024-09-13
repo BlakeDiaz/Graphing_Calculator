@@ -101,6 +101,7 @@ qt_add_executable(
     ${CMAKE_SOURCE_DIR}/src/axis_marker_data.cpp
     ${CMAKE_SOURCE_DIR}/src/coordinate_transformation_data.cpp
     ${CMAKE_SOURCE_DIR}/src/graph_widget.cpp
+    ${CMAKE_SOURCE_DIR}/src/parse_error.cpp
     ${CMAKE_SOURCE_DIR}/include/calculator_form.hpp)
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -133,6 +134,7 @@ add_executable(
     ${CMAKE_SOURCE_DIR}/src/axis_marker_data.cpp
     ${CMAKE_SOURCE_DIR}/src/coordinate_transformation_data.cpp
     ${CMAKE_SOURCE_DIR}/src/graph_widget.cpp
+    ${CMAKE_SOURCE_DIR}/src/parse_error.cpp
     ${CMAKE_SOURCE_DIR}/include/calculator_form.hpp
     ${CMAKE_SOURCE_DIR}/src/calculator_test.cc)
     

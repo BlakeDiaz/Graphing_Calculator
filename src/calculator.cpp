@@ -7,6 +7,7 @@
 #include "user_function_dependency_locator.tab.hpp"
 #include "user_function_dependency_locator_lexer.hpp"
 #include <algorithm>
+#include <Parse_Error.hpp>
 #include <array>
 #include <cctype>
 #include <cmath>
@@ -38,7 +39,7 @@ Calculator::ExpressionType Calculator::identify_expression(std::string expressio
     // Remove any whitespace characters from the expression
     std::string modified_expression = remove_whitespace(expression);
 
-    std::regex find_function_definition("[a-z]\\([a-z]\\)=");
+    const std::regex find_function_definition("[a-z]\\([a-z]\\)=");
 
     bool function_definition_found =
         std::regex_search(modified_expression, find_function_definition, std::regex_constants::match_continuous);
@@ -61,20 +62,20 @@ Calculator::ExpressionType Calculator::identify_expression(std::string expressio
  * @param expression The expression representing the User_Function
  * @return A set containing the identifiers for each User_Function that the expression depends on.
  */
-std::unordered_set<char> Calculator::locate_user_function_dependencies(std::string expression)
+std::unordered_set<char> Calculator::locate_user_function_dependencies(const std::string& expression, int line_number)
 {
-    // Remove any whitespace characters from the expression
-    std::string modified_expression = remove_whitespace(expression);
+    std::string modified_expression = expression;
 
     // Add marker for end of expression
     modified_expression.append("\n");
 
     std::unordered_set<char> dependencies;
 
-    YY_BUFFER_STATE bs = ufdl_scan_string(modified_expression.c_str());
+    YY_BUFFER_STATE bs = ufdl_scan_string(expression.c_str());
     ufdl_switch_to_buffer(bs);
 
-    ufdl::parser user_function_dependency_locator(dependencies, User_Function::find_variable(expression));
+    Parse_Error parse_error(line_number, expression);
+    ufdl::parser user_function_dependency_locator(parse_error, dependencies, User_Function::find_variable(expression));
     user_function_dependency_locator();
 
     ufdl_delete_buffer(bs);
