@@ -118,26 +118,11 @@ expression:
 | expression "^" expression
 /* End of grammar. */
 %%
-void print_spaces_to_column(int column)
-{
-    for (int i = 0; i < column; i++)
-    {
-        std::cerr << " ";
-    }
-}
-void print_error_marker(int column)
-{
-    for (int i = 0; i < 3; i++)
-    {
-        print_spaces_to_column(column);
-        std::cerr << '^' << "\n";
-    }
-}
 void ufdl::parser::error(const location_type& location, const std::string& message)
 {
     int beginning_column = location.begin.column;
     std::cerr << parse_error.expression << '\n';
-    print_error_marker(beginning_column);
+    Parse_Error::print_error_marker_to_column(beginning_column);
     std::cerr << "Error on line 1, column " << beginning_column << "\n" << message << std::endl;
 }
 void ufdl::parser::report_syntax_error(const context& error_context) const
@@ -148,7 +133,7 @@ void ufdl::parser::report_syntax_error(const context& error_context) const
     int symbol_length = ending_column - beginning_column;
 
     std::cerr << parse_error.expression << '\n';
-    print_error_marker(beginning_column);
+    Parse_Error::print_error_marker_to_column(beginning_column);
 
     std::cerr << "Syntax Error on line 1, column " << beginning_column << "\nUnexpected token: ";
     std::cerr << ufdl::parser::symbol_name(error_context.token()) << '\n';
