@@ -76,7 +76,7 @@ input:
 line:
   "\n"
 | USER_FUNCTION_ASSIGNMENT expression "\n"
-| error "\n"                                { YYABORT; }
+| error                                     { YYABORT; }
 ;
 
 implicit_multiplication_expression:
