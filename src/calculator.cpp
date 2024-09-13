@@ -71,10 +71,10 @@ std::unordered_set<char> Calculator::locate_user_function_dependencies(const std
 
     std::unordered_set<char> dependencies;
 
-    YY_BUFFER_STATE bs = ufdl_scan_string(expression.c_str());
+    YY_BUFFER_STATE bs = ufdl_scan_string(modified_expression.c_str());
     ufdl_switch_to_buffer(bs);
 
-    Parse_Error parse_error(line_number, expression);
+    Parse_Error parse_error(line_number, modified_expression);
     ufdl::parser user_function_dependency_locator(parse_error, dependencies, User_Function::find_variable(expression));
     user_function_dependency_locator();
 
