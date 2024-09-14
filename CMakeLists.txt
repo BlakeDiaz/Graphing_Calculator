@@ -84,7 +84,6 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets UiTools OpenGLWidgets)
 qt_add_executable(
     ${PROJECT_NAME}
     ${CMAKE_SOURCE_DIR}/forms/calculator_form.ui
-    ${CMAKE_SOURCE_DIR}/src/yyerror.cpp
     ${CMAKE_SOURCE_DIR}/src/string_manipulation.cpp
     ${CMAKE_SOURCE_DIR}/src/main.cpp
     ${CMAKE_SOURCE_DIR}/src/input_manager.cpp
@@ -118,7 +117,6 @@ enable_testing()
 
 add_executable(
     calculator_test
-    ${CMAKE_SOURCE_DIR}/src/yyerror.cpp
     ${CMAKE_SOURCE_DIR}/src/string_manipulation.cpp
     ${CMAKE_SOURCE_DIR}/src/input_manager.cpp
     ${CMAKE_SOURCE_DIR}/src/calculator.cpp
