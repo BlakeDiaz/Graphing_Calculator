@@ -19,6 +19,7 @@
 
 %{
   #include <iostream>
+  #include <sstream>
 %}
 
 // Used to simplify composite functions.
@@ -120,24 +121,30 @@ expression:
 %%
 void ufdl::parser::error(const location_type& location, const std::string& message)
 {
+    std::stringstream message_stream;
+
     int beginning_column = location.begin.column;
-    std::cerr << parse_error.expression << '\n';
-    Parse_Error::print_error_marker_to_column(beginning_column);
-    std::cerr << "Error on line 1, column " << beginning_column << "\n" << message << std::endl;
+    message_stream << parse_error.expression << '\n';
+    Parse_Error::print_error_marker_to_column(message_stream, beginning_column);
+    message_stream << "Error on line 1, column " << beginning_column << "\n" << message;
+
+    parse_error.message = message_stream.str();
 }
 void ufdl::parser::report_syntax_error(const context& error_context) const
 {
+    std::stringstream message_stream;
+
     location_type current_location = error_context.location();
     int beginning_column = current_location.begin.column;
     int ending_column = current_location.end.column;
     int symbol_length = ending_column - beginning_column;
 
-    std::cerr << parse_error.expression << '\n';
-    Parse_Error::print_error_marker_to_column(beginning_column);
+    message_stream << parse_error.expression << '\n';
+    Parse_Error::print_error_marker_to_column(message_stream, beginning_column);
 
-    std::cerr << "Syntax Error on line 1, column " << beginning_column << "\nUnexpected token: ";
-    std::cerr << ufdl::parser::symbol_name(error_context.token()) << '\n';
-    std::cerr << "Expected token: ";
+    message_stream << "Syntax Error on line 1, column " << beginning_column << "\nUnexpected token: ";
+    message_stream << ufdl::parser::symbol_name(error_context.token()) << '\n';
+    message_stream << "Expected token: ";
 
     symbol_kind_type expected_tokens[parser::YYNTOKENS];
     for (int i = 0; i < parser::YYNTOKENS; i++)
@@ -148,17 +155,18 @@ void ufdl::parser::report_syntax_error(const context& error_context) const
 
     if (expected_tokens[0] == symbol_kind::S_YYEMPTY)
     {
-        std::cerr << '\n' << "Something broke" << std::endl;
+        message_stream << '\n' << "Something broke" << std::endl;
         return;
     }
 
     for (int i = 0; i < parser::YYNTOKENS - 1 && expected_tokens[i] != symbol_kind::S_YYEMPTY; i++)
     {
-        std::cerr << parser::symbol_name(expected_tokens[i]);
+        message_stream << parser::symbol_name(expected_tokens[i]);
         if (expected_tokens[i + 1] != symbol_kind::S_YYEMPTY)
         {
-            std::cerr << ", ";
+            message_stream << ", ";
         }
     }
-    std::cerr << std::endl;
+
+    parse_error.message = message_stream.str();
 }

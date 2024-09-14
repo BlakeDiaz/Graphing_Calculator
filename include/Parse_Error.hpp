@@ -1,11 +1,13 @@
 #pragma once
 #include <location.hpp>
 #include <string>
+#include <sstream>
 
 struct Parse_Error
 {
     ufdl::location location;
     std::string expression;
+    std::string message;
 
     Parse_Error(int line_number, std::string expression);
 
@@ -23,7 +25,7 @@ struct Parse_Error
     *
     *  @param column Column markers are printed at.
     */
-    static void print_error_marker_to_column(int column);
+    static void print_error_marker_to_column(std::stringstream& stream, int column);
 private:
     /**
      * Prints spaces up to, but not at, a given column.
@@ -32,5 +34,5 @@ private:
      *
      * @param column Column spaces are printed up to. Exclusive.
      */
-    static void print_spaces_to_column(int column);
+    static void print_spaces_to_column(std::stringstream& stream, int column);
 };

@@ -80,6 +80,10 @@ std::unordered_set<char> Calculator::locate_user_function_dependencies(const std
 
     ufdl_delete_buffer(bs);
 
+    std::cerr << "Begin ufdl error message:" << std::endl;
+    std::cerr << parse_error.message << std::endl;
+    std::cerr << "End ufdl error message" << std::endl;
+
     return dependencies;
 }
 
@@ -110,6 +114,10 @@ std::string Calculator::format_expression(std::unordered_map<char, User_Function
 
     fmt_delete_buffer(bs);
 
+    std::cerr << "Begin formatter error message:" << std::endl;
+    std::cerr << parse_error.message << std::endl;
+    std::cerr << "End formatter error message" << std::endl;
+
     return formatted_expression;
 }
 
@@ -137,6 +145,12 @@ double Calculator::solve_expression(std::string expression, int line_number)
     parser();
 
     yy_delete_buffer(bs);
+
+    /*
+    std::cerr << "Begin solver error message:" << std::endl;
+    std::cerr << parse_error.message << std::endl;
+    std::cerr << "End solver error message" << std::endl;
+    */
 
     return result;
 }
