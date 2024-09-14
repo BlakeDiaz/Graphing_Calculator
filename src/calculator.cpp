@@ -120,20 +120,20 @@ std::string Calculator::format_expression(std::unordered_map<char, User_Function
  * @param expression The formatted expression to be computed.
  * @return The solution to the expression.
  */
-double Calculator::solve_expression(std::string expression)
+double Calculator::solve_expression(std::string expression, int line_number)
 {
-    // Create a copy of expression to modify for make it easier for the computation parser to parse
     std::string modified_expression = expression;
 
     // Add marker for end of expression
     modified_expression.append("\n");
 
-    double result;
+    double result = 0;
 
     YY_BUFFER_STATE bs = yy_scan_string(modified_expression.c_str());
     yy_switch_to_buffer(bs);
 
-    yy::parser parser(Calculator::function_map, result);
+    Parse_Error parse_error(line_number, modified_expression);
+    yy::parser parser(parse_error, Calculator::function_map, result);
     parser();
 
     yy_delete_buffer(bs);
