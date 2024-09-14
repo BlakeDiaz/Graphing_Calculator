@@ -62,7 +62,7 @@ Calculator::ExpressionType Calculator::identify_expression(std::string expressio
  * @param expression The expression representing the User_Function
  * @return A set containing the identifiers for each User_Function that the expression depends on.
  */
-std::unordered_set<char> Calculator::locate_user_function_dependencies(const std::string& expression, int line_number)
+std::tuple<std::unordered_set<char>, Parse_Error> Calculator::locate_user_function_dependencies(const std::string& expression, int line_number)
 {
     std::string modified_expression = expression;
 
@@ -84,7 +84,7 @@ std::unordered_set<char> Calculator::locate_user_function_dependencies(const std
     std::cerr << parse_error.message << std::endl;
     std::cerr << "End ufdl error message" << std::endl;
 
-    return dependencies;
+    return {dependencies, parse_error};
 }
 
 /**
@@ -95,7 +95,7 @@ std::unordered_set<char> Calculator::locate_user_function_dependencies(const std
  * @return A tuple containing the formatted expression, as well as a User_Function if the expression was a function
  * definition.
  */
-std::string Calculator::format_expression(std::unordered_map<char, User_Function>& user_function_map,
+std::tuple<std::string, Parse_Error> Calculator::format_expression(std::unordered_map<char, User_Function>& user_function_map,
                                           std::string expression, int line_number)
 {
     std::string modified_expression = expression;
@@ -118,7 +118,7 @@ std::string Calculator::format_expression(std::unordered_map<char, User_Function
     std::cerr << parse_error.message << std::endl;
     std::cerr << "End formatter error message" << std::endl;
 
-    return formatted_expression;
+    return {formatted_expression, parse_error};
 }
 
 /**
@@ -128,7 +128,7 @@ std::string Calculator::format_expression(std::unordered_map<char, User_Function
  * @param expression The formatted expression to be computed.
  * @return The solution to the expression.
  */
-double Calculator::solve_expression(std::string expression, int line_number)
+std::tuple<double, Parse_Error> Calculator::solve_expression(std::string expression, int line_number)
 {
     std::string modified_expression = expression;
 
@@ -152,5 +152,5 @@ double Calculator::solve_expression(std::string expression, int line_number)
     std::cerr << "End solver error message" << std::endl;
     */
 
-    return result;
+    return {result, parse_error};
 }

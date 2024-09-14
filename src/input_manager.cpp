@@ -86,7 +86,7 @@ std::unordered_map<char, User_Function> Input_Manager::create_user_function_map(
         // are invalid
         if (new_user_function_expressions.size() >= previous_number_of_new_user_function_expressions )
         {
-            // TODO Handle the error with a pop-up or error section in the UI
+            // TODO propogate error back up to update_graph function
             new_user_function_expressions.clear();
             invalid_dependency = true;
             break;

@@ -129,6 +129,7 @@ void ufdl::parser::error(const location_type& location, const std::string& messa
     message_stream << "Error on line 1, column " << beginning_column << "\n" << message;
 
     parse_error.message = message_stream.str();
+    parse_error.is_error = true;
 }
 void ufdl::parser::report_syntax_error(const context& error_context) const
 {
@@ -169,4 +170,5 @@ void ufdl::parser::report_syntax_error(const context& error_context) const
     }
 
     parse_error.message = message_stream.str();
+    parse_error.is_error = true;
 }

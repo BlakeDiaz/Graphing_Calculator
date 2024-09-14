@@ -42,7 +42,7 @@ TEST(CalculatorTest, IdentifyExpression)
 
 TEST_F(CalculatorTestFixture, FormatExpression)
 {
-    EXPECT_STREQ(Calculator::format_expression(user_function_map, "g(x) = 5x + 4").c_str(), "5*(x)+4");
+    EXPECT_STREQ(std::get<0>(Calculator::format_expression(user_function_map, "g(x) = 5x + 4")).c_str(), "5*(x)+4");
 }
 
 TEST_F(CalculatorTestFixture, LocateUser_FunctionDependencies)
@@ -57,11 +57,11 @@ TEST_F(CalculatorTestFixture, LocateUser_FunctionDependencies)
     {
         User_Function& user_function = user_function_map.at(c);
         EXPECT_EQ(user_function.user_function_dependencies.size(),
-                  Calculator::locate_user_function_dependencies(user_function.expression).size());
+                  std::get<0>(Calculator::locate_user_function_dependencies(user_function.expression)).size());
     }
 
-    EXPECT_EQ(Calculator::locate_user_function_dependencies("g(x) = 4c(x) + 2^a(x)").size(), 2);
-    EXPECT_EQ(Calculator::locate_user_function_dependencies("g(x) = 4c(x) + 2^a(x) + f(x)").size(), 3);
+    EXPECT_EQ(std::get<0>(Calculator::locate_user_function_dependencies("g(x) = 4c(x) + 2^a(x)")).size(), 2);
+    EXPECT_EQ(std::get<0>(Calculator::locate_user_function_dependencies("g(x) = 4c(x) + 2^a(x) + f(x)")).size(), 3);
 }
 
 } // namespace

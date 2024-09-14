@@ -183,7 +183,11 @@ std::vector<float> Graph_Widget::create_curve(const User_Function& user_function
     for (int i = 0; i < number_of_points; i++)
     {
         float x = (i * x_step) + lower_x_limit;
-        float y = Calculator::solve_expression(user_function.call(std::to_string(x)));
+        auto&&[y, parse_error] = Calculator::solve_expression(user_function.call(std::to_string(x)));
+        if (parse_error.is_error)
+        {
+            // TODO propogate error back up to update_graph function
+        }
         graph.push_back(x);
         graph.push_back(y);
     }

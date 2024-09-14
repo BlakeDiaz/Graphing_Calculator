@@ -4,6 +4,7 @@
 #include "graph_widget.hpp"
 #include <QPushButton>
 #include <QString>
+#include <QToolTip>
 #include <iostream>
 #include <ostream>
 #include <tuple>
@@ -127,6 +128,9 @@ void Calculator_Form::reset_graph()
         table->item(row, 1)->setText("");
         // Reset color button to red
         change_function_color((QPushButton*)table->cellWidget(row, 2), default_function_color);
+        // Reset tooltips to be blank
+        table->item(row, input_column)->setToolTip("");
+        table->item(row, output_column)->setToolTip("");
     }
     table->item(0, 0)->setText("f(x) = x + 3");
 }
@@ -141,6 +145,8 @@ void Calculator_Form::update_graph()
 
     for (int row = 0; row < table->rowCount(); row++)
     {
+        table->item(row, input_column)->setToolTip("");
+        table->item(row, output_column)->setToolTip("");
         input_text = table->item(row, input_column)->text();
         current_color = table->cellWidget(row, color_column)->palette().color(QPalette::Button);
 
@@ -157,9 +163,14 @@ void Calculator_Form::update_graph()
             break;
         }
         case Calculator::FUNCTION_DEFINITION: {
-            new_user_function_expressions.push_back(
-                std::tuple(input_text.toStdString(),
-                           Calculator::locate_user_function_dependencies(input_text.toStdString()), current_color));
+            std::string input_string = input_text.toStdString();
+            auto&&[dependencies, parse_error] = Calculator::locate_user_function_dependencies(input_text.toStdString());
+            if (parse_error.is_error)
+            {
+                display_error_in_table(parse_error, row);
+                return;
+            }
+            new_user_function_expressions.push_back(std::tuple(input_string, dependencies, current_color));
 
             break;
         }
@@ -192,8 +203,21 @@ void Calculator_Form::update_graph()
         switch (Calculator::identify_expression(input_text.toStdString()))
         {
         case Calculator::SOLVABLE_EXPRESSION: {
-            output_text = QString::number(Calculator::solve_expression(
-                Calculator::format_expression(user_function_map, input_text.toStdString())));
+            auto&&[formatted_expression, parse_error] = Calculator::format_expression(user_function_map, input_text.toStdString());
+            if (parse_error.is_error)
+            {
+                display_error_in_table(parse_error, row);
+                return;
+            }
+            auto solve_result = Calculator::solve_expression(formatted_expression);
+            double output = std::get<0>(solve_result);
+            parse_error = std::get<1>(solve_result);
+            if (parse_error.is_error)
+            {
+                display_error_in_table(parse_error, row);
+                return;
+            }
+            output_text = QString::number(output);
             break;
         }
         case Calculator::FUNCTION_DEFINITION: {
@@ -232,4 +256,20 @@ void Calculator_Form::changeEvent(QEvent* e)
     default:
         break;
     }
+}
+
+void Calculator_Form::display_error_in_table(const Parse_Error& parse_error, int row)
+{
+    QTableWidget* table = ui.function_table_widget;
+    QString error_text;
+
+    error_text.reserve(9 + parse_error.message.size());
+    error_text.append("<pre>");
+    error_text.append(parse_error.message);
+    error_text.append("</pre>");
+
+    table->item(row, input_column)->setToolTip(error_text);
+    table->item(row, output_column)->setToolTip(error_text);
+
+    table->item(row, output_column)->setText("ERROR");
 }

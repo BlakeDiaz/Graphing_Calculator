@@ -8,6 +8,7 @@ struct Parse_Error
     ufdl::location location;
     std::string expression;
     std::string message;
+    bool is_error;
 
     Parse_Error(int line_number, std::string expression);
 
