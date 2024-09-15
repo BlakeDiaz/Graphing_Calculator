@@ -150,6 +150,8 @@ void Calculator_Form::update_graph()
         input_text = table->item(row, input_column)->text();
         current_color = table->cellWidget(row, color_column)->palette().color(QPalette::Button);
 
+        table->item(row, output_column)->setText("");
+
         if (input_text == "")
         {
             continue;
@@ -168,7 +170,7 @@ void Calculator_Form::update_graph()
             if (parse_error.is_error)
             {
                 display_error_in_table(parse_error, row);
-                return;
+                break;
             }
             new_user_function_expressions.push_back(std::tuple(input_string, dependencies, current_color));
 
@@ -188,7 +190,6 @@ void Calculator_Form::update_graph()
     float y_min = std::stof(ui.y_axis_lower_bound_line_edit->text().toStdString());
     float x_max = std::stof(ui.x_axis_upper_bound_line_edit->text().toStdString());
     float y_max = std::stof(ui.y_axis_upper_bound_line_edit->text().toStdString());
-    QString output_text;
 
     for (int row = 0; row < table->rowCount(); row++)
     {
@@ -196,7 +197,6 @@ void Calculator_Form::update_graph()
 
         if (input_text == "")
         {
-            table->item(row, output_column)->setText("");
             continue;
         }
 
@@ -207,21 +207,23 @@ void Calculator_Form::update_graph()
             if (parse_error.is_error)
             {
                 display_error_in_table(parse_error, row);
-                return;
+                break;
             }
+
             auto solve_result = Calculator::solve_expression(formatted_expression);
             double output = std::get<0>(solve_result);
             parse_error = std::get<1>(solve_result);
             if (parse_error.is_error)
             {
                 display_error_in_table(parse_error, row);
-                return;
+                break;
             }
-            output_text = QString::number(output);
+
+            table->item(row, output_column)->setText(QString::number(output));
+
             break;
         }
         case Calculator::FUNCTION_DEFINITION: {
-            output_text = "";
             break;
         }
         default: {
@@ -230,7 +232,6 @@ void Calculator_Form::update_graph()
         }
         }
 
-        table->item(row, output_column)->setText(output_text);
     }
 
     graph_gl_widget->update_state(user_function_map, {.x_min = x_min, .x_max = x_max, .y_min = y_min, .y_max = y_max});
