@@ -141,7 +141,8 @@ void Calculator_Form::update_graph()
     QString input_text;
     QColor current_color;
 
-    std::vector<std::tuple<std::string, std::unordered_set<char>, QColor>> new_user_function_expressions;
+    // Expression, dependencies, color, row number
+    std::vector<std::tuple<std::string, std::unordered_set<char>, QColor, int>> new_user_function_expressions;
 
     for (int row = 0; row < table->rowCount(); row++)
     {
@@ -172,7 +173,7 @@ void Calculator_Form::update_graph()
                 display_error_in_table(parse_error, row);
                 break;
             }
-            new_user_function_expressions.push_back(std::tuple(input_string, dependencies, current_color));
+            new_user_function_expressions.push_back(std::tuple(input_string, dependencies, current_color, row));
 
             break;
         }
@@ -184,7 +185,12 @@ void Calculator_Form::update_graph()
         }
     }
 
-    user_function_map = Input_Manager::create_user_function_map(new_user_function_expressions);
+    auto&& [user_function_map, error] = Input_Manager::create_user_function_map(new_user_function_expressions, table->rowCount());
+
+    if (error.is_error)
+    {
+        display_user_function_map_error_in_table(error);
+    }
 
     float x_min = std::stof(ui.x_axis_lower_bound_line_edit->text().toStdString());
     float y_min = std::stof(ui.y_axis_lower_bound_line_edit->text().toStdString());
@@ -259,6 +265,39 @@ void Calculator_Form::changeEvent(QEvent* e)
     }
 }
 
+void Calculator_Form::display_user_function_map_error_in_table(const User_Function_Map_Error& error)
+{
+    QTableWidget* table = ui.function_table_widget;
+    for (int i = 0; i < error.invalid_dependencies_list.size(); i++)
+    {
+        const std::vector<char>& invalid_dependencies = error.invalid_dependencies_list[i];
+        int row = i + 1;
+        if (invalid_dependencies.size() == 0)
+        {
+            continue;
+        }
+
+        QString error_text;
+        error_text.append("<pre>");
+        error_text.append("Error on line ");
+        error_text.append(QString::number(row));
+        error_text.append("\nInvalid function dependencies: ");
+
+        for (int j = 0; j < invalid_dependencies.size() - 1; i++)
+        {
+            error_text.append(invalid_dependencies[j]);
+            error_text.append(", ");
+        }
+        error_text.append(invalid_dependencies[invalid_dependencies.size() - 1]);
+
+        error_text.append("</pre>");
+
+        table->item(row, input_column)->setToolTip(error_text);
+        table->item(row, output_column)->setToolTip(error_text);
+
+        table->item(row, output_column)->setText("ERROR");
+    }
+}
 void Calculator_Form::display_error_in_table(const Parse_Error& parse_error, int row)
 {
     QTableWidget* table = ui.function_table_widget;

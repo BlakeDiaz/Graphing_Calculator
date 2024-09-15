@@ -30,6 +30,21 @@ static bool check_if_user_function_can_be_defined(const std::unordered_map<char,
     return true;
 }
 
+static std::vector<char> get_invalid_dependencies(const std::unordered_map<char, User_Function>& user_function_map,
+                                                  const std::unordered_set<char>& dependencies)
+{
+    std::vector<char> invalid_dependencies;
+    for (char dependency : dependencies)
+    {
+        if (!user_function_map.contains(dependency))
+        {
+            invalid_dependencies.push_back(dependency);
+        }
+    }
+
+    return invalid_dependencies;
+}
+
 /**
  * Creates an unordered map associating each User_Function's identifier to the User_Function itself.
  *
@@ -38,8 +53,8 @@ static bool check_if_user_function_can_be_defined(const std::unordered_map<char,
  * represents.
  * @return An unordered map containing the User_Functions the list of expressions represent.
  */
-std::unordered_map<char, User_Function> Input_Manager::create_user_function_map(
-    std::vector<std::tuple<std::string, std::unordered_set<char>, QColor>>& new_user_function_expressions)
+std::tuple<std::unordered_map<char, User_Function>, User_Function_Map_Error> Input_Manager::create_user_function_map(
+    std::vector<std::tuple<std::string, std::unordered_set<char>, QColor, int>>& new_user_function_expressions, int number_of_rows)
 {
     /*
      * To assemble each User_Function, we need to have its dependencies assembled in the map first, so that we can
@@ -51,7 +66,7 @@ std::unordered_map<char, User_Function> Input_Manager::create_user_function_map(
     std::unordered_map<char, User_Function> user_function_map;
     for (int i = 0; i < new_user_function_expressions.size();)
     {
-        auto&& [expression, dependencies, color] = new_user_function_expressions.at(i);
+        auto&& [expression, dependencies, color, _] = new_user_function_expressions.at(i);
         if (dependencies.size() == 0)
         {
             user_function_map.emplace(User_Function::find_identifier(expression),
@@ -71,7 +86,7 @@ std::unordered_map<char, User_Function> Input_Manager::create_user_function_map(
     {
         for (int i = 0; i < new_user_function_expressions.size(); i++)
         {
-            auto&& [expression, dependencies, color] = new_user_function_expressions.at(i);
+            auto&& [expression, dependencies, color, _] = new_user_function_expressions.at(i);
 
             if (check_if_user_function_can_be_defined(user_function_map, expression, dependencies))
             {
@@ -86,18 +101,24 @@ std::unordered_map<char, User_Function> Input_Manager::create_user_function_map(
         // are invalid
         if (new_user_function_expressions.size() >= previous_number_of_new_user_function_expressions )
         {
-            // TODO propogate error back up to update_graph function
-            new_user_function_expressions.clear();
             invalid_dependency = true;
             break;
         }
     }
 
-    // Handle error of invalid dependency
-    if (invalid_dependency)
+    User_Function_Map_Error error;
+    if (!invalid_dependency)
     {
-        std::cerr << "Invalid Dependency" << std::endl;
+        return {user_function_map, error};
     }
 
-    return user_function_map;
+    error.is_error = true;
+    error.invalid_dependencies_list.resize(number_of_rows * sizeof(std::vector<char>));
+    for (auto&& [expression, dependencies, color, row_number] : new_user_function_expressions)
+    {
+        // Row numbers start at 1, so we subtract 1 to fit them in the vector
+        error.invalid_dependencies_list[row_number - 1] = get_invalid_dependencies(user_function_map, dependencies);
+    }
+
+    return {user_function_map, error};
 }
