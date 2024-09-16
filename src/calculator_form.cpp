@@ -344,9 +344,7 @@ void Calculator_Form::display_user_function_map_error_in_table(const User_Functi
         }
 
         QString error_text;
-        error_text.append("<pre>");
-        error_text.append("Error on line ");
-        error_text.append(QString::number(row));
+        error_text.append("<pre>Error");
         error_text.append("\nInvalid function dependencies: ");
 
         for (int i = 0; i < invalid_dependencies.size() - 1; i++)
