@@ -11,7 +11,7 @@ struct Parse_Error
     bool is_error = false;
 
     Parse_Error() = default;
-    Parse_Error(int line_number, std::string expression);
+    Parse_Error(int row_number, std::string expression);
 
     /**
     * Prints three ^ symbols on three lines at a given column.

@@ -62,7 +62,7 @@ Calculator::ExpressionType Calculator::identify_expression(std::string expressio
  * @param expression The expression representing the User_Function
  * @return A set containing the identifiers for each User_Function that the expression depends on.
  */
-std::tuple<std::unordered_set<char>, Parse_Error> Calculator::locate_user_function_dependencies(const std::string& expression, int line_number)
+std::tuple<std::unordered_set<char>, Parse_Error> Calculator::locate_user_function_dependencies(const std::string& expression, int row_number)
 {
     std::string modified_expression = expression;
 
@@ -74,7 +74,7 @@ std::tuple<std::unordered_set<char>, Parse_Error> Calculator::locate_user_functi
     YY_BUFFER_STATE bs = ufdl_scan_string(modified_expression.c_str());
     ufdl_switch_to_buffer(bs);
 
-    Parse_Error parse_error(line_number, modified_expression);
+    Parse_Error parse_error(row_number, modified_expression);
     ufdl::parser user_function_dependency_locator(parse_error, dependencies, User_Function::find_variable(expression));
     user_function_dependency_locator();
 
@@ -92,7 +92,7 @@ std::tuple<std::unordered_set<char>, Parse_Error> Calculator::locate_user_functi
  * definition.
  */
 std::tuple<std::string, Parse_Error> Calculator::format_expression(std::unordered_map<char, User_Function>& user_function_map,
-                                          std::string expression, int line_number)
+                                          std::string expression, int row_number)
 {
     std::string modified_expression = expression;
 
@@ -104,7 +104,7 @@ std::tuple<std::string, Parse_Error> Calculator::format_expression(std::unordere
     YY_BUFFER_STATE bs = fmt_scan_string(modified_expression.c_str());
     fmt_switch_to_buffer(bs);
 
-    Parse_Error parse_error(line_number, modified_expression);
+    Parse_Error parse_error(row_number, modified_expression);
     fmt::parser formatter(parse_error, user_function_map, formatted_expression);
     formatter();
 
@@ -120,7 +120,7 @@ std::tuple<std::string, Parse_Error> Calculator::format_expression(std::unordere
  * @param expression The formatted expression to be computed.
  * @return The solution to the expression.
  */
-std::tuple<double, Parse_Error> Calculator::solve_expression(std::string expression, int line_number)
+std::tuple<double, Parse_Error> Calculator::solve_expression(std::string expression, int row_number)
 {
     std::string modified_expression = expression;
 
@@ -132,7 +132,7 @@ std::tuple<double, Parse_Error> Calculator::solve_expression(std::string express
     YY_BUFFER_STATE bs = yy_scan_string(modified_expression.c_str());
     yy_switch_to_buffer(bs);
 
-    Parse_Error parse_error(line_number, modified_expression);
+    Parse_Error parse_error(row_number, modified_expression);
     yy::parser parser(parse_error, Calculator::function_map, result);
     parser();
 
