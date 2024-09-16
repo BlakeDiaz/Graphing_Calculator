@@ -219,10 +219,8 @@ void Calculator_Form::change_function_color(QPushButton* button, const QColor& c
         return;
     }
 
-    QPalette palette = button->palette();
-    palette.setColor(QPalette::Button, color);
-    button->setAutoFillBackground(true);
-    button->setPalette(palette);
+    QString style_sheet = QString("background-color: ") + color.name();
+    button->setStyleSheet(style_sheet);
     button->update();
 }
 
