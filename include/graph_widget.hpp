@@ -34,11 +34,15 @@ class Graph_Widget : public QOpenGLWidget
     Line_Rendering_Data x_axis_marker_rendering_data;
     Line_Rendering_Data y_axis_marker_rendering_data;
 
-    const int total_number_of_curve_points = 2000;
+    const int total_number_of_curve_points = 50000;
+    const float point_size = 5.0f;
 
     std::vector<float> create_curve(const User_Function& user_function, const float lower_x_limit,
                                     const float upper_x_limit, const float x_step);
     unsigned int setup_points_VAO(float data[], unsigned int data_length);
+
+    void render_curve(QOpenGLShaderProgram& program, const Coordinate_Transformation_Data& transformation_data,
+                               const Line_Rendering_Data& curve_data);
     void render_line(QOpenGLShaderProgram& program, const Coordinate_Transformation_Data& transformation_data,
                      const Line_Rendering_Data& curve_data);
     void render_disconnected_lines(QOpenGLShaderProgram& program,
