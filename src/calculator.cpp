@@ -80,10 +80,6 @@ std::tuple<std::unordered_set<char>, Parse_Error> Calculator::locate_user_functi
 
     ufdl_delete_buffer(bs);
 
-    std::cerr << "Begin ufdl error message:" << std::endl;
-    std::cerr << parse_error.message << std::endl;
-    std::cerr << "End ufdl error message" << std::endl;
-
     return {dependencies, parse_error};
 }
 
@@ -114,10 +110,6 @@ std::tuple<std::string, Parse_Error> Calculator::format_expression(std::unordere
 
     fmt_delete_buffer(bs);
 
-    std::cerr << "Begin formatter error message:" << std::endl;
-    std::cerr << parse_error.message << std::endl;
-    std::cerr << "End formatter error message" << std::endl;
-
     return {formatted_expression, parse_error};
 }
 
@@ -145,12 +137,6 @@ std::tuple<double, Parse_Error> Calculator::solve_expression(std::string express
     parser();
 
     yy_delete_buffer(bs);
-
-    /*
-    std::cerr << "Begin solver error message:" << std::endl;
-    std::cerr << parse_error.message << std::endl;
-    std::cerr << "End solver error message" << std::endl;
-    */
 
     return {result, parse_error};
 }
