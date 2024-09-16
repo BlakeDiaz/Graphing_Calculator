@@ -335,10 +335,9 @@ std::optional<Graph_Window_Data> Calculator_Form::get_graph_window_data()
 void Calculator_Form::display_user_function_map_error_in_table(const User_Function_Map_Error& error)
 {
     QTableWidget* table = ui.function_table_widget;
-    for (int i = 0; i < error.invalid_dependencies_list.size(); i++)
+    for (int row = 0; row < error.invalid_dependencies_list.size(); row++)
     {
-        const std::vector<char>& invalid_dependencies = error.invalid_dependencies_list[i];
-        int row = i + 1;
+        const std::vector<char>& invalid_dependencies = error.invalid_dependencies_list[row];
         if (invalid_dependencies.size() == 0)
         {
             continue;
@@ -350,9 +349,9 @@ void Calculator_Form::display_user_function_map_error_in_table(const User_Functi
         error_text.append(QString::number(row));
         error_text.append("\nInvalid function dependencies: ");
 
-        for (int j = 0; j < invalid_dependencies.size() - 1; i++)
+        for (int i = 0; i < invalid_dependencies.size() - 1; i++)
         {
-            error_text.append(invalid_dependencies[j]);
+            error_text.append(invalid_dependencies[i]);
             error_text.append(", ");
         }
         error_text.append(invalid_dependencies[invalid_dependencies.size() - 1]);

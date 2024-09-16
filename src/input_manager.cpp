@@ -116,8 +116,7 @@ std::tuple<std::unordered_map<char, User_Function>, User_Function_Map_Error> Inp
     error.invalid_dependencies_list.resize(number_of_rows * sizeof(std::vector<char>));
     for (auto&& [expression, dependencies, color, row_number] : new_user_function_expressions)
     {
-        // Row numbers start at 1, so we subtract 1 to fit them in the vector
-        error.invalid_dependencies_list[row_number - 1] = get_invalid_dependencies(user_function_map, dependencies);
+        error.invalid_dependencies_list[row_number] = get_invalid_dependencies(user_function_map, dependencies);
     }
 
     return {user_function_map, error};
