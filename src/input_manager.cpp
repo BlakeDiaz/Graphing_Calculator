@@ -66,11 +66,11 @@ std::tuple<std::unordered_map<char, User_Function>, User_Function_Map_Error> Inp
     std::unordered_map<char, User_Function> user_function_map;
     for (int i = 0; i < new_user_function_expressions.size();)
     {
-        auto&& [expression, dependencies, color, _] = new_user_function_expressions.at(i);
+        auto&& [expression, dependencies, color, row_number] = new_user_function_expressions.at(i);
         if (dependencies.size() == 0)
         {
             user_function_map.emplace(User_Function::find_identifier(expression),
-                                      User_Function(user_function_map, expression, dependencies, color));
+                                      User_Function(user_function_map, expression, dependencies, color, row_number));
             new_user_function_expressions.erase(new_user_function_expressions.begin() + i);
         }
         else
@@ -86,12 +86,12 @@ std::tuple<std::unordered_map<char, User_Function>, User_Function_Map_Error> Inp
     {
         for (int i = 0; i < new_user_function_expressions.size(); i++)
         {
-            auto&& [expression, dependencies, color, _] = new_user_function_expressions.at(i);
+            auto&& [expression, dependencies, color, row_number] = new_user_function_expressions.at(i);
 
             if (check_if_user_function_can_be_defined(user_function_map, expression, dependencies))
             {
                 user_function_map.emplace(User_Function::find_identifier(expression),
-                                          User_Function(user_function_map, expression, dependencies, color));
+                                          User_Function(user_function_map, expression, dependencies, color, row_number));
                 new_user_function_expressions.erase(new_user_function_expressions.begin() + i);
             }
 

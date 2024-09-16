@@ -62,16 +62,17 @@ User_Function::User_Function(std::unordered_map<char, User_Function> user_functi
                              QColor color)
     : identifier(find_identifier(expression)), variable(find_variable(expression)), expression(expression),
       formatted_expression(std::get<0>(Calculator::format_expression(user_function_map, expression))),
-      user_function_dependencies(std::get<0>(Calculator::locate_user_function_dependencies(expression))), color(color)
+      user_function_dependencies(std::get<0>(Calculator::locate_user_function_dependencies(expression))), color(color),
+      row_number(0)
 {
 }
 
 
 User_Function::User_Function(std::unordered_map<char, User_Function> user_function_map, std::string expression,
-                             std::unordered_set<char> user_function_dependencies, QColor color)
+                             std::unordered_set<char> user_function_dependencies, QColor color, int row_number)
     : identifier(find_identifier(expression)), variable(find_variable(expression)), expression(expression),
     formatted_expression(std::get<0>(Calculator::format_expression(user_function_map, expression))),
-    user_function_dependencies(user_function_dependencies), color(color)
+    user_function_dependencies(user_function_dependencies), color(color), row_number(row_number)
 {
 }
 
@@ -83,7 +84,8 @@ User_Function::User_Function(std::unordered_map<char, User_Function> user_functi
 User_Function::User_Function(std::string expression, std::string formatted_expression,
                              std::unordered_set<char> user_function_dependencies, QColor color)
     : identifier(find_identifier(expression)), variable(find_variable(expression)), expression(expression),
-      formatted_expression(formatted_expression), user_function_dependencies(user_function_dependencies), color(color)
+      formatted_expression(formatted_expression), user_function_dependencies(user_function_dependencies), color(color),
+      row_number(0)
 {
 }
 
@@ -102,7 +104,7 @@ User_Function::User_Function(const char identifier, const char variable, const s
                              std::string formatted_expression, std::unordered_set<char> user_function_dependencies,
                              QColor color)
     : identifier(identifier), variable(variable), expression(expression), formatted_expression(formatted_expression),
-      user_function_dependencies(user_function_dependencies), color(color)
+      user_function_dependencies(user_function_dependencies), color(color), row_number(0)
 {
 }
 
