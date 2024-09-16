@@ -5,6 +5,7 @@
 #include <QPushButton>
 #include <QString>
 #include <QToolTip>
+#include <QMessageBox>
 #include <iostream>
 #include <ostream>
 #include <tuple>
@@ -141,6 +142,13 @@ void Calculator_Form::update_graph()
     QString input_text;
     QColor current_color;
 
+    std::optional<Graph_Window_Data> graph_window_data_optional = get_graph_window_data();
+    if (!graph_window_data_optional.has_value())
+    {
+        return;
+    }
+    Graph_Window_Data graph_window_data = graph_window_data_optional.value();
+
     // Expression, dependencies, color, row number
     std::vector<std::tuple<std::string, std::unordered_set<char>, QColor, int>> new_user_function_expressions;
 
@@ -192,10 +200,7 @@ void Calculator_Form::update_graph()
         display_user_function_map_error_in_table(error);
     }
 
-    float x_min = std::stof(ui.x_axis_lower_bound_line_edit->text().toStdString());
-    float y_min = std::stof(ui.y_axis_lower_bound_line_edit->text().toStdString());
-    float x_max = std::stof(ui.x_axis_upper_bound_line_edit->text().toStdString());
-    float y_max = std::stof(ui.y_axis_upper_bound_line_edit->text().toStdString());
+
 
     for (int row = 0; row < table->rowCount(); row++)
     {
@@ -240,7 +245,7 @@ void Calculator_Form::update_graph()
 
     }
 
-    graph_gl_widget->update_state(user_function_map, {.x_min = x_min, .x_max = x_max, .y_min = y_min, .y_max = y_max});
+    graph_gl_widget->update_state(user_function_map, graph_window_data);
 }
 
 void Calculator_Form::change_function_color(QPushButton* button, const QColor& color)
@@ -263,6 +268,62 @@ void Calculator_Form::changeEvent(QEvent* e)
     default:
         break;
     }
+}
+
+std::optional<Graph_Window_Data> Calculator_Form::get_graph_window_data()
+{
+    float x_min, x_max, y_min, y_max;
+    const QString invalid_range_error_header = "Error: Invalid Range";
+    const QString invalid_input_error_header = "Error: Invalid Input";
+
+    try
+    {
+        x_min = std::stof(ui.x_axis_lower_bound_line_edit->text().toStdString());
+    }
+    catch (const std::invalid_argument& e)
+    {
+        display_error_message_box(invalid_input_error_header, "Unable to read lower bound for x");
+        return {};
+    }
+    try
+    {
+        y_min = std::stof(ui.y_axis_lower_bound_line_edit->text().toStdString());
+    }
+    catch (const std::invalid_argument& e)
+    {
+        display_error_message_box(invalid_input_error_header, "Unable to read lower bound for y");
+        return {};
+    }
+    try
+    {
+        x_max = std::stof(ui.x_axis_upper_bound_line_edit->text().toStdString());
+    }
+    catch (const std::invalid_argument& e)
+    {
+        display_error_message_box(invalid_input_error_header, "Unable to read upper bound for x");
+        return {};
+    }
+    try
+    {
+        y_max = std::stof(ui.y_axis_upper_bound_line_edit->text().toStdString());
+    }
+    catch (const std::invalid_argument& e)
+    {
+        display_error_message_box(invalid_input_error_header, "Unable to read upper bound for y");
+        return {};
+    }
+    if (x_min >= x_max)
+    {
+        display_error_message_box(invalid_range_error_header, "Minimum value for x is >= maximum value for x");
+        return {};
+    }
+    if (y_min >= y_max)
+    {
+        display_error_message_box(invalid_range_error_header,  "Minimum value for y is >= maximum value for y");
+        return {};
+    }
+
+    return Graph_Window_Data{x_min, x_max, y_min, y_max};
 }
 
 void Calculator_Form::display_user_function_map_error_in_table(const User_Function_Map_Error& error)
@@ -312,4 +373,13 @@ void Calculator_Form::display_error_in_table(const Parse_Error& parse_error, int
     table->item(row, output_column)->setToolTip(error_text);
 
     table->item(row, output_column)->setText("ERROR");
+}
+
+void Calculator_Form::display_error_message_box(const QString& header, const QString& message)
+{
+    QMessageBox message_box(this);
+    message_box.setText(header);
+    message_box.setDetailedText(message);
+
+    message_box.exec();
 }
