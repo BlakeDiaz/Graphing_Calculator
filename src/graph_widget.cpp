@@ -62,6 +62,8 @@ void Graph_Widget::initializeGL()
     functions = QOpenGLContext::currentContext()->extraFunctions();
     functions->glClearColor(1.0f, 1.0f, 1.0f, 1.0f);
     functions->glClear(GL_COLOR_BUFFER_BIT);
+    // Allows the point size to be changed in order to make a lower number of points seem like a smooth curve
+    functions->glEnable(GL_PROGRAM_POINT_SIZE);
 
     // Initialize window settings
     Graph_Window_Data graph_window = {.x_min = -10, .x_max = 10, .y_min = -10, .y_max = 10};
@@ -88,9 +90,6 @@ void Graph_Widget::initializeGL()
     y_axis_rendering_data.number_of_points = y_axis_points.size() / 2;
     x_axis_marker_rendering_data.number_of_points = x_axis_marker_points.size() / 2;
     y_axis_marker_rendering_data.number_of_points = y_axis_marker_points.size() / 2;
-
-    // Change the 
-    glPointSize(point_size);
 
     // The default color of QColor is black, so we don't have to set it here
 }
