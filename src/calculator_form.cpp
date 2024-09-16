@@ -214,6 +214,11 @@ void Calculator_Form::update_graph()
 
 void Calculator_Form::change_function_color(QPushButton* button, const QColor& color)
 {
+    if (!color.isValid())
+    {
+        return;
+    }
+
     QPalette palette = button->palette();
     palette.setColor(QPalette::Button, color);
     button->setAutoFillBackground(true);
