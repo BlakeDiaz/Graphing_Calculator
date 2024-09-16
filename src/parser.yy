@@ -111,7 +111,7 @@ void yy::parser::error(const location_type& location, const std::string& message
     int beginning_column = location.begin.column;
     message_stream << parse_error.expression << '\n';
     Parse_Error::print_error_marker_to_column(message_stream, beginning_column);
-    message_stream << "Error on column " << beginning_column + 1 << "\n" << message;
+    message_stream << "Error on column " << beginning_column + 1 << ":\n" << message;
 
     parse_error.message = message_stream.str();
     parse_error.is_error = true;
@@ -128,7 +128,7 @@ void yy::parser::report_syntax_error(const context& error_context) const
     message_stream << parse_error.expression << '\n';
     Parse_Error::print_error_marker_to_column(message_stream, beginning_column);
 
-    message_stream << "Syntax Error on column " << beginning_column + 1 << "\nUnexpected token: ";
+    message_stream << "Syntax Error on column " << beginning_column + 1 << ":\nUnexpected token: ";
     message_stream << yy::parser::symbol_name(error_context.token()) << '\n';
     message_stream << "Expected token: ";
 
