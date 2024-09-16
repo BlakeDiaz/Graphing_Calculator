@@ -79,11 +79,12 @@ std::tuple<std::unordered_map<char, User_Function>, User_Function_Map_Error> Inp
         }
     }
 
-    int previous_number_of_new_user_function_expressions = new_user_function_expressions.size();
+    int previous_number_of_new_user_function_expressions;
     bool invalid_dependency = false;
     bool user_function_can_be_defined = true;
     while (!new_user_function_expressions.empty())
     {
+        previous_number_of_new_user_function_expressions = new_user_function_expressions.size();
         for (int i = 0; i < new_user_function_expressions.size(); i++)
         {
             auto&& [expression, dependencies, color, row_number] = new_user_function_expressions.at(i);
