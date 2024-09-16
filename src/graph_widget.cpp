@@ -187,8 +187,8 @@ std::vector<float> Graph_Widget::create_curve(const User_Function& user_function
     {
         float x = (i * x_step) + lower_x_limit;
         auto&&[y, parse_error] = Calculator::solve_expression(user_function.call(std::to_string(x)));
-        // If we run into a divide-by-zero, just skip that point
-        if (parse_error.is_error)
+        // If we run into an undefined value, skip that point
+        if (isnan(y))
         {
             continue;
         }

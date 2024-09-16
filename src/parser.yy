@@ -90,8 +90,8 @@ expression:
 | expression "/" expression             {
                                             if ($3 == 0)
                                             {
-                                                throw yy::parser::syntax_error(@3, "Divide-by-zero error");
-                                                $$ = 0;
+                                                result = NAN;
+                                                YYACCEPT;
                                             }
                                             else
                                             {

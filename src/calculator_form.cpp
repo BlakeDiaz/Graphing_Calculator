@@ -229,6 +229,12 @@ void Calculator_Form::update_graph()
                 display_error_in_table(parse_error, row);
                 break;
             }
+            // Undefined value
+            if (isnan(output))
+            {
+                table->item(row, output_column)->setText("Undefined");
+                break;
+            }
 
             table->item(row, output_column)->setText(QString::number(output));
 
