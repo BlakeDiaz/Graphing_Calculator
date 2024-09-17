@@ -50,24 +50,6 @@ char User_Function::find_variable(std::string expression)
     return modified_expression[2];
 }
 
-/**
- * Class constructor.
- *
- * @param user_function_map An unordered map containing each user-defined function.
- * @param expression The text form of the function e.g. "f(x) = 5x + 3".
- * @param formatted_expression The body of the function formatted to make it easier to parse e.g. "5*x+3" from the
- * expression "f(x) = 5x + 3".
- */
-User_Function::User_Function(std::unordered_map<char, User_Function> user_function_map, std::string expression,
-                             QColor color)
-    : identifier(find_identifier(expression)), variable(find_variable(expression)), expression(expression),
-      formatted_expression(std::get<0>(Calculator::format_expression(user_function_map, expression))),
-      user_function_dependencies(std::get<0>(Calculator::locate_user_function_dependencies(expression))), color(color),
-      row_number(0)
-{
-}
-
-
 User_Function::User_Function(std::unordered_map<char, User_Function> user_function_map, std::string expression,
                              std::unordered_set<char> user_function_dependencies, QColor color, int row_number)
     : identifier(find_identifier(expression)), variable(find_variable(expression)), expression(expression),
