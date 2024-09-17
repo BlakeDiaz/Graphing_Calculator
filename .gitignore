@@ -1,7 +1,7 @@
 # Directories
 Debug/*
 build/*
-cmake-build-debug/*
+cmake-build-*/
 .cache/*
 .vscode/*
 .idea/*
