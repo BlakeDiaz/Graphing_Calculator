@@ -10,6 +10,7 @@
 #include <unordered_set>
 #include <vector>
 #include <Parse_Error.hpp>
+#include <Axis_Toggle_Status.hpp>
 
 class Graph_Widget : public QOpenGLWidget
 {
@@ -17,7 +18,7 @@ class Graph_Widget : public QOpenGLWidget
   public:
     Graph_Widget(QWidget* parent);
     std::vector<Parse_Error> update_state(const std::unordered_map<char, User_Function>& user_function_map,
-                      const Graph_Window_Data& graph_window);
+                      const Graph_Window_Data& graph_window, const Axis_Toggle_Status& axis_toggle_status);
 
   protected:
     void initializeGL() override;
@@ -34,6 +35,7 @@ class Graph_Widget : public QOpenGLWidget
     std::vector<Line_Rendering_Data> curves_rendering_data;
     Line_Rendering_Data x_axis_marker_rendering_data;
     Line_Rendering_Data y_axis_marker_rendering_data;
+    Axis_Toggle_Status axis_toggle_status = {true, true, true, true};
 
     const int total_number_of_curve_points = 50000;
     const float point_size = 5.0f;

@@ -38,6 +38,8 @@ class Calculator_Form : public QDialog
     void remove_function();
     void reset_graph();
     void update_graph();
+    void x_axis_toggled(Qt::CheckState state);
+    void y_axis_toggled(Qt::CheckState state);
     void change_function_color(QPushButton* button, const QColor& color);
     std::optional<Graph_Window_Data> get_graph_window_data();
     void display_user_function_map_error_in_table(const User_Function_Map_Error& parse_error);

@@ -1,6 +1,7 @@
 #include "calculator_form.hpp"
 #include "Calculator.hpp"
 #include "Input_Manager.hpp"
+#include "axis_marker_data.hpp"
 #include "graph_widget.hpp"
 #include <QPushButton>
 #include <QString>
@@ -9,6 +10,7 @@
 #include <iostream>
 #include <ostream>
 #include <tuple>
+#include <Axis_Toggle_Status.hpp>
 
 static bool check_if_user_function_can_be_defined(const std::unordered_map<char, User_Function>& user_function_map,
                                                   const std::string& expression,
@@ -75,6 +77,8 @@ Calculator_Form::Calculator_Form(QWidget* parent) : QDialog(parent)
     QObject::connect(ui.remove_function_push_button, &QPushButton::clicked, this, &Calculator_Form::remove_function);
     QObject::connect(ui.reset_graph_push_button, &QPushButton::clicked, this, &Calculator_Form::reset_graph);
     QObject::connect(ui.update_graph_push_button, &QPushButton::clicked, this, &Calculator_Form::update_graph);
+    QObject::connect(ui.x_axis_enabled_check_box, &QCheckBox::checkStateChanged, this, &Calculator_Form::x_axis_toggled);
+    QObject::connect(ui.y_axis_enabled_check_box, &QCheckBox::checkStateChanged, this, &Calculator_Form::y_axis_toggled);
 }
 
 void Calculator_Form::add_function()
@@ -148,6 +152,15 @@ void Calculator_Form::update_graph()
         return;
     }
     Graph_Window_Data graph_window_data = graph_window_data_optional.value();
+
+    Axis_Toggle_Status axis_toggle_status = {
+        .x_axis_enabled = ui.x_axis_enabled_check_box->isChecked(),
+        .y_axis_enabled = ui.y_axis_enabled_check_box->isChecked(),
+        .x_axis_markers_enabled = ui.x_axis_markers_enabled_check_box->isChecked()
+                                  && ui.x_axis_enabled_check_box->isChecked(),
+        .y_axis_markers_enabled = ui.y_axis_markers_enabled_check_box->isChecked()
+                                  && ui.y_axis_enabled_check_box->isChecked()
+    };
 
     // Expression, dependencies, color, row number
     std::vector<std::tuple<std::string, std::unordered_set<char>, QColor, int>> new_user_function_expressions;
@@ -251,11 +264,21 @@ void Calculator_Form::update_graph()
 
     }
 
-    std::vector<Parse_Error> parse_errors = graph_gl_widget->update_state(user_function_map, graph_window_data);
+    std::vector<Parse_Error> parse_errors = graph_gl_widget->update_state(user_function_map, graph_window_data, axis_toggle_status);
     for (auto parse_error : parse_errors)
     {
         display_error_in_table(parse_error, parse_error.location.begin.line);
     }
+}
+
+
+void Calculator_Form::x_axis_toggled(Qt::CheckState state)
+{
+    ui.x_axis_markers_enabled_check_box->setEnabled(state == Qt::Checked);
+}
+void Calculator_Form::y_axis_toggled(Qt::CheckState state)
+{
+    ui.y_axis_markers_enabled_check_box->setEnabled(state == Qt::Checked);
 }
 
 void Calculator_Form::change_function_color(QPushButton* button, const QColor& color)

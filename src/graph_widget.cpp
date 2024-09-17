@@ -103,20 +103,33 @@ void Graph_Widget::paintGL()
     functions = QOpenGLContext::currentContext()->extraFunctions();
     functions->glClear(GL_COLOR_BUFFER_BIT);
 
-    render_line(axis_shader, transformation_data, x_axis_rendering_data);
-    render_line(axis_shader, transformation_data, y_axis_rendering_data);
+    if (axis_toggle_status.x_axis_enabled)
+    {
+        render_line(axis_shader, transformation_data, x_axis_rendering_data);
+    }
+    if (axis_toggle_status.y_axis_enabled)
+    {
+        render_line(axis_shader, transformation_data, y_axis_rendering_data);
+    }
 
     for (auto& curve_rendering_data : curves_rendering_data)
     {
         render_curve(curve_shader, transformation_data, curve_rendering_data);
     }
 
-    render_disconnected_lines(axis_shader, transformation_data, x_axis_marker_rendering_data);
-    render_disconnected_lines(axis_shader, transformation_data, y_axis_marker_rendering_data);
+    if (axis_toggle_status.x_axis_markers_enabled)
+    {
+        render_disconnected_lines(axis_shader, transformation_data, x_axis_marker_rendering_data);
+    }
+
+    if (axis_toggle_status.y_axis_markers_enabled)
+    {
+        render_disconnected_lines(axis_shader, transformation_data, y_axis_marker_rendering_data);
+    }
 }
 
 std::vector<Parse_Error> Graph_Widget::update_state(const std::unordered_map<char, User_Function>& user_function_map,
-                                const Graph_Window_Data& graph_window)
+                                const Graph_Window_Data& graph_window, const Axis_Toggle_Status& axis_toggle_status)
 {
     // This lets us call OpenGL functions outside of initializeGL, resizeGL, and paintGL
     makeCurrent();
@@ -129,6 +142,8 @@ std::vector<Parse_Error> Graph_Widget::update_state(const std::unordered_map<cha
     {
         functions->glDeleteVertexArrays(1, &data.VAO);
     }
+
+    this->axis_toggle_status = axis_toggle_status;
 
     // Update x and y axes, as well as their markers based on the new graph window
     transformation_data.update(graph_window);
