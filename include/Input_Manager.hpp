@@ -1,6 +1,5 @@
 #include "User_Function.hpp"
 #include <QColor>
-#include <optional>
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>

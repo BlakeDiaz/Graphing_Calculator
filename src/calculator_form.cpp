@@ -1,7 +1,6 @@
 #include "calculator_form.hpp"
 #include "Calculator.hpp"
 #include "Input_Manager.hpp"
-#include "axis_marker_data.hpp"
 #include "graph_widget.hpp"
 #include <QPushButton>
 #include <QString>

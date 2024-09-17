@@ -7,7 +7,6 @@
 #include <QOpenGLShaderProgram>
 #include <QtOpenGLWidgets/QOpenGLWidget>
 #include <unordered_map>
-#include <unordered_set>
 #include <vector>
 #include <Parse_Error.hpp>
 #include <Axis_Toggle_Status.hpp>

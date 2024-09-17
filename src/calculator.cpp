@@ -6,13 +6,11 @@
 #include "string_manipulation.hpp"
 #include "user_function_dependency_locator.tab.hpp"
 #include "user_function_dependency_locator_lexer.hpp"
-#include <algorithm>
 #include <Parse_Error.hpp>
 #include <array>
 #include <cctype>
 #include <cmath>
 #include <regex>
-#include <set>
 
 /**
  * Creates an unordered map containing most common mathematical functions (sin, cos, etc.).
