@@ -115,7 +115,7 @@ void Graph_Widget::paintGL()
     render_disconnected_lines(axis_shader, transformation_data, y_axis_marker_rendering_data);
 }
 
-void Graph_Widget::update_state(const std::unordered_map<char, User_Function>& user_function_map,
+std::vector<Parse_Error> Graph_Widget::update_state(const std::unordered_map<char, User_Function>& user_function_map,
                                 const Graph_Window_Data& graph_window)
 {
     // This lets us call OpenGL functions outside of initializeGL, resizeGL, and paintGL
@@ -163,9 +163,16 @@ void Graph_Widget::update_state(const std::unordered_map<char, User_Function>& u
 
     curves_rendering_data.clear();
 
+    std::vector<Parse_Error> parse_errors;
     for (const auto& [identifier, user_function] : user_function_map)
     {
-        std::vector<float> curve_points = create_curve(user_function, graph_window.x_min, graph_window.x_max, x_step);
+        auto curve_result = create_curve(user_function, graph_window.x_min, graph_window.x_max, x_step);
+        std::vector<float> curve_points = std::get<0>(curve_result);
+        Parse_Error parse_error = std::get<1>(curve_result);
+        if (parse_error.is_error)
+        {
+            parse_errors.push_back(parse_error);
+        }
         curves_rendering_data.push_back({.VAO = setup_points_VAO(curve_points.data(), curve_points.size()),
                                          .number_of_points = curve_points.size() / 2,
                                          .color = user_function.color});
@@ -173,9 +180,11 @@ void Graph_Widget::update_state(const std::unordered_map<char, User_Function>& u
 
     // Repaints the graph to display the new changes (paintGL shouldn't be called directly)
     update();
+
+    return parse_errors;
 }
 
-std::vector<float> Graph_Widget::create_curve(const User_Function& user_function, const float lower_x_limit,
+std::tuple<std::vector<float>, Parse_Error> Graph_Widget::create_curve(const User_Function& user_function, const float lower_x_limit,
                                               const float upper_x_limit, const float x_step)
 {
     const int number_of_points = (upper_x_limit - lower_x_limit) / x_step;
@@ -185,17 +194,22 @@ std::vector<float> Graph_Widget::create_curve(const User_Function& user_function
     for (int i = 0; i < number_of_points; i++)
     {
         float x = (i * x_step) + lower_x_limit;
-        auto&&[y, parse_error] = Calculator::solve_expression(user_function.call(std::to_string(x)));
+        auto&&[y, parse_error] = Calculator::solve_expression(user_function.call(std::to_string(x)),
+                                                              user_function.row_number);
         // If we run into an undefined value, skip that point
         if (isnan(y))
         {
             continue;
         }
+        if (parse_error.is_error)
+        {
+            return {{}, parse_error};
+        }
         graph.push_back(x);
         graph.push_back(y);
     }
 
-    return graph;
+    return {graph, {}};
 }
 
 unsigned int Graph_Widget::setup_points_VAO(float data[], unsigned int data_length)

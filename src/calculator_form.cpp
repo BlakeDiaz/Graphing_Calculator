@@ -251,7 +251,11 @@ void Calculator_Form::update_graph()
 
     }
 
-    graph_gl_widget->update_state(user_function_map, graph_window_data);
+    std::vector<Parse_Error> parse_errors = graph_gl_widget->update_state(user_function_map, graph_window_data);
+    for (auto parse_error : parse_errors)
+    {
+        display_error_in_table(parse_error, parse_error.location.begin.line);
+    }
 }
 
 void Calculator_Form::change_function_color(QPushButton* button, const QColor& color)
