@@ -4,6 +4,8 @@
 #include "graph_widget.hpp"
 #include <QPushButton>
 #include <QString>
+#include <QToolTip>
+#include <QMessageBox>
 #include <iostream>
 #include <ostream>
 #include <tuple>
@@ -127,6 +129,9 @@ void Calculator_Form::reset_graph()
         table->item(row, 1)->setText("");
         // Reset color button to red
         change_function_color((QPushButton*)table->cellWidget(row, 2), default_function_color);
+        // Reset tooltips to be blank
+        table->item(row, input_column)->setToolTip("");
+        table->item(row, output_column)->setToolTip("");
     }
     table->item(0, 0)->setText("f(x) = x + 3");
 }
@@ -137,12 +142,24 @@ void Calculator_Form::update_graph()
     QString input_text;
     QColor current_color;
 
-    std::vector<std::tuple<std::string, std::unordered_set<char>, QColor>> new_user_function_expressions;
+    std::optional<Graph_Window_Data> graph_window_data_optional = get_graph_window_data();
+    if (!graph_window_data_optional.has_value())
+    {
+        return;
+    }
+    Graph_Window_Data graph_window_data = graph_window_data_optional.value();
+
+    // Expression, dependencies, color, row number
+    std::vector<std::tuple<std::string, std::unordered_set<char>, QColor, int>> new_user_function_expressions;
 
     for (int row = 0; row < table->rowCount(); row++)
     {
+        table->item(row, input_column)->setToolTip("");
+        table->item(row, output_column)->setToolTip("");
         input_text = table->item(row, input_column)->text();
         current_color = table->cellWidget(row, color_column)->palette().color(QPalette::Button);
+
+        table->item(row, output_column)->setText("");
 
         if (input_text == "")
         {
@@ -157,9 +174,14 @@ void Calculator_Form::update_graph()
             break;
         }
         case Calculator::FUNCTION_DEFINITION: {
-            new_user_function_expressions.push_back(
-                std::tuple(input_text.toStdString(),
-                           Calculator::locate_user_function_dependencies(input_text.toStdString()), current_color));
+            std::string input_string = input_text.toStdString();
+            auto&&[dependencies, parse_error] = Calculator::locate_user_function_dependencies(input_text.toStdString());
+            if (parse_error.is_error)
+            {
+                display_error_in_table(parse_error, row);
+                break;
+            }
+            new_user_function_expressions.push_back(std::tuple(input_string, dependencies, current_color, row));
 
             break;
         }
@@ -171,13 +193,14 @@ void Calculator_Form::update_graph()
         }
     }
 
-    user_function_map = Input_Manager::create_user_function_map(new_user_function_expressions);
+    auto&& [user_function_map, error] = Input_Manager::create_user_function_map(new_user_function_expressions, table->rowCount());
 
-    float x_min = std::stof(ui.x_axis_lower_bound_line_edit->text().toStdString());
-    float y_min = std::stof(ui.y_axis_lower_bound_line_edit->text().toStdString());
-    float x_max = std::stof(ui.x_axis_upper_bound_line_edit->text().toStdString());
-    float y_max = std::stof(ui.y_axis_upper_bound_line_edit->text().toStdString());
-    QString output_text;
+    if (error.is_error)
+    {
+        display_user_function_map_error_in_table(error);
+    }
+
+
 
     for (int row = 0; row < table->rowCount(); row++)
     {
@@ -185,19 +208,39 @@ void Calculator_Form::update_graph()
 
         if (input_text == "")
         {
-            table->item(row, output_column)->setText("");
             continue;
         }
 
         switch (Calculator::identify_expression(input_text.toStdString()))
         {
         case Calculator::SOLVABLE_EXPRESSION: {
-            output_text = QString::number(Calculator::solve_expression(
-                Calculator::format_expression(user_function_map, input_text.toStdString())));
+            auto&&[formatted_expression, parse_error] = Calculator::format_expression(user_function_map, input_text.toStdString());
+            if (parse_error.is_error)
+            {
+                display_error_in_table(parse_error, row);
+                break;
+            }
+
+            auto solve_result = Calculator::solve_expression(formatted_expression);
+            double output = std::get<0>(solve_result);
+            parse_error = std::get<1>(solve_result);
+            if (parse_error.is_error)
+            {
+                display_error_in_table(parse_error, row);
+                break;
+            }
+            // Undefined value
+            if (isnan(output))
+            {
+                table->item(row, output_column)->setText("Undefined");
+                break;
+            }
+
+            table->item(row, output_column)->setText(QString::number(output));
+
             break;
         }
         case Calculator::FUNCTION_DEFINITION: {
-            output_text = "";
             break;
         }
         default: {
@@ -206,10 +249,13 @@ void Calculator_Form::update_graph()
         }
         }
 
-        table->item(row, output_column)->setText(output_text);
     }
 
-    graph_gl_widget->update_state(user_function_map, {.x_min = x_min, .x_max = x_max, .y_min = y_min, .y_max = y_max});
+    std::vector<Parse_Error> parse_errors = graph_gl_widget->update_state(user_function_map, graph_window_data);
+    for (auto parse_error : parse_errors)
+    {
+        display_error_in_table(parse_error, parse_error.location.begin.line);
+    }
 }
 
 void Calculator_Form::change_function_color(QPushButton* button, const QColor& color)
@@ -235,4 +281,115 @@ void Calculator_Form::changeEvent(QEvent* e)
     default:
         break;
     }
+}
+
+std::optional<Graph_Window_Data> Calculator_Form::get_graph_window_data()
+{
+    float x_min, x_max, y_min, y_max;
+    const QString invalid_range_error_header = "Error: Invalid Range";
+    const QString invalid_input_error_header = "Error: Invalid Input";
+
+    try
+    {
+        x_min = std::stof(ui.x_axis_lower_bound_line_edit->text().toStdString());
+    }
+    catch (const std::invalid_argument& e)
+    {
+        display_error_message_box(invalid_input_error_header, "Unable to read lower bound for x");
+        return {};
+    }
+    try
+    {
+        y_min = std::stof(ui.y_axis_lower_bound_line_edit->text().toStdString());
+    }
+    catch (const std::invalid_argument& e)
+    {
+        display_error_message_box(invalid_input_error_header, "Unable to read lower bound for y");
+        return {};
+    }
+    try
+    {
+        x_max = std::stof(ui.x_axis_upper_bound_line_edit->text().toStdString());
+    }
+    catch (const std::invalid_argument& e)
+    {
+        display_error_message_box(invalid_input_error_header, "Unable to read upper bound for x");
+        return {};
+    }
+    try
+    {
+        y_max = std::stof(ui.y_axis_upper_bound_line_edit->text().toStdString());
+    }
+    catch (const std::invalid_argument& e)
+    {
+        display_error_message_box(invalid_input_error_header, "Unable to read upper bound for y");
+        return {};
+    }
+    if (x_min >= x_max)
+    {
+        display_error_message_box(invalid_range_error_header, "Minimum value for x is >= maximum value for x");
+        return {};
+    }
+    if (y_min >= y_max)
+    {
+        display_error_message_box(invalid_range_error_header,  "Minimum value for y is >= maximum value for y");
+        return {};
+    }
+
+    return Graph_Window_Data{x_min, x_max, y_min, y_max};
+}
+
+void Calculator_Form::display_user_function_map_error_in_table(const User_Function_Map_Error& error)
+{
+    QTableWidget* table = ui.function_table_widget;
+    for (int row = 0; row < error.invalid_dependencies_list.size(); row++)
+    {
+        const std::vector<char>& invalid_dependencies = error.invalid_dependencies_list[row];
+        if (invalid_dependencies.size() == 0)
+        {
+            continue;
+        }
+
+        QString error_text;
+        error_text.append("<pre>Error:");
+        error_text.append("\nInvalid function dependencies: ");
+
+        for (int i = 0; i < invalid_dependencies.size() - 1; i++)
+        {
+            error_text.append(invalid_dependencies[i]);
+            error_text.append(", ");
+        }
+        error_text.append(invalid_dependencies[invalid_dependencies.size() - 1]);
+
+        error_text.append("</pre>");
+
+        table->item(row, input_column)->setToolTip(error_text);
+        table->item(row, output_column)->setToolTip(error_text);
+
+        table->item(row, output_column)->setText("ERROR");
+    }
+}
+void Calculator_Form::display_error_in_table(const Parse_Error& parse_error, int row)
+{
+    QTableWidget* table = ui.function_table_widget;
+    QString error_text;
+
+    error_text.reserve(9 + parse_error.message.size());
+    error_text.append("<pre>");
+    error_text.append(parse_error.message);
+    error_text.append("</pre>");
+
+    table->item(row, input_column)->setToolTip(error_text);
+    table->item(row, output_column)->setToolTip(error_text);
+
+    table->item(row, output_column)->setText("ERROR");
+}
+
+void Calculator_Form::display_error_message_box(const QString& header, const QString& message)
+{
+    QMessageBox message_box(this);
+    message_box.setText(header);
+    message_box.setDetailedText(message);
+
+    message_box.exec();
 }

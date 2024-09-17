@@ -7,6 +7,7 @@
 #include "user_function_dependency_locator.tab.hpp"
 #include "user_function_dependency_locator_lexer.hpp"
 #include <algorithm>
+#include <Parse_Error.hpp>
 #include <array>
 #include <cctype>
 #include <cmath>
@@ -38,7 +39,7 @@ Calculator::ExpressionType Calculator::identify_expression(std::string expressio
     // Remove any whitespace characters from the expression
     std::string modified_expression = remove_whitespace(expression);
 
-    std::regex find_function_definition("[a-z]\\([a-z]\\)=");
+    const std::regex find_function_definition("[a-z]\\([a-z]\\)=");
 
     bool function_definition_found =
         std::regex_search(modified_expression, find_function_definition, std::regex_constants::match_continuous);
@@ -61,10 +62,9 @@ Calculator::ExpressionType Calculator::identify_expression(std::string expressio
  * @param expression The expression representing the User_Function
  * @return A set containing the identifiers for each User_Function that the expression depends on.
  */
-std::unordered_set<char> Calculator::locate_user_function_dependencies(std::string expression)
+std::tuple<std::unordered_set<char>, Parse_Error> Calculator::locate_user_function_dependencies(const std::string& expression, int row_number)
 {
-    // Remove any whitespace characters from the expression
-    std::string modified_expression = remove_whitespace(expression);
+    std::string modified_expression = expression;
 
     // Add marker for end of expression
     modified_expression.append("\n");
@@ -74,12 +74,13 @@ std::unordered_set<char> Calculator::locate_user_function_dependencies(std::stri
     YY_BUFFER_STATE bs = ufdl_scan_string(modified_expression.c_str());
     ufdl_switch_to_buffer(bs);
 
-    ufdl::parser user_function_dependency_locator(dependencies, User_Function::find_variable(expression));
+    Parse_Error parse_error(row_number, expression);
+    ufdl::parser user_function_dependency_locator(parse_error, dependencies, User_Function::find_variable(expression));
     user_function_dependency_locator();
 
     ufdl_delete_buffer(bs);
 
-    return dependencies;
+    return {dependencies, parse_error};
 }
 
 /**
@@ -90,12 +91,10 @@ std::unordered_set<char> Calculator::locate_user_function_dependencies(std::stri
  * @return A tuple containing the formatted expression, as well as a User_Function if the expression was a function
  * definition.
  */
-std::string Calculator::format_expression(std::unordered_map<char, User_Function>& user_function_map,
-                                          std::string expression)
+std::tuple<std::string, Parse_Error> Calculator::format_expression(std::unordered_map<char, User_Function>& user_function_map,
+                                          std::string expression, int row_number)
 {
-    // Create a copy of expression to modify for make it easier for the formatter to parse
-    // Additionally, remove any whitespace characters from the expression
-    std::string modified_expression = remove_whitespace(expression);
+    std::string modified_expression = expression;
 
     // Add marker for end of expression
     modified_expression.append("\n");
@@ -105,12 +104,13 @@ std::string Calculator::format_expression(std::unordered_map<char, User_Function
     YY_BUFFER_STATE bs = fmt_scan_string(modified_expression.c_str());
     fmt_switch_to_buffer(bs);
 
-    fmt::parser formatter(user_function_map, formatted_expression);
+    Parse_Error parse_error(row_number, expression);
+    fmt::parser formatter(parse_error, user_function_map, formatted_expression);
     formatter();
 
     fmt_delete_buffer(bs);
 
-    return formatted_expression;
+    return {formatted_expression, parse_error};
 }
 
 /**
@@ -120,23 +120,23 @@ std::string Calculator::format_expression(std::unordered_map<char, User_Function
  * @param expression The formatted expression to be computed.
  * @return The solution to the expression.
  */
-double Calculator::solve_expression(std::string expression)
+std::tuple<double, Parse_Error> Calculator::solve_expression(std::string expression, int row_number)
 {
-    // Create a copy of expression to modify for make it easier for the computation parser to parse
     std::string modified_expression = expression;
 
     // Add marker for end of expression
     modified_expression.append("\n");
 
-    double result;
+    double result = 0;
 
     YY_BUFFER_STATE bs = yy_scan_string(modified_expression.c_str());
     yy_switch_to_buffer(bs);
 
-    yy::parser parser(Calculator::function_map, result);
+    Parse_Error parse_error(row_number, expression);
+    yy::parser parser(parse_error, Calculator::function_map, result);
     parser();
 
     yy_delete_buffer(bs);
 
-    return result;
+    return {result, parse_error};
 }

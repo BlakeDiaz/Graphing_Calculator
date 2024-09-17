@@ -9,13 +9,14 @@
 #include <unordered_map>
 #include <unordered_set>
 #include <vector>
+#include <Parse_Error.hpp>
 
 class Graph_Widget : public QOpenGLWidget
 {
 
   public:
     Graph_Widget(QWidget* parent);
-    void update_state(const std::unordered_map<char, User_Function>& user_function_map,
+    std::vector<Parse_Error> update_state(const std::unordered_map<char, User_Function>& user_function_map,
                       const Graph_Window_Data& graph_window);
 
   protected:
@@ -34,11 +35,15 @@ class Graph_Widget : public QOpenGLWidget
     Line_Rendering_Data x_axis_marker_rendering_data;
     Line_Rendering_Data y_axis_marker_rendering_data;
 
-    const int total_number_of_curve_points = 2000;
+    const int total_number_of_curve_points = 50000;
+    const float point_size = 5.0f;
 
-    std::vector<float> create_curve(const User_Function& user_function, const float lower_x_limit,
+    std::tuple<std::vector<float>, Parse_Error> create_curve(const User_Function& user_function, const float lower_x_limit,
                                     const float upper_x_limit, const float x_step);
     unsigned int setup_points_VAO(float data[], unsigned int data_length);
+
+    void render_curve(QOpenGLShaderProgram& program, const Coordinate_Transformation_Data& transformation_data,
+                               const Line_Rendering_Data& curve_data);
     void render_line(QOpenGLShaderProgram& program, const Coordinate_Transformation_Data& transformation_data,
                      const Line_Rendering_Data& curve_data);
     void render_disconnected_lines(QOpenGLShaderProgram& program,

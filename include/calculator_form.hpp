@@ -5,6 +5,9 @@
 #include <QColorDialog>
 #include <string>
 #include <vector>
+#include <optional>
+#include <Parse_Error.hpp>
+#include <User_Function_Map_Error.hpp>
 
 class Calculator_Form : public QDialog
 {
@@ -36,4 +39,8 @@ class Calculator_Form : public QDialog
     void reset_graph();
     void update_graph();
     void change_function_color(QPushButton* button, const QColor& color);
+    std::optional<Graph_Window_Data> get_graph_window_data();
+    void display_user_function_map_error_in_table(const User_Function_Map_Error& parse_error);
+    void display_error_in_table(const Parse_Error& parse_error, int row);
+    void display_error_message_box(const QString& header, const QString& message);
 };

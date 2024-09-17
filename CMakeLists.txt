@@ -84,7 +84,6 @@ find_package(Qt6 REQUIRED COMPONENTS Core Gui Widgets UiTools OpenGLWidgets)
 qt_add_executable(
     ${PROJECT_NAME}
     ${CMAKE_SOURCE_DIR}/forms/calculator_form.ui
-    ${CMAKE_SOURCE_DIR}/src/yyerror.cpp
     ${CMAKE_SOURCE_DIR}/src/string_manipulation.cpp
     ${CMAKE_SOURCE_DIR}/src/main.cpp
     ${CMAKE_SOURCE_DIR}/src/input_manager.cpp
@@ -101,6 +100,7 @@ qt_add_executable(
     ${CMAKE_SOURCE_DIR}/src/axis_marker_data.cpp
     ${CMAKE_SOURCE_DIR}/src/coordinate_transformation_data.cpp
     ${CMAKE_SOURCE_DIR}/src/graph_widget.cpp
+    ${CMAKE_SOURCE_DIR}/src/parse_error.cpp
     ${CMAKE_SOURCE_DIR}/include/calculator_form.hpp)
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -117,7 +117,6 @@ enable_testing()
 
 add_executable(
     calculator_test
-    ${CMAKE_SOURCE_DIR}/src/yyerror.cpp
     ${CMAKE_SOURCE_DIR}/src/string_manipulation.cpp
     ${CMAKE_SOURCE_DIR}/src/input_manager.cpp
     ${CMAKE_SOURCE_DIR}/src/calculator.cpp
@@ -133,6 +132,7 @@ add_executable(
     ${CMAKE_SOURCE_DIR}/src/axis_marker_data.cpp
     ${CMAKE_SOURCE_DIR}/src/coordinate_transformation_data.cpp
     ${CMAKE_SOURCE_DIR}/src/graph_widget.cpp
+    ${CMAKE_SOURCE_DIR}/src/parse_error.cpp
     ${CMAKE_SOURCE_DIR}/include/calculator_form.hpp
     ${CMAKE_SOURCE_DIR}/src/calculator_test.cc)
     

@@ -4,28 +4,33 @@
 %require "3.8.2"
 %header
 
-%define api.token.raw
+%locations
 
+%define api.token.raw
 %define api.token.constructor
+
 %define api.value.type variant
+
+%define api.location.type { ufdl::location }
+
+%define parse.error custom
 %define parse.assert
 
 %{
   #include <iostream>
-  #include <cmath>   // For pow, used in the grammar
-  void yyerror(char const *);
-  extern int yylineno;
+  #include <sstream>
+  #include <cmath>
 %}
 
 %code requires
 {
   #include "Function.hpp" // Includes func_map variable, and Function type
+  #include <Parse_Error.hpp>
   #include <map>
 }
 
-// Used to compute functions such as "sin" and "cos".
+%param { Parse_Error& parse_error }
 %param { const std::unordered_map<std::string, Function>& func_map }
-// Used to store the solution to the expression.
 %parse-param { double& result }
 
 // Enable run-time traces (yydebug)
@@ -73,7 +78,7 @@ input:
 line:
   "\n"
 | expression "\n"   { result = $1; }
-| error "\n"        { yyerrok;     }
+| error             { YYABORT; }
 ;
 
 expression:
@@ -82,14 +87,73 @@ expression:
 | expression "+" expression             { $$ = $1 + $3;     }
 | expression "-" expression             { $$ = $1 - $3;     }
 | expression "*" expression             { $$ = $1 * $3;     }
-| expression "/" expression             { $$ = $1 / $3;     }
+| expression "/" expression             {
+                                            if ($3 == 0)
+                                            {
+                                                result = NAN;
+                                                YYACCEPT;
+                                            }
+                                            else
+                                            {
+                                                $$ = $1 / $3;
+                                            }
+                                        }
 | "-" expression  %prec NEGATIVE_SIGN   { $$ = -$2;         }
 | expression "^" expression             { $$ = pow($1, $3); }
 | "(" expression ")"                    { $$ = $2;          }
 ;
 /* End of grammar. */
 %%
-void yy::parser::error(const std::string& m)
+void yy::parser::error(const location_type& location, const std::string& message)
 {
-    std::cerr << m << " Line: " << yylineno << '\n';
+    std::stringstream message_stream;
+
+    int beginning_column = location.begin.column;
+    message_stream << parse_error.expression << '\n';
+    Parse_Error::print_error_marker_to_column(message_stream, beginning_column);
+    message_stream << "Error on column " << beginning_column + 1 << ":\n" << message;
+
+    parse_error.message = message_stream.str();
+    parse_error.is_error = true;
+}
+void yy::parser::report_syntax_error(const context& error_context) const
+{
+    std::stringstream message_stream;
+
+    location_type current_location = error_context.location();
+    int beginning_column = current_location.begin.column;
+    int ending_column = current_location.end.column;
+    int symbol_length = ending_column - beginning_column;
+
+    message_stream << parse_error.expression << '\n';
+    Parse_Error::print_error_marker_to_column(message_stream, beginning_column);
+
+    message_stream << "Syntax Error on column " << beginning_column + 1 << ":\nUnexpected token: ";
+    message_stream << yy::parser::symbol_name(error_context.token()) << '\n';
+    message_stream << "Expected token: ";
+
+    symbol_kind_type expected_tokens[parser::YYNTOKENS];
+    for (int i = 0; i < parser::YYNTOKENS; i++)
+    {
+        expected_tokens[i] = symbol_kind::S_YYEMPTY;
+    }
+    int success = error_context.expected_tokens(expected_tokens, parser::YYNTOKENS);
+
+    if (expected_tokens[0] == symbol_kind::S_YYEMPTY)
+    {
+        message_stream << '\n' << "Something broke" << std::endl;
+        return;
+    }
+
+    for (int i = 0; i < parser::YYNTOKENS - 1 && expected_tokens[i] != symbol_kind::S_YYEMPTY; i++)
+    {
+        message_stream << parser::symbol_name(expected_tokens[i]);
+        if (expected_tokens[i + 1] != symbol_kind::S_YYEMPTY)
+        {
+            message_stream << ", ";
+        }
+    }
+
+    parse_error.message = message_stream.str();
+    parse_error.is_error = true;
 }
