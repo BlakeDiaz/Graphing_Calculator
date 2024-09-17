@@ -36,7 +36,7 @@ class Graph_Widget : public QOpenGLWidget
     Line_Rendering_Data y_axis_marker_rendering_data;
     Axis_Toggle_Status axis_toggle_status = {true, true, true, true};
 
-    const int total_number_of_curve_points = 50000;
+    const int total_number_of_curve_points = 500000;
     const float point_size = 5.0f;
 
     std::tuple<std::vector<float>, Parse_Error> create_curve(const User_Function& user_function, const float lower_x_limit,
