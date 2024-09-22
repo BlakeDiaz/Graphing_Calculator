@@ -24,15 +24,35 @@ A desktop graphing calculator inspired by Desmos.
 
 ## Technical Explanation
 The calculator largely consists of two halves - the actual calculation, and the ui surrounding it.
+Changes in the UI are processed once the `Update` button is pressed.
+Once the button is pressed, a few things happen.
 
-Input in the form of a user-defined function is put through three parsers (and their associated lexers).
+First, the graph window (the minimum and maximum values of the x and y axes) is updated.
+Second, the axis settings (whether the x and y axes and their associated markers are displayed) are updated.
+Third, each item in the function table is processed.
 
-First, a dependency locator to figure out what other user-defined functions our given function depends on.
+If a given item is determined to be a solvable expression, we skip it for now.
+If it's a function definition, we figure out what other user functions it depends on and store that information for later.
+After that, we create a user function map.
 
-Second, a formatter that expands composite functions to their base terms.
+This map associates the identifier of a user function (i.e. the `f` in `f(x)= 5x + 4`) with the function itself to allow for easy lookups later.
+This is also where we check to see if the dependencies of our user functions can be resolved, and where we create the user function objects themselves.
 
-For example, if the two functions in the calculator were `f(x) = x + 2` and `g(x) = f(x)^2`, the formatter would expand `g(x)` internally to `g(x) = (x + 2)^2`.
+When we create user functions, we format the bodies of their expressions to make them easier to evaluate at different points.
+The formatting involves a few steps.
+First, `*` symbols are inserted where implicit multiplication occurs e.g. changing `5(3+4)` to `5*(3+4)`.
+Second, parentheses are placed around the function's variable.
+This makes it easier for us to repalce the function's variable with the point the function is being evaluated at.
+Finally, calls to other user functions are replaced with their formatted bodies.
 
-The third parser evaluates the value of a function at a certain point, for example, `g(2)`.
+Once the map is created, we once again loop through each item in our function table now that our user functions have been created and indexed.
+If it's a solvable expression, we replace each user function call with the formatted body of our user function and then solve the expression.
 
-This parser is run thousands of times in order to get enough points to display a graph of the function.
+After finishing this, the final step is to update the graph being displayed.
+This involves taking each user function's body and evaluating it at thousands of points between the minimum and maximum values of the x-axis.
+Finally, we render each user function's points with its associated color.
+
+Three parsers (and their lexers) are used to help process input.
+First, the dependency locator parser is used to figure out what other user-defined functions our given function depends on.
+Second, the formatter parser is used to format user functions and expressions.
+Finally, the solver parser is used to evaluate expressions as well as user functions at specific points.
