@@ -42,7 +42,7 @@ When we create user functions, we format the bodies of their expressions to make
 The formatting involves a few steps.
 First, `*` symbols are inserted where implicit multiplication occurs e.g. changing `5(3+4)` to `5*(3+4)`.
 Second, parentheses are placed around the function's variable.
-This makes it easier for us to repalce the function's variable with the point the function is being evaluated at.
+This makes it easier for us to replace the function's variable with the point the function is being evaluated at.
 Finally, calls to other user functions are replaced with their formatted bodies.
 
 Once the map is created, we once again loop through each item in our function table now that our user functions have been created and indexed.
